@@ -40,7 +40,7 @@ This paper aims to address this problem: **how to raise the level of abstraction
 ## Method
 This paper proposes the DR. WELL framework, a decentralized collaborative framework that combines neural methods (the reasoning ability of LLMs) with symbolic systems (structured representation and planning). Its core design simplifies coordination through symbolic abstraction.
 
-<img src="/images/2511.04646v1/x1.jpg" alt="DR. WELL 框架概览" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2511.04646v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Negotiation Protocol
 When one or more intelligent agents become idle, they enter a shared “communication room” and trigger a structured two-round negotiation protocol to assign tasks.
@@ -53,7 +53,7 @@ This design limits communication to necessary synchronization points, avoiding c
 ### Symbolic Planning and Execution
 Once task commitments are determined, each intelligent agent independently enters a planning-and-execution loop.
 
-<img src="/images/2511.04646v1/x2.jpg" alt="单个智能体的规划与执行循环" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.04646v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 1.  **Plan generation and revision**: Each intelligent agent uses its LLM to generate an initial symbolic plan draft based on the committed task. It then queries the shared world model (WM) and uses the successful plan prototypes and instances stored there to revise and refine the draft, making it more effective and better suited to the current context. The final plan is a sequence of symbolic macro actions from a predefined vocabulary, such as $$sync$$, $$align$$, and $$push$$.
 2.  **Execution and verification**: A symbolic controller executes the actions in the plan one by one.
@@ -61,12 +61,12 @@ Once task commitments are determined, each intelligent agent independently enter
     *   **Postcondition verification**: The actual effect of the action is verified by the environment. The controller translates the symbolic action into low-level movement commands and executes them, and the environment reports whether the action successfully achieved the intended effect.
     *   **Failure handling**: If the preconditions are not met (for example, waiting for a collaborator times out), the action fails and the plan either moves to the next step or aborts. If the plan finishes execution or fails, the intelligent agents return to the idle state and prepare for a new round of negotiation.
 
-<img src="/images/2511.04646v1/n_wholeplan.jpg" alt="规划流程图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.04646v1/n_wholeplan.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### World Model (WM)
 The world model is the innovative core of the framework; it serves both as a shared memory bank and as the engine for learning and optimization.
 
-<img src="/images/2511.04646v1/swell_WM.jpg" alt="世界模型的结构与功能" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.04646v1/swell_WM.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 #### Innovations
 1.  **Dynamically evolving hierarchical graph structure**: WM is built as a dynamic symbolic graph of the form:

@@ -57,7 +57,7 @@ To obtain a better performance trade-off, the paper further designs a randomized
 **Innovation**: By randomizing, the algorithm smooths out the “sharpness” of the decision and avoids being targeted by the adversary at a specific decision point.
 *   **Advantage**: The algorithm is $(\frac{1+1/b}{1-e^{-(\lambda-1/b)}})$-robust and $(\frac{\lambda}{1-e^{-\lambda}})$-consistent. As shown below, compared with the deterministic algorithm, it can provide better consistency under the same robustness guarantee.
 
-<img src="/images/2407.17712v1/tradeoffs.jpg" alt="滑雪租赁问题的鲁棒性与一致性权衡" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2407.17712v1/tradeoffs.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Non-clairvoyant Job Scheduling
 Problem setting: Schedule $n$ jobs on a single machine with the goal of minimizing the total completion time. The actual processing time $x\_j$ of each job is unknown, but a predicted value $y\_j$ is available. Jobs can be preempted and resumed at any time. The classic optimal non-clairvoyant algorithm is Round-Robin (RR), with a competitive ratio of 2.

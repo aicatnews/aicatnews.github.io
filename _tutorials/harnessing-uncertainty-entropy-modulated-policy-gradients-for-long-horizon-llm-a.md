@@ -49,7 +49,7 @@ $${% endraw %}
 
 This reveals an inherent learning dynamic: high-entropy (uncertain) steps naturally produce large gradients, which may lead to unstable training; low-entropy (confident) steps produce small gradients, meaning that even if these steps are correct, their reinforcement effect is limited, thereby reducing learning efficiency. EMPG is designed precisely to directly address this dual challenge.
 
-<img src="/images/2509.09265v1/x1.jpg" alt="EMPG机制概述及其算法性能" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2509.09265v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Innovations
 
@@ -57,7 +57,7 @@ The innovation of EMPG lies in introducing a new **Modulated Advantage** $A\_{\t
 
 
 {% raw %}$$
-A_{\text{mod}}(i,t)=\underbrace{A^{(i)}\cdot g(H_{t}^{(i)})}_{\text{自校准梯度缩放}}+\underbrace{\zeta\cdot f(H_{t+1}^{(i)})}_{\text{未来清晰度奖励}}
+A_{\text{mod}}(i,t)=\underbrace{A^{(i)}\cdot g(H_{t}^{(i)})}_{\text{self-calibrated gradient scaling}}+\underbrace{\zeta\cdot f(H_{t+1}^{(i)})}_{\text{future clarity reward}}
 $${% endraw %}
 
 
@@ -154,11 +154,11 @@ The paper conducted extensive experiments on three challenging long-horizon agen
 
 *   **Training stability**: Compared with the “policy collapse” that may occur in the later stages of the baseline DAPO method (with sharp KL divergence fluctuations), EMPG maintains a stable and low KL divergence throughout training, proving that its gradient modulation mechanism effectively prevents overly aggressive policy updates and ensures stable convergence.
 
-<img src="/images/2509.09265v1/x2.jpg" alt="训练过程中的KL损失动态" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2509.09265v1/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **The necessity of step-level analysis**: The analysis shows that, unlike previous token-level findings, at the step level of “thinking-action” even steps with very low initial entropy can undergo dramatic entropy changes after RL fine-tuning. This confirms the correctness of using “steps” as the basic unit for analysis and modulation, and is also a key motivation behind the design of EMPG.
 
-<img src="/images/2509.09265v1/entropy_change_by_bin.jpg" alt="不同熵区间的步级熵变化" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2509.09265v1/entropy_change_by_bin.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **Learning dynamics**: The learning curves in the experiments show that baseline methods quickly hit a performance bottleneck and stagnate, whereas EMPG can continue learning and break through this bottleneck, ultimately converging to a higher performance level. This indicates that EMPG not only accelerates learning, but also guides the intelligent agent to discover better strategies that baseline methods cannot find.
 

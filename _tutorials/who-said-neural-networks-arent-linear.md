@@ -53,7 +53,7 @@ $${% endraw %}
 
 Here, $g\_x$ maps the input data $x$ into a latent space, $A$ performs a linear transformation in that latent space, and then $g\_y^{-1}$ maps the result back to the output space.
 
-<img src="/images/2510.08570/lin_fig_meth.jpg" alt="Linearizer架构图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.08570/lin_fig_meth.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 <center>The Linearizer structure (top) is a linear operation sandwiched between two invertible functions. (Bottom) Vector addition and scalar multiplication define an induced vector space in which f is linear.</center>
 
 ## Innovations
@@ -117,7 +117,7 @@ The paper demonstrates the practical utility of the Linearizer framework through
     *   **Performance validation**: The FID score of one-step generation is comparable to that of 100-step iteration, validating the correctness of the theory.
     *   **Exact inversion**: By leveraging the properties of $f^\dagger$, the model can implement an exact encoder, mapping real images back into latent space, something standard diffusion models struggle to do. This makes image reconstruction and interpolation possible.
 
-<img src="/images/2510.08570/x1.jpg" alt="插值结果" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.08570/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 <center>The images on the left and right (in red) are the original (non-generated) data $x\_1$ and $x\_2$. The middle image is obtained by interpolation in latent space. </center>
 
 **Quantitative Comparison Results**
@@ -134,7 +134,7 @@ The paper demonstrates the practical utility of the Linearizer framework through
 *   **Method**: Associate different artistic styles with different core matrices $A\_{\text{style}}$, while content information is extracted by the shared $g\_x$. The style transfer function is $f\_{\text{style}}(x) = g\_y^{-1}(A\_{\text{style}} g\_x(x))$.
 *   **Conclusion**: This architecture completely separates content and style. Different styles can be easily composed like algebraic objects; for example, smooth transitions between two styles can be achieved by linearly interpolating the two style matrices, $\alpha A\_1 + (1-\alpha) A\_2$.
 
-<img src="/images/2510.08570/main_style_transfer.jpg" alt="风格迁移插值" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.08570/main_style_transfer.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 <center>Left: original image. Middle: style transfer using the left and right style images. Right: interpolation between the two styles.</center>
 
 ## Linear Idempotent Generative Networks
@@ -143,5 +143,5 @@ The paper demonstrates the practical utility of the Linearizer framework through
     *   **Global projector**: Unlike previous methods that only approximately achieve idempotence near the training data (such as IGNs), the model in this paper is a **global projector** thanks to its architectural guarantees. It can project any input onto the target data manifold.
     *   **No noise injection required**: The model does not inject noise during training, and the entire ambient space can serve as the input source, which is a very unique generative model.
 
-<img src="/images/2510.08570/ign_meth.jpg" alt="幂等生成网络方法" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.08570/ign_meth.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 <center>The black solid arrows indicate forward propagation; the red dashed arrows indicate backpropagation. Our linear IGN constructs a global projector that can project any input onto the target distribution. The top shows the input, and the bottom shows the matched output.</center>

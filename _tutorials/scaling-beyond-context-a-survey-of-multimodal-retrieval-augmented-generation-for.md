@@ -130,7 +130,7 @@ Early studies typically used the **page** as the atomic retrieval unit, ignoring
 To further improve multimodal RAG performance, researchers have introduced graph structures and intelligent agent frameworks.
 
 <img src="/images/2510.15253v1/x5.jpg" alt="Hybrid enhancement methods: graph-based vs agent-based" style="width:85%; max-width:450px; margin:auto; display:block;">
-(a) Graph-based: documents/elements form a graph index, and graph traversal is used to retrieve relevant neighborhoods. (b) Agent-based: an LLM智能体 decomposes the text query, coordinates multimodal retrieval, verifies collected evidence, and synthesizes the final answer.
+(a) Graph-based: documents/elements form a graph index, and graph traversal is used to retrieve relevant neighborhoods. (b) Agent-based: an LLMagent decomposes the text query, coordinates multimodal retrieval, verifies collected evidence, and synthesizes the final answer.
 
 #### Graph-based multimodal RAG
 This approach represents multimodal content as an explicit graph, where nodes correspond to modalities or content units (such as pages, text blocks, images, and tables), and edges represent semantic, spatial, and contextual relationships among them. Retrieval and reasoning on this graph can integrate heterogeneous evidence more effectively. For example, HM-RAG uses a graph-based database as one of the key modalities for multi-source retrieval. mKG-RAG explicitly constructs a multimodal knowledge graph as a structured knowledge base to improve retrieval accuracy. MoLoRAG leverages a page graph encoding logical relationships between pages to retrieve evidence through graph traversal.

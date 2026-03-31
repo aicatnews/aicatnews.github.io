@@ -104,7 +104,7 @@ The table below shows the performance of the pretrained models on several core b
 *   **Human preference and multi-turn dialogue evaluation**: In separate internal evaluations, Gemma 2 models show significant improvements over Gemma 1.1 in safety and instruction following, and also achieve much higher user satisfaction and goal completion rates in multi-turn conversations than the previous generation.
 *   **Memorization and privacy**: Gemma 2 has an extremely low memorization rate; whether measured by exact match or approximate match, its memorization rate is far below that of previous models, including Gemma 1.
 
-<img src="/images/2408.00118v3/x1.jpg" alt="记忆化率对比图。左图显示Gemma 2家族模型的总体记忆化率远低于Gemma 1和其它文献模型。右图按数据源细分，显示Gemma 2在代码、维基和科学文献等来源上的记忆化程度更高，但总体上各来源的精确和近似记忆化率都显著低于前代。" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2408.00118v3/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Final Conclusion
 Through architectural improvements (such as interleaved attention) and innovative training methods (especially the large-scale use of knowledge distillation), Gemma 2 successfully delivers a substantial boost in overall model capability without significantly increasing model size. The experimental results show that Gemma 2 not only leads comparable open models on automated benchmarks, but also demonstrates strong competitiveness in human evaluations that reflect real-world applications, providing a powerful new tool for building practical, efficient, and responsible AI applications.

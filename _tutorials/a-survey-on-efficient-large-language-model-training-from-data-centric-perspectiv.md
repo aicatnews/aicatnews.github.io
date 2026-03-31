@@ -16,7 +16,7 @@ title: "A Survey on Efficient Large Language Model Training: From Data-centric P
 
 Post-training of Large Language Models (LLMs) has become a critical stage for unlocking their domain adaptation capabilities and task generalization potential. This stage effectively enhances the model’s abilities in long-context reasoning, human alignment, instruction fine-tuning, and domain-specific adaptation.
 
-<img src="/images/2510.25817v1/x1.jpg" alt="数据飞轮图示" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.25817v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 However, in the post-training stage of LLMs, data, as the core driving force behind model evolution, is facing a severe “data challenge”: the cost of manually annotating high-quality data is rising rapidly, while the marginal gains from simply scaling up data are diminishing. In addition, static datasets inherently limit the model’s ability to adapt to ever-changing real-world knowledge. The linear dependence between data volume and model performance fundamentally stems from the inefficient use of data in traditional post-training paradigms.
 
@@ -51,7 +51,7 @@ These five dimensions complement one another: selection filters high-quality dat
 
 Data selection is crucial for improving the efficiency of LLM post-training by identifying high-value data subsets. As shown in the figure below, this article divides existing methods into four dimensions: (1) static filtering based on intrinsic data properties, (2) dynamic selection that adapts during training, (3) Agent strategies using collaborative mechanisms, and (4) labeling efficiency achieved through human-machine collaboration.
 
-<img src="/images/2510.25817v1/data-selection.jpg" alt="数据选择方法四大类别概览" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.25817v1/data-selection.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Static Filtering
 
@@ -90,7 +90,7 @@ Current data selection methods face challenges in aligning static metrics with d
 
 As shown in the figure below, improving data quality is crucial for maximizing the effectiveness of LLM post-training. Through semantic refinement, toxicity control, and distribution stabilization, researchers aim to improve the informativeness, safety, and robustness of training data. This article categorizes existing methods into three directions.
 
-<img src="/images/2510.25817v1/dataquality-enhance.jpg" alt="数据质量增强的三大关键方法" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.25817v1/dataquality-enhance.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Semantic Rewriting
 
@@ -124,7 +124,7 @@ Semantic rewriting, toxicity control, and distribution stabilization are key str
 
 Generating synthetic training data is a powerful strategy for overcoming data scarcity and enhancing the robustness of LLM post-training. As shown in the figure below, synthetic data generation methods can be divided into three categories: **instruction-driven generation**, **knowledge-guided generation**, and **adversarial generation**.
 
-<img src="/images/2510.25817v1/data-synthetic.jpg" alt="合成数据生成的三种主要方法" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.25817v1/data-synthetic.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Instruction-Driven Synthetic Data Generation
 
@@ -150,7 +150,7 @@ Each method has its trade-offs: instruction-driven methods scale quickly but ris
 
 Data distillation and compression techniques improve the efficiency of LLM post-training by reducing data complexity while preserving performance. As shown in the figure below, this includes three complementary approaches: **model distillation** for knowledge transfer, **data distillation** for dataset compression, and **joint compression** for unified optimization.
 
-<img src="/images/2510.25817v1/data-distillation.jpg" alt="数据蒸馏与压缩的三种方法" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.25817v1/data-distillation.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Model Distillation
 
@@ -172,7 +172,7 @@ These three methods offer complementary advantages for improving LLM efficiency:
 
 Self-evolving data ecosystems strategically optimize LLM post-training through autonomous data generation, real-time feedback, and continuous learning. As shown in the figure below, this ecosystem forms a closed loop of generation, evaluation, and adaptive training. This article discusses its three key components: self-iterative optimization, dynamic evaluation feedback, and LLM as judge.
 
-<img src="/images/2510.25817v1/selfevol.jpg" alt="自进化数据生态系统示意图" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.25817v1/selfevol.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Self-Iterative Optimization
 

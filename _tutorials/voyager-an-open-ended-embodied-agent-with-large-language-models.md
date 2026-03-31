@@ -134,4 +134,4 @@ Although Voyager currently lacks visual perception, experiments show that it can
 **Figure 10**: Progress in building and designing under human input.
 
 ### Summary
-The Voyager proposed in this paper is the first LLM-driven embodied lifelong learning 智能体. Experiments show that it can continuously explore the world, develop increasingly complex skills without human intervention, and demonstrate outstanding performance in discovering new items, unlocking the tech tree, exploring the map, and generalizing to new tasks. Voyager’s success provides a strong starting point and example for developing general 智能体 without fine-tuning model parameters.
+The Voyager proposed in this paper is the first LLM-driven embodied lifelong learning agent. Experiments show that it can continuously explore the world, develop increasingly complex skills without human intervention, and demonstrate outstanding performance in discovering new items, unlocking the tech tree, exploring the map, and generalizing to new tasks. Voyager’s success provides a strong starting point and example for developing general agent without fine-tuning model parameters.

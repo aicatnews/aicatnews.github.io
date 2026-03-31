@@ -35,7 +35,7 @@ This paper proposes a deep research multi-agent system called MARS (Multi-Agent 
 ### Dual-System Collaboration Framework
 The MARS framework integrates System 1’s intuitive processing ability and System 2’s deliberate reasoning ability into the same LLM, activating them through different prompts. The two work together through a clearly defined collaboration process to solve complex problems.
 
-<img src="/images/2510.04935v1/x1.jpg" alt="MARS双系统协作框架概览" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.04935v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 This collaboration process can be formalized as multi-round interaction:
 1.  **System 2 performs reasoning and planning**: In round $i$, System 2 ($\pi\_{\text{sys}\_2}$) generates reasoning steps $s\_i$ based on the current context $c\_i$ (which includes the initial question and information from previous rounds), and may also generate a tool call request (including tool parameters $t\_i$ and the call purpose $p\_i$).
@@ -73,7 +73,7 @@ The main innovation of this method lies in the **clear division of labor and joi
 ### Dual-System Optimization Strategy
 To enable end-to-end training, this paper proposes an optimization strategy based on multi-agent reinforcement learning, extending the GRPO (Group Relative Policy Optimization) algorithm.
 
-<img src="/images/2510.04935v1/x2.jpg" alt="MARS中的GRPO多智能体强化学习演示" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.04935v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 #### Efficient Content Handling with Bin Packing
 When System 1 processes large amounts of variable-length text returned by tools, to improve parallel processing efficiency, this paper adopts a bin-packing strategy based on the First Fit Decreasing (FFD) algorithm. This strategy efficiently organizes variable-length text blocks into optimally sized batches, reducing the total number of times System 1 needs to generate summaries.

@@ -31,7 +31,7 @@ At present, mainstream research in the field of emotional dialogue focuses on us
 
 In the field of agent memory management, existing architectures are mostly based on Retrieval-Augmented Generation (RAG). Although some work has improved this by using hybrid retrieval, optimizing the retrieval process (such as Selfmem), or building external memory banks (such as MemoryBank), two major bottlenecks remain:
 1.  **Static and incoherent memory**: Traditional methods store interactions as a collection of isolated facts and cannot synthesize multiple interactions into an evolving understanding of the user, leading to contradictions when the user's attitude changes.
-2.  **Memory bloat and noise**: Storing all interactions indiscriminately causes the memory bank to grow without bound, increasing retrieval latency and computational overhead while also introducing大量 noise, making it difficult to retrieve key information—the "needle in a haystack" problem.
+2.  **Memory bloat and noise**: Storing all interactions indiscriminately causes the memory bank to grow without bound, increasing retrieval latency and computational overhead while also introducinga large amount of noise, making it difficult to retrieve key information—the "needle in a haystack" problem.
 
 This paper aims to address the above issues, especially how to dynamically model and manage long-term emotional memory, in order to overcome the limitations of traditional RAG architectures in handling emotional fluctuations and to maintain memory consistency and efficiency.
 
@@ -41,12 +41,12 @@ This paper proposes an agent framework for emotional dialogue called DAM-LLM, wh
 ### System Architecture
 DAM-LLM consists of three core components: a central Master Agent, a two-stage hybrid retrieval module, and a distributed memory unit network. Together, these form a closed-loop cognitive architecture. The system drives dynamic memory optimization by minimizing the global belief entropy $\sum\_{m\in M}H(m)$, maximizing certainty in modeling user preferences. The Master Agent uses belief entropy as a global perceptual signal to coordinate Bayesian memory updates, semantic retrieval, and entropy-driven compression.
 
-<img src="/images/2510.27418v1/x1.jpg" alt="DAM-LLM框架图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.27418v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### DAM-LLM Agent
 The collaborative workflow of the system is completed by multiple agents, forming a complete closed loop from problem understanding to memory operations and response generation.
 
-<img src="/images/2510.27418v1/x2.jpg" alt="协作工作流图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.27418v1/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 1.  **Input Routing**: The routing agent analyzes user intent and decides whether the current input should trigger **Store**, **Retrieve**, or direct **Generate** response.
 
@@ -85,7 +85,7 @@ $${% endraw %}
 
 Among them, $C$ is the current sentiment confidence (prior), $W$ is its weight; $S$ is the strength of the new observed evidence, and $P$ is its confidence. This mechanism allows high-strength evidence to shape the sentiment profile more effectively while remaining robust to low-strength incidental remarks, thereby enabling smooth memory evolution.
 
-<img src="/images/2510.27418v1/x3.jpg" alt="类贝叶斯更新过程示意图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.27418v1/x3.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 
 #### Cognitive Belief Entropy
@@ -122,16 +122,16 @@ To evaluate the system’s performance in emotional scenarios, this paper constr
 <img src="/images/2510.27418v1/e1.jpg" alt="Emotional accumulation and transition" style="width:85%; max-width:450px; margin:auto; display:block;">
     <img src="/images/2510.27418v1/e2.jpg" alt="Emotional accumulation and transition" style="width:85%; max-width:450px; margin:auto; display:block;">
     
-    <img src="/images/2510.27418v1/x4.jpg" alt="情感强度量化响应" style="width:85%; max-width:600px; margin:auto; display:block;">
+    <img src="/images/2510.27418v1/x4.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **Stability Analysis**: Thirty observations of “coffee (taste)” show that the system quickly forms an initial confidence level within about 15 interactions, after which the confidence curve gradually converges and stabilizes as evidence accumulates. This process also verifies that the system can effectively distinguish and independently store different aspects of the same object, such as the taste and packaging of coffee.
 
-<img src="/images/2510.27418v1/e4.jpg" alt="置信度演化曲线" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.27418v1/e4.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Compression Algorithm Validation
 *   **Memory Growth Control**: Through an ablation study comparing systems with and without the Bayesian update mechanism, after processing 500 dialogues, the memory size of the system without the update mechanism grew linearly, while DAM-LLM achieved a memory compression rate of **63.7% to 70.6%**, with the number of memory units remaining stable at around 130-140, effectively suppressing memory bloat.
 
-<img src="/images/2510.27418v1/e5.jpg" alt="有无贝叶斯更新的记忆增长对比" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.27418v1/e5.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### System Performance Evaluation
 The system was evaluated from six dimensions using the LLM-as-a-judge (GPT-4) method.

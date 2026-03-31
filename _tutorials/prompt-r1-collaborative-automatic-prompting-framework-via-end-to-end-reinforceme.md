@@ -19,7 +19,7 @@ This paper proposes an end-to-end reinforcement learning framework called Prompt
 The paper introduces or adopts the following core concepts:
 
 1.  **Prompt-R1**: A collaborative automatic prompting framework based on end-to-end reinforcement learning. Its core idea is to use a small language model as the intelligent agent, which learns how to generate the optimal prompt sequence by interacting with a large language model to solve complex tasks.
-2.  **智能体 (Agent)**: In the Prompt-R1 framework, this role is played by a small-scale LLM. It is responsible for “thinking” about the problem, generating guiding prompts, and iterating over multiple rounds based on feedback from the large language model, ultimately producing the answer.
+2.  **agent (Agent)**: In the Prompt-R1 framework, this role is played by a small-scale LLM. It is responsible for “thinking” about the problem, generating guiding prompts, and iterating over multiple rounds based on feedback from the large language model, ultimately producing the answer.
 3.  **Environment**: In the Prompt-R1 framework, this role is played by a large-scale LLM. It receives prompts from the intelligent agent and generates responses based on its strong reasoning ability. This large model is “plug-and-play” and requires no additional training.
 4.  **Multi-Turn Prompt Interaction**: A series of “prompt-response” loops between the intelligent agent and the environment. In each round, the intelligent agent adjusts its thinking and prompts based on the historical interaction record, gradually guiding the environment toward the correct answer.
 5.  **Double-constrained Reward**: A specific reward function designed for the reinforcement learning process, consisting of two parts: **format reward** ensures that the intelligent agent’s output (reasoning process and prompts) follows the preset structure and conventions; **answer reward** evaluates the accuracy of the final answer. This design ensures that the model not only pursues correctness but also generates a well-structured and logically coherent reasoning path.
@@ -39,14 +39,14 @@ Current methods for improving the performance of large language models (LLMs) ma
 
 This paper aims to address the above issues by proposing a resource-efficient, adaptive, and scalable collaborative framework that enables small LLMs to effectively leverage the capabilities of large LLMs without fine-tuning the large LLMs.
 
-<img src="/images/2511.01016v1/x1.jpg" alt="Prompt-R1 智能体与大型 LLM 协作回答问题的示例。智能体通过与大型 LLM 逐步交互，获得了正确答案。" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.01016v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-<img src="/images/2511.01016v1/x2.jpg" alt="不同方法的比较：人机交互、提示工程、微调优化以及本文的协作式自动提示框架 (Prompt-R1)。" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.01016v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ## Method
 The core of Prompt-R1 is a collaborative process between an intelligent agent played by a small LLM and an environment played by a large LLM, with the entire process optimized end to end through reinforcement learning.
 
-<img src="/images/2511.01016v1/x3.jpg" alt="Prompt-R1 框架概览。一个小型 LLM 作为智能体，通过多轮提示与作为环境的大型 LLM 交互来回答问题。大型 LLM 是即插即用的，支持多种不同的模型。" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.01016v1/x3.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### Multi-Turn Prompt Interaction Framework
 The framework models the problem-solving process as a multi-turn dialogue between the intelligent agent (small LLM $S$) and the environment (large LLM $L$).
@@ -166,9 +166,9 @@ The experiments were conducted around several research questions, including the 
 
 *   **Transferability (RQ3/RQ5)**: Experiments demonstrated the “plug-and-play” nature of Prompt-R1. An intelligent agent trained with an open-source model (a zero-cost environment) can directly collaborate with closed-source models such as GPT-4o-mini (a cost-bearing environment) and significantly improve their performance. As shown in the figure below, across multiple datasets and LLMs, models equipped with the Prompt-R1 intelligent agent consistently improved, proving that the framework’s strategy can be successfully transferred.
 
-<img src="/images/2511.01016v1/x4.jpg" alt="在八个数据集上，六种不同 LLM 在未使用 Prompt-R1 智能体（蓝色）和使用后（橙色）的性能对比。" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.01016v1/x4.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-<img src="/images/2511.01016v1/x5.jpg" alt="在 OOD 数据集上，六种 LLM 的平均性能对比，以及使用 Prompt-R1 智能体后的平均性能提升。" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.01016v1/x5.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *   **Final conclusion**:
     The Prompt-R1 framework successfully improves performance on complex tasks by enabling a small intelligent agent trained with reinforcement learning to collaborate with a large LLM. It not only outperforms existing methods across a variety of tasks and datasets, but also demonstrates excellent generalization and transferability. This “small model guiding large model” paradigm offers a new and promising path for efficiently and cost-effectively leveraging and enhancing the capabilities of existing LLMs.

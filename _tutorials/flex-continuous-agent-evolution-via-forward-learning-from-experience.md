@@ -16,7 +16,7 @@ It completely overturns the traditional learning approach, enabling AI Agents to
 
 Most importantly, this process requires **no gradient backpropagation** at all. It is extremely low-cost, yet it delivers performance gains of up to 23% on difficult problems across mathematics, chemistry, biology, and more!
 
-<img src="/images/2511.06449v1/front_pic.jpg" alt="FLEX范式概览与主要成果" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.06449v1/front_pic.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### The dilemma: why can’t today’s Agents “learn”?
 
@@ -58,7 +58,7 @@ This paradigm brings three profound advantages:
 
 To realize this elegant idea, FLEX designs a sophisticated mechanism that can be understood as a clearly divided “strategic command center.” The study formalizes it as a **hierarchical Markov decision process** (**Meta-MDP**).
 
-<img src="/images/2511.06449v1/fig-fl.jpg" alt="FLEX的具体实现机制" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.06449v1/fig-fl.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 #### Lower-level MDP: frontline exploration and experience distillation
 

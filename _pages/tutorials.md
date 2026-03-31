@@ -20,7 +20,7 @@ pagination:
 
   <div class="header-bar">
     <h1>Tutorials</h1>
-    <h2>每日AI最新进展分享。</h2>
+    <h2>Daily updates on the latest AI advances.</h2>
   </div>
 
 {% if site.display_tags and site.display_tags.size > 0 or site.display_categories and site.display_categories.size > 0 %}

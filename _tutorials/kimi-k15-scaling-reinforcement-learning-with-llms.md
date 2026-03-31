@@ -90,23 +90,23 @@ To make the model more efficient while maintaining high performance, this paper 
 
 ### Infrastructure Innovation
 
-<img src="/images/2501.12599v4/x3.jpg" alt="系统总览" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2501.12599v4/x3.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 *   **Large-scale RL training system**: This paper builds a synchronous iterative RL training system. The system includes a central master, rollout worker nodes, and training worker nodes. The rollout nodes are responsible for generating experience and storing it in the Replay Buffer, while the training nodes fetch data from it to update the model.
 
-<img src="/images/2501.12599v4/x4.jpg" alt="部分Rollout示意图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2501.12599v4/x4.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **Partial Rollouts**: This is the core technique that enables long-context RL. The system sets a fixed token budget for each rollout. If a generation is not completed in one pass, the unfinished part is stored in the Replay Buffer and continued in the next iteration. In this way, prior content can be efficiently reused, greatly reducing the computational cost of generating long sequences.
 
-<img src="/images/2501.12599v4/x5.jpg" alt="混合部署框架" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2501.12599v4/x5.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **Hybrid deployment of training and inference**: To maximize GPU utilization, this paper designs a hybrid deployment framework. The framework uses Kubernetes Sidecar containers to deploy both the training framework (Megatron) and the inference framework (vLLM) in the same Pod. During the RL training phase, the GPU is used by Megatron; during the rollout (inference) phase, the model weights are transferred to vLLM in a memory-efficient way for execution, while the training process is paused. This avoids the GPU idling problem in on-policy RL caused by waiting for inference.
 
 ## Experimental conclusions
 
-<img src="/images/2501.12599v4/x1.jpg" alt="Kimi k1.5 long-CoT 结果" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2501.12599v4/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-<img src="/images/2501.12599v4/x2.jpg" alt="Kimi k1.5 short-CoT 结果" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2501.12599v4/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 This paper validates the effectiveness of the proposed method through evaluations on multiple authoritative benchmarks.
 

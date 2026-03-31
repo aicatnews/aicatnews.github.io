@@ -79,7 +79,7 @@ This paper is organized around the following three core research questions:
 
 This paper collected 281 related papers, including 83 in the “good” category, 54 in the “bad” category, and 144 in the “ugly” category. As shown in the figure below, most papers were published in 2023, indicating a rapid rise in research interest in this field.
 
-<img src="/images/2312.02003v3/page_3_Figure_1.jpg" alt="论文分类概览" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2312.02003v3/page_3_Figure_1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 **Finding I:** In security-related applications, most researchers tend to use LLMs to enhance security, such as vulnerability detection, rather than as attack tools. Overall, LLMs contribute more positively than negatively to the security community.
 
@@ -170,9 +170,9 @@ LLMs have also contributed to data security, mainly in terms of data integrity, 
 
 This section examines the offensive applications of LLMs and classifies them into five categories based on their position in the system architecture.
 
-<img src="/images/2312.02003v3/page_7_Figure_1.jpg" alt="网络攻击分类体系" style="width:80%; max-width:300px; margin:auto; display:block;">
+<img src="/images/2312.02003v3/page_7_Figure_1.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
-<img src="/images/2312.02003v3/page_7_Figure_3.jpg" alt="现有攻击的普遍性" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2312.02003v3/page_7_Figure_3.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ## Summary of the Taxonomy
 

@@ -26,7 +26,7 @@ GAM, by contrast, borrows the **Just-in-Time (JIT)** idea from programming.
 
 It does only the lightest work offline, and only at runtime—when a question needs to be answered—does it invest intensive computation to “deeply research” the current task and generate a customized, highly efficient context.
 
-<img src="/images/2511.18423v1/x1.jpg" alt="GAM框架概览" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.18423v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 To achieve this, GAM designs an elegant two-part architecture: the **Memorizer** and the **Researcher**.
 
@@ -86,11 +86,11 @@ Interestingly, the “Memorizer” is less sensitive to model size; even a small
 
 One unique advantage of GAM is its **test-time scalability**. This means that when dealing with difficult problems, we can improve performance by increasing its “thinking time.”
 
-<img src="/images/2511.18423v1/reflection_depth.jpg" alt="增加反思深度提升性能" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.18423v1/reflection_depth.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Left: Increasing reflection depth (allowing more rounds of research)*
 
-<img src="/images/2511.18423v1/pages.jpg" alt="增加检索页面数提升性能" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.18423v1/pages.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Right: Increasing the number of pages retrieved per round of research*
 

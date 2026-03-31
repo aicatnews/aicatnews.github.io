@@ -31,14 +31,14 @@ This section briefly outlines the theoretical foundations of reinforcement learn
 
 ## States, Actions, and Rewards
 
-The core framework of reinforcement learning involves the interaction between an **智能体 (agent)** and its **environment (environment)**, as shown in Figure 1. To achieve a specific goal, the 智能体 performs **actions (action)** based on **observations (observations)** received from the environment. After the environment receives an action, its state changes and it feeds back a **reward (reward)** to the 智能体, which is a numerical evaluation of the action’s quality.
+The core framework of reinforcement learning involves the interaction between an **agent (agent)** and its **environment (environment)**, as shown in Figure 1. To achieve a specific goal, the agent performs **actions (action)** based on **observations (observations)** received from the environment. After the environment receives an action, its state changes and it feeds back a **reward (reward)** to the agent, which is a numerical evaluation of the action’s quality.
 
 <img src="/images/2405.10369v1/x1.jpg" alt="Interaction between agent and environment" style="width:85%; max-width:450px; margin:auto; display:block;">
-> Figure 1: Interaction between the 智能体 and the environment. The 智能体 receives observations, takes actions, and obtains the corresponding rewards.
+> Figure 1: Interaction between the agent and the environment. The agent receives observations, takes actions, and obtains the corresponding rewards.
 
 This interaction process can be described mathematically:
 *   **State (State)**: The set representing the environment state is $\mathcal{S}$, and a single state is denoted by $s$ (usually a vector). A state is a condensed representation of observations.
-*   **Action (Action)**: The set of actions the 智能体 can take is $\mathcal{A}$, and a single action is denoted by $a$ (usually a vector). The state and action spaces can be either discrete or continuous.
+*   **Action (Action)**: The set of actions the agent can take is $\mathcal{A}$, and a single action is denoted by $a$ (usually a vector). The state and action spaces can be either discrete or continuous.
 *   **Reward (Reward)**: A scalar value $r$ that measures how good an action is, produced by the reward function $\mathcal{R}$. The principle of reward design is: the more an action helps achieve the final goal, the higher the reward; otherwise, a low reward or a penalty is given.
 
 The table below lists some examples of reinforcement learning applications:
@@ -52,15 +52,15 @@ The table below lists some examples of reinforcement learning applications:
 
 ## Markov Decision Process
 
-The interaction between the 智能体 and the environment is a continuous loop. At time step $t$, the 智能体 receives state $s\_t$ and reward $r\_t$, and outputs action $a\_t$; after the environment executes $a\_t$, it transitions to a new state $s\_{t+1}$ and provides a new reward. This process is usually **episodic**, meaning that after a series of steps it reaches a terminal state (success or failure).
+The interaction between the agent and the environment is a continuous loop. At time step $t$, the agent receives state $s\_t$ and reward $r\_t$, and outputs action $a\_t$; after the environment executes $a\_t$, it transitions to a new state $s\_{t+1}$ and provides a new reward. This process is usually **episodic**, meaning that after a series of steps it reaches a terminal state (success or failure).
 
 This process can be formalized as a **Markov Decision Process (MDP)**, defined by a quadruple $(\mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P})$. Here $\mathcal{P}$ is the state transition probability. The **Markov property** means that the state transition probability at time step $t$ depends only on the current state $s\_t$ and the action $a\_t$ taken, i.e., $p(s\_{t+1} \mid s\_t, a\_t)$.
 
-The learning objective of the 智能体 is not to maximize immediate reward, but to maximize the **discounted cumulative reward** of future rewards. This introduces the **discount factor** $\gamma$ ($0 < \gamma < 1$), which balances the importance of short-term and long-term rewards and ensures convergence of the total reward over an infinite time horizon.
+The learning objective of the agent is not to maximize immediate reward, but to maximize the **discounted cumulative reward** of future rewards. This introduces the **discount factor** $\gamma$ ($0 < \gamma < 1$), which balances the importance of short-term and long-term rewards and ensures convergence of the total reward over an infinite time horizon.
 
 ## Q Function, Value Function, and Policy
 
-To solve RL problems, we introduce several core concepts and illustrate them with a simple maze example (Figure 2). The goal of the 智能体 is to move from any empty cell to the target position in the upper right corner.
+To solve RL problems, we introduce several core concepts and illustrate them with a simple maze example (Figure 2). The goal of the agent is to move from any empty cell to the target position in the upper right corner.
 
 <img src="/images/2405.10369v1/x2.jpg" alt="Maze environment" style="width:80%; max-width:300px; margin:auto; display:block;">
 > Figure 2: Maze environment, containing 5 valid states (0-4) and 4 actions (up, down, left, right).
@@ -78,7 +78,7 @@ To achieve the goal, we define a reward table (Table 2) and introduce a Q table 
 | 3 | $-\infty$ | -1 | -1 | $-\infty$ |
 | 4 | $-\infty$ | -1 | 100 | $-\infty$ |
 
-By repeatedly iterating and updating the Q table $Q[s,a]$ using Algorithm 1 (a simplified form of Q-learning), we can eventually obtain a converged Q table (Table 3), which guides the 智能体 to choose the optimal action in any state.
+By repeatedly iterating and updating the Q table $Q[s,a]$ using Algorithm 1 (a simplified form of Q-learning), we can eventually obtain a converged Q table (Table 3), which guides the agent to choose the optimal action in any state.
 
 **Table 3: Converged Q table for the maze environment ($\gamma=0.9$)**
 

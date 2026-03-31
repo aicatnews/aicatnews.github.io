@@ -20,7 +20,7 @@ Although these methods have been very successful, they seem to stem from differe
 
 The core idea of GRAPE is that positional information can be represented through a **Group Action**. Specifically, position $n$ corresponds to a group element $G(n)$, which is a matrix acting on word vectors. This group element is derived via the **Matrix Exponential** from a more fundamental **Generator** $L$: $G(n) = \exp(n\omega L)$.
 
-![图：GRAPE框架概览](images/page_1_Figure_0.jpg)
+![Figure illustration](images/page_1_Figure_0.jpg)
 
 Figure: Overview of the GRAPE framework. On the left, multiplicative GRAPE unifies methods such as RoPE through rotation operations in the special orthogonal group SO(d). On the right, additive GRAPE unifies methods such as ALiBi and FoX through unipotent transformations in the general linear group GL.
 

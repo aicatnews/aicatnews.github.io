@@ -13,7 +13,7 @@ Meta Reality Labs’ latest research result, **MobileLLM-Pro**, is designed to b
 
 Even more impressive, it supports a context window of up to 128K, and after 4-bit quantization, its performance barely degrades. How was this achieved? The answer lies in the four core innovations of MobileLLM-Pro.
 
-<img src="/images/2511.06719v1/process.jpg" alt="MobileLLM-Pro的四阶段训练流程" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.06719v1/process.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### Core Architecture: Small Size, Big Capacity
 
@@ -23,11 +23,11 @@ To efficiently handle 128K-long text on edge devices, the study adopts a **Local
 
 ### Innovation 1: Implicit Positional Distillation, Learning Long Text the Smart Way
 
-Traditional models usually need to be “fed”大量 long-sequence data to learn how to handle long text. But this is not only computationally expensive, it can also cause the model to forget existing knowledge while learning new positional information.
+Traditional models usually need to be “fed”a large amount of long-sequence data to learn how to handle long text. But this is not only computationally expensive, it can also cause the model to forget existing knowledge while learning new positional information.
 
 MobileLLM-Pro proposes a new technique called **implicit positional distillation**.
 
-<img src="/images/2511.06719v1/impl_pos_emb_2.jpg" alt="隐式位置蒸馏示意图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.06719v1/impl_pos_emb_2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 Its core idea is to let a powerful teacher model that has seen 128K-long text (Llama 4-Scout) distill long-range dependencies and positional understanding, and then pass them on to the student model (MobileLLM-Pro). Throughout the process, the student model never needs to see the full long-text data.
 
@@ -39,7 +39,7 @@ To make small models more “well-rounded,” researchers usually mix code, reas
 
 MobileLLM-Pro adopts a **Specialist Model Merging** strategy. In the final stage of pretraining, they train multiple “domain experts” in parallel based on the same model checkpoint, such as a coding expert and a reasoning expert.
 
-<img src="/images/2511.06719v1/btm.jpg" alt="专家模型融合过程" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.06719v1/btm.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 Finally, using **non-uniform weight averaging**, they merge the “wisdom” (model weights) of these experts into a single model. This approach adds no parameters, yet creates an “all-rounder” that outperforms any single expert across capabilities.
 

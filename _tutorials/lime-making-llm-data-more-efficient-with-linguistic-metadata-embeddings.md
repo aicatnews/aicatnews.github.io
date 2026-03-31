@@ -20,7 +20,7 @@ The core idea of LIME is to inject rich linguistic metadata at the source of mod
 
 Specifically, LIME’s workflow consists of four steps, as shown below:
 
-![LIME 流程图](images/page_4_Figure_1.jpg)
+![Figure illustration](images/page_4_Figure_1.jpg)
 
 1.  **Linguistic pre-tokenization**: First, use a linguistics-rule-based tool (such as spaCy) to preprocess the text and identify word boundaries.
 
@@ -51,7 +51,7 @@ So how effective is this bit of “syntax sugar”? The answer: immediate.
 
 Research shows that LIME can significantly improve a model’s learning efficiency. Taking a 500M-parameter model as an example, the LIME model reached the same accuracy as the baseline model after training on only **43.65%** of the data that the baseline needed to train on all data. In other words, **training speed improved by 56%**!
 
-![LIME 训练效率对比](images/page_5_Figure_3.jpg)
+![Figure illustration](images/page_5_Figure_3.jpg)
 
 *Left: The LIME model (orange line) reaches the baseline model’s (blue line) final accuracy more quickly. Right: Across different model sizes, the LIME model achieves higher accuracy and lower perplexity.*
 
@@ -76,7 +76,7 @@ LIME+1 takes a bolder approach: when training the current Token $t\_i$, it does 
 
 This is equivalent to “spoiling” in advance what type of word the model should generate next before it actually does so (for example, a “verb” or a “number”).
 
-![LIME+1 推理引导](images/page_6_Figure_4.jpg)
+![Figure illustration](images/page_6_Figure_4.jpg)
 
 *LIME+1 inference example: by telling the model in advance that the next Token should be a verb (VBZ), it can guide the model to generate “is” rather than other words.*
 

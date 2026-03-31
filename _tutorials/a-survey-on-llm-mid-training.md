@@ -29,13 +29,13 @@ Mid-training coordinates three major capability areas:
 
 The figure below shows where mid-training sits in the overall landscape of LLM development.
 
-<img src="/images/2510.23081v1/x1.jpg" alt="中间训练在LLM能力渐进发展中的作用" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.23081v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ## Data Curation
 
 The data used in mid-training is typically a mixture of general high-quality corpora and specially formatted data, such as QA pairs, instruction data, and domain data in mathematics and code. This section will examine the end-to-end workflow of data curation in detail, including data collection, synthesis, selection, decontamination, and mixing; as shown in the figure below, the order of these steps can be adjusted as needed.
 
-<img src="/images/2510.23081v1/x2.jpg" alt="中间训练数据策管流程" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.23081v1/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Data Collection
 
@@ -145,7 +145,7 @@ Unlike pretraining scaling laws, **Decay Scaling Laws** take into account the un
 
 ## Evaluation
 
-Model evaluation during intermediate training follows established standardized benchmarks, as shown in the table below. The evaluation framework covers multiple domains, including general, math, coding, intelligent体, and long context, and is strategically aligned with the intermediate training objectives detailed below.
+Model evaluation during intermediate training follows established standardized benchmarks, as shown in the table below. The evaluation framework covers multiple domains, including general, math, coding, intelligent agent, and long context, and is strategically aligned with the intermediate training objectives detailed below.
 
 Benchmarks for intermediate training.
 
@@ -159,7 +159,7 @@ Benchmarks for intermediate training.
 | | Code completion | HumanEval |
 | | Code repair | HumanEval-Fix, Code-Fix |
 | | Code reasoning | HumanEval-NL, Code-Reasoning |
-| **Intelligent体** | Tool use | ToolBench, AgentBench |
+| **Intelligent agent** | Tool use | ToolBench, AgentBench |
 | **Long context** | Reasoning | NarrativeQA, QuALITY, ScrollS |
 
 ## Goal-Driven Implementation

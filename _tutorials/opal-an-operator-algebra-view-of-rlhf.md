@@ -81,7 +81,7 @@ When these assumptions do not hold, the method becomes **non-reducible**. The pa
 *   **Non-additive gates**: when penalties have gating logic (such as $$$\mathbf{1}\{\phi\_1=0\}\phi\_2$$$), they cannot be represented by a single non-negative additive surrogate.
 *   **Score-dependent weights**: when weights are functions of $$$\Delta f$$$, the order of operator application changes the final decision, so no utility-independent $$$w^{\ast}$$$ exists.
 
-<img src="/images/2509.11298v1/x1.jpg" alt="阶梯到范式的过程：加性惩罚汇集到f*；乘性权重汇集到w*；参考调整则分开累计。" style="width:80%; max-width:300px; margin:auto; display:block;">
+<img src="/images/2509.11298v1/x1.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 ## GKPO: A Standardized Exchange Pattern
 Building on the theory of Opal, the paper designs GKPO (Generalized Kernel Preference Object), a concrete, executable JSON schema for RLHF objectives.
@@ -95,8 +95,8 @@ GKPO’s design has the following core advantages:
 3.  **Explicit failure diagnosis**: When a method is irreducible, GKPO does not attempt to force a conversion. Instead, it explicitly marks $$inside_R: false$$ in the $$reducibility$$ field and indicates the reason for failure (such as $$reference_shift$$), while also providing a minimal “witness” to prove it. This makes the method’s underlying assumptions and limitations transparent.
 4.  **Inter-method converter**: GKPO acts as an “exchange layer” between methods. As long as a method is reducible, inter-method conversion can be achieved through the path $$$X \to \text{GKPO} \to Y$$$, while preserving its margins and decisions (within the range of positive scaling).
 
-### GKPO 示例
-一个DPO方法的极简GKPO实例如下：
+### GKPO Example
+A minimal GKPO example of a DPO method is shown below:
 ``$$json
 {
   "version": "gkpo-1.0",

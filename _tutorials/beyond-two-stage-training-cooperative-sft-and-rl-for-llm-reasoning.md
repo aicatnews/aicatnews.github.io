@@ -41,7 +41,7 @@ BRIDGE adopts an augmented model architecture that splits the model parameters i
 
 This parameter separation is the key to bilevel optimization, allowing the two objectives to adapt together during training rather than overwriting each other.
 
-<img src="/images/2509.06948v1/bridge.jpg" alt="模型架构对比" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.06948v1/bridge.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### Bilevel Optimization Formulation
 The framework is formalized as a bilevel optimization problem, with SFT as the upper-level problem and RL as the lower-level problem:
@@ -79,13 +79,13 @@ The update of the LoRA parameters $$$w$$$ aims to maximize a composite objective
 
 
 {% raw %}$$
-\underbrace{J_{\mathrm{RL}}(\theta,w) - J_{\mathrm{RL}}(\hat{\theta},w)}_{\text{协作增益}}
+\underbrace{J_{\mathrm{RL}}(\theta,w) - J_{\mathrm{RL}}(\hat{\theta},w)}_{\text{cooperative gain}}
 $${% endraw %}
 
 
 where $$$\theta$$$ is the parameter jointly optimized by SFT and RL, while $$$\hat{\theta}$$$ is the parameter optimized only by RL. This gain term measures the performance improvement brought by “joint SFT-RL training” over “pure RL training.” By maximizing this gain, the upper-level SFT learns how to provide the most helpful guidance for RL, thereby theoretically ensuring that the collaboration outperforms RL alone.
 
-<img src="/images/2509.06948v1/comparison_methods.jpg" alt="训练方法对比" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2509.06948v1/comparison_methods.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ## Experimental Results
 The paper conducted extensive experiments on three large language models (Qwen2.5-3B, Llama-3.2-3B, Qwen2-8B) and five mathematical reasoning benchmarks.
@@ -110,7 +110,7 @@ The paper conducted extensive experiments on three large language models (Qwen2.
 
 *   **Higher training efficiency**: Training dynamics analysis shows that the Cold-start method exhibits a “decrease first, then increase” performance pattern in the early stage of RL, indicating that the model is forgetting SFT knowledge, which leads to low efficiency. In contrast, BRIDGE achieves rapid and stable reward growth through continuous SFT guidance, avoiding catastrophic forgetting.
 
-<img src="/images/2509.06948v1/training_dynamics.jpg" alt="训练动态对比" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.06948v1/training_dynamics.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *   **Better cost-effectiveness**: Compared with the Cold-start method, which requires nearly twice the training time, BRIDGE saves 14%-44% of training time while achieving higher performance, demonstrating its cost advantage in practical deployment.
 

@@ -35,7 +35,7 @@ However, although the existing literature contains many reviews of algorithmic p
 
 Object recognition is a general term that covers multiple specific tasks. These tasks differ in granularity and objectives, forming a hierarchical understanding framework.
 
-<img src="/images/2507.22361v1/1.jpg" alt="物体识别任务概述" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2507.22361v1/1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 *   **Image Classification**: Determining which category the entire image belongs to.
 *   **Object Localization**: Marking the position of one or more objects in an image with bounding boxes.

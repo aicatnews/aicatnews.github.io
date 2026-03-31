@@ -22,7 +22,7 @@ Its core consists of two major components:
 
 2.  **Self-Consistency Cascades**: With the chance to “learn from the master,” the student model’s capability is greatly enhanced, but how do we know when it has learned well and when it will make mistakes? “Self-consistency cascades” act as the quality inspector. It asks the student model to generate multiple answers to the same question, for example three. If all answers are exactly the same, it means the student is confident, and we accept its answer. If the answers are inconsistent, it means the student is confused, and the system automatically “cascades” the difficult problem to the expensive teacher model for resolution.
 
-<img src="/images/2512.02543v1/x1.jpg" alt="方法概览" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.02543v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Figure 1: The workflow of context distillation and self-consistency cascades. First, teacher model demonstrations are collected and stored in a database; at inference time, relevant examples are retrieved for the student model, and a self-consistency check determines whether to seek help from the teacher model.*
 
@@ -60,7 +60,7 @@ This loop occurs at every step of the task, ensuring that the Agent remains both
 
 Talk is cheap; the data speaks for itself. The study was validated on two mainstream Agent benchmarks, ALFWorld and AppWorld.
 
-<img src="/images/2512.02543v1/x2.jpg" alt="成本-精度权衡图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.02543v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Figure 2: Pareto frontier of cost and accuracy. The yellow star representing “IC + Cascade” (the proposed method) significantly outperforms other methods on both benchmarks, achieving lower cost and higher accuracy.*
 

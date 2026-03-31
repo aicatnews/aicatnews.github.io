@@ -48,7 +48,7 @@ This paper aims to address the above problems by proposing a general, label-free
 
 The proposed Online Process Reward Learning (OPRL) framework learns a process reward model (PRM) online, converting sparse trajectory-level outcome preferences into dense step-level reward signals to guide fine-grained policy updates.
 
-<img src="/images/2509.19199v1/x1.jpg" alt="OPRL训练流程图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2509.19199v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 The figure above shows the overall training flow of OPRL: the agent interacts with the environment to generate trajectories, and an outcome reward model (ORM) evaluates the entire trajectory and provides an outcome reward. These trajectories with outcome labels are used to update the PRM, which then generates implicit process rewards for each step in the trajectory. Finally, the agent policy is updated using both the outcome reward and the implicit step rewards.
 
@@ -91,7 +91,7 @@ This process teaches the PRM to prefer trajectories that lead to better outcomes
 
 Finally, the policy is updated using the surrogate objective of standard RL algorithms such as PPO.
 
-<img src="/images/2509.19199v1/x2.jpg" alt="优势计算示意图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.19199v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 As shown above, when OPRL updates the policy, the final advantage function is a combination of the episode-level advantage $A^{E}(\tau)$ and the step-level advantage $A^{S}(a)$.
 
@@ -149,17 +149,17 @@ Experiments were conducted on three challenging agent benchmarks: WebShop (web s
 
 *   **General applicability across different RL algorithms**: Experiments show that OPRL can consistently improve the performance of a variety of RL algorithms, including RLOO, REINFORCE++, and GRPO, demonstrating its strong generality and robustness.
 
-<img src="/images/2509.19199v1/x3.jpg" alt="OPRL在不同RL算法上的性能提升" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.19199v1/x3.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### Sample Efficiency and Training Stability
 
-<img src="/images/2509.19199v1/x4.jpg" alt="训练过程中的性能曲线" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.19199v1/x4.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *   OPRL demonstrates excellent sample efficiency and training stability. As shown in the figure above, compared with the baselines, OPRL converges to a higher performance level more quickly, and the performance curves during training are smoother with smaller fluctuations. For example, on WebShop, OPRL reaches the final performance of the baseline RLOO method in only 105 steps, improving training efficiency by about 2x. This verifies that its step-level reward signal can effectively reduce gradient variance and enable more stable policy updates.
 
 ### Exploration Efficiency Analysis
 
-<img src="/images/2509.19199v1/x5.jpg" alt="奖励与探索效率动态图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.19199v1/x5.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *   OPRL enables more efficient exploration. As shown in the figure above, during the early stage of training, the implicit step reward rises rapidly first, and then drives the growth of episode reward. This indicates that the agent first learns effective local action heuristics and then combines them into complete high-reward trajectories. Meanwhile, as training progresses, the average number of steps required for the agent to complete the task decreases significantly, proving that OPRL can guide the agent to reduce unnecessary actions and improve exploration efficiency.
 

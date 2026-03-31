@@ -13,7 +13,7 @@ title: "LIMI: Less is More for Agency"
 ---
 
 ## TL;DR
-This paper proposes the LIMI method and shows that by using only a very small number of carefully curated, high-quality training samples—just 78 in total—it is possible to train powerful AI智能体 that outperform models trained on massive amounts of data in intelligent agent tasks, thereby establishing the “less is more” principle for intelligent agent development.
+This paper proposes the LIMI method and shows that by using only a very small number of carefully curated, high-quality training samples—just 78 in total—it is possible to train powerful AIagent that outperform models trained on massive amounts of data in intelligent agent tasks, thereby establishing the “less is more” principle for intelligent agent development.
 
 ## Key Definitions
 The paper introduces or adopts the following concepts, which are essential for understanding its core contributions:
@@ -43,7 +43,7 @@ The core methodology of LIMI (Less is More for Intelligent Agency) shows that st
 
 3.  **Revealing the efficiency principle of intelligent agent development**: Through experiments, the paper demonstrates that the emergence of agency follows the “less is more” principle. The key lies in the “quality” of the data rather than the “quantity.” By strategically focusing on two core knowledge-work domains—**Vibe Coding** and **Research Workflows**—the paper shows that an extremely small number of demonstrations (only 78), yet containing complex collaboration, planning, and execution processes, is sufficient to cultivate an intelligent agent that outperforms one trained on large-scale data.
 
-<img src="/images/2509.17567v1/limi_data_pipeline.jpg" alt="LIMI数据构建流程图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2509.17567v1/limi_data_pipeline.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ## Dataset Construction Process
 The foundation of LIMI lies in its strategic dataset construction process, which aims to capture the essence of agency with minimal data.
@@ -53,7 +53,7 @@ The paper first builds a query pool containing 78 high-quality queries, $\mathca
 *   **Collection of real-world queries**: 60 real tasks from the daily work of developers and researchers were collected, ensuring task complexity and ecological validity.
 *   **GitHub PR synthesis**: To broaden coverage, the paper designs a process that uses GPT-5 to synthesize new queries from PRs in top GitHub projects (with more than 10,000 stars). Through multi-stage filtering (repository screening, PR screening, expert annotation review), the authenticity and high quality of the synthesized queries were ensured. In the end, 18 queries that best matched the definitions of Vibe Coding and Research Workflows were selected.
 
-<img src="/images/2509.17567v1/x3.jpg" alt="LIMI训练数据特征" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2509.17567v1/x3.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 As shown in the figure, these data cover the two major domains of Vibe Coding and Research Workflows, and the trajectory lengths are widely distributed (average 42.4k tokens), reflecting the complexity of the tasks.
 
@@ -64,7 +64,7 @@ The collection process was carried out by four computer science PhD students act
 ## Experimental Conclusions
 The experiments were conducted around $$AgencyBench$$ and a series of general-purpose benchmarks, aiming to verify the effectiveness, data efficiency, and generalization ability of the LIMI method.
 
-![Agency Bench任务概览](images/2509.17567v1/x4.png)
+![Figure illustration](images/2509.17567v1/x4.png)
 
 ## Core Results
 

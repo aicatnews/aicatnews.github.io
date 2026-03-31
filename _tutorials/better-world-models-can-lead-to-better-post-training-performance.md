@@ -18,7 +18,7 @@ To study this question precisely, the researchers chose a perfect “sandbox” 
 
 The task is simple: give a Transformer a sequence of scrambled cube states and have it generate a sequence of “optimal” steps to solve the cube.
 
-<img src="/images/2512.03400v1/x1.jpg" alt="魔方任务流程图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.03400v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 The key here is that during training, the model only sees the initial state and the final solution steps, but **does not see** the intermediate cube states after each move.
 
@@ -48,7 +48,7 @@ This is like attaching an “EEG monitor” to the model. The researchers traine
 
 The higher the decoding accuracy, the clearer and more structured the model’s internal representation of the cube state.
 
-<img src="/images/2512.03400v1/intermediate_states.jpg" alt="探针准确率对比" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.03400v1/intermediate_states.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 As shown in the figure above, models that underwent “world model pretraining” (Pre-Train) or “joint training” (Joint-Train) achieved significantly higher probe accuracy than the standard fine-tuning model. This proves that explicit learning does indeed build a higher-quality internal world representation.
 
@@ -60,7 +60,7 @@ The researchers performed a bolder “brain surgery”: before the model generat
 
 If the model truly relies on this internal representation, then its next decision should shift from “a reasonable step to solve cube S” to “a reasonable step to solve cube T.”
 
-<img src="/images/2512.03400v1/intervene_plots_good_move_acc.jpg" alt="因果干预成功率" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2512.03400v1/intervene_plots_good_move_acc.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 The experimental results (as shown in the upper-left figure) indicate that models trained with an explicit world model had a higher intervention success rate. This shows that their decisions rely more on the clearly constructed internal world model rather than on vague statistical associations.
 
@@ -70,7 +70,7 @@ Now we come to the most critical question: how much does a clearer world model h
 
 The research team added a **post-training stage with reinforcement learning** (Post-training with GRPO) to all three training strategies above. GRPO further optimizes the model’s policy through multiple rollouts and rewards (reward = 1 for solving the cube, otherwise 0).
 
-<img src="/images/2512.03400v1/x2.jpg" alt="最终性能对比" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2512.03400v1/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 The figure above shows the final showdown and reveals an astonishing finding:
 

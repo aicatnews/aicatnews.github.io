@@ -58,7 +58,7 @@ $${% endraw %}
 
 This means that the choice of advantage function used by a particular algorithm (i.e., the weight $Z\_i$) ultimately determines the form of the objective function $J\_h$ it optimizes. Through this framework, the true optimization objectives of existing algorithms can be analyzed and compared.
 
-<img src="/images/2510.13651v1/x1.jpg" alt="不同变换函数h的示意图" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.13651v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Deriving the Weight Form and Objective Function
 This article considers a class of specific weight forms whose values depend on whether the current sample is correct ($R\_i = 1\_{y\_i \in C(x)}$) and on the number of correct responses among the other $M-1$ samples ($S\_i = \sum\_{j \neq i} R\_j$):

@@ -64,7 +64,7 @@ The researchers compared FFT with LoRA at different ranks ($r=4, 8, 16$) on the 
 
 *   **Faster training**: More surprisingly, LoRA did not shorten training time on the H100 GPU. The researchers pointed out that for a small model like GPT-2, the training bottleneck is compute-bound rather than memory-bound. The memory savings from LoRA cannot be translated into an actual training-speed advantage.
 
-<img src="/images/2603.20100v1/fft_lora_curves.jpg" alt="FFT vs. LoRA 训练曲线" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2603.20100v1/fft_lora_curves.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 The figure above clearly shows FFT (blue solid line) leading throughout in development-set accuracy over LoRA with different ranks (dashed lines).
 

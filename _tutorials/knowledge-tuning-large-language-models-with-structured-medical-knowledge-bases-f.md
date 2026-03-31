@@ -30,7 +30,7 @@ Its core idea is very clever: instead of forcing the model to “memorize” all
 
 The whole process is divided into three stages, as shown below:
 
-![知识调优流程图](images/page_3_Figure_2.jpg)
+![Figure illustration](images/page_3_Figure_2.jpg)
 
 1.  **Understand the question and generate a query**: When the model receives a question (such as “What are the symptoms of cicatricial pyloric obstruction?”), it first predicts the core **medical entity** (such as “cicatricial pyloric obstruction”) and **attribute** (such as “clinical manifestations”).
 
@@ -46,7 +46,7 @@ To train and evaluate the model, the research team also built and open-sourced t
 
 The dataset contains 7,449 high-quality question-answer pairs, and each pair strictly corresponds to an entry in a structured medical knowledge base. This provides a valuable resource for future research on medical large models.
 
-![cMedKnowQA数据集示例](images/page_3_Figure_0.jpg)
+![Figure illustration](images/page_3_Figure_0.jpg)
 
 ### How Effective Are the Experiments?
 
@@ -60,17 +60,17 @@ The results were impressive:
 
 - **Higher answer quality**: In expert H2 evaluations, the knowledge-tuned model significantly outperformed baseline models in both helpfulness and harmlessness, proving that its answers are more professional and trustworthy.
 
-![模型响应质量评估](images/page_6_Figure_10.jpg)
+![Figure illustration](images/page_6_Figure_10.jpg)
 
 More importantly, Knowledge-tuning demonstrated strong few-shot learning and generalization capabilities.
 
 Even with only a small amount of training data, the model could quickly learn knowledge retrieval skills.
 
-![小样本学习能力](images/page_6_Figure_10.jpg)
+![Figure illustration](images/page_6_Figure_10.jpg)
 
 At the same time, the model could transfer the learned ability to new diseases unseen during training, showing good generalization.
 
-![对未见实体的泛化能力](images/page_6_Figure_15.jpg)
+![Figure illustration](images/page_6_Figure_15.jpg)
 
 ### Conclusion
 

@@ -22,7 +22,7 @@ In the multi-stage ranking pipeline of recommender systems, **Early Stage Rankin
 
 It needs to quickly filter hundreds of high-quality candidates from massive recall results and pass them to more refined downstream ranking models.
 
-<img src="/images/2511.21095v1/x1.jpg" alt="多阶段级联排序系统" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.21095v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 To balance efficiency and effectiveness, industry widely adopts a “user-item decoupled” two-tower architecture.
 
@@ -38,7 +38,7 @@ To break through this bottleneck, GESR does not abandon the two-tower model; ins
 
 This module no longer keeps users and items “separated”; instead, it allows them to interact fully during the encoding stage.
 
-<img src="/images/2511.21095v1/x2.jpg" alt="GESR整体模型架构" style="width:80%; max-width:300px; margin:auto; display:block;">
+<img src="/images/2511.21095v1/x2.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 The MoA module acts like a “feature fusion master,” containing several carefully designed attention mechanisms:
 
@@ -50,7 +50,7 @@ For example, if 3 of the 10 videos a user watched were by the same creator as th
 
 This approach directly encodes explicit cross signals, is lightweight, and is highly interpretable.
 
-<img src="/images/2511.21095v1/x4.jpg" alt="硬匹配注意力（HMA）模块概览" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2511.21095v1/x4.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 #### 2. Deep understanding: Target-Aware Self Attention
 
@@ -94,7 +94,7 @@ Meta’s engineers responded with a combined strategy:
 
 *   **Efficient serving architecture**: retrieve item features efficiently during serving through an optimized caching mechanism, minimizing online computation as much as possible.
 
-<img src="/images/2511.21095v1/x5.jpg" alt="GESR服务架构" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.21095v1/x5.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 The final result is impressive: while model quality improved substantially, the QPS (queries per second) of GESR (advanced version) dropped by less than 10%, fully meeting the stringent requirements of online serving.
 

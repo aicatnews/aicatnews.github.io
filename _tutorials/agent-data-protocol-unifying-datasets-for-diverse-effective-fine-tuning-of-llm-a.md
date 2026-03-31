@@ -80,7 +80,7 @@ To put ADP into practice, the paper designs a three-stage conversion pipeline:
 ### Innovation
 The most important innovation of ADP is the introduction of an “intermediate language,” which greatly reduces the engineering complexity of data integration.
 
-<img src="/images/2510.24702v1/x2.jpg" alt="工程量对比" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.24702v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *   **Left figure (without ADP)**: Without ADP, for $$D$$ datasets and $$A$$ intelligent agent frameworks, researchers need to write $$D * A$$ separate conversion scripts, making the engineering effort **quadratic $$O(D×A)$$**.
 *   **Right figure (with ADP)**: With ADP, each dataset only needs one Raw→ADP converter, and each intelligent agent framework only needs one ADP→SFT converter. The total engineering effort is reduced to **linear $$O(D+A)$$**.

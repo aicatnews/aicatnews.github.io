@@ -104,11 +104,11 @@ As shown in the table below, the BrowseConf family of methods achieves performan
 ### Ablation Study and Analysis
 *   **Effect of the confidence threshold**: Experiments show that a stricter confidence threshold (i.e., a larger $k\%$) can lead to higher final accuracy, but at the cost of more average attempts. This reveals a trade-off between accuracy and computational cost.
 
-    <img src="/images/2510.23458v2/bc_en_threshold.jpg" alt="gpt-oss-120b 在 BrowseComp 上不同k%值下的性能消融" style="width:85%; max-width:600px; margin:auto; display:block;">
+    <img src="/images/2510.23458v2/bc_en_threshold.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-*   **Interaction changes across consecutive attempts**: Analysis shows that **BrowseConf-Summary** and **BrowseConf-Neg**, which carry historical information, significantly reduce the number of interaction steps (thought-action-observation loops) required in later attempts. This demonstrates that leveraging information from previous attempts enables the intelligent体 to solve problems more efficiently.
+*   **Interaction changes across consecutive attempts**: Analysis shows that **BrowseConf-Summary** and **BrowseConf-Neg**, which carry historical information, significantly reduce the number of interaction steps (thought-action-observation loops) required in later attempts. This demonstrates that leveraging information from previous attempts enables the intelligent agent to solve problems more efficiently.
 
-    <img src="/images/2510.23458v2/tool_call_change.jpg" alt="DeepSeek-V3.1 在 BrowseComp 上连续尝试间交互次数的平均变化" style="width:85%; max-width:600px; margin:auto; display:block;">
+    <img src="/images/2510.23458v2/tool_call_change.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Conclusion
-This paper confirms that verbalized confidence is a reliable signal for evaluating an intelligent体’s performance on complex tasks. Based on this, the proposed BrowseConf method dynamically allocates computational resources, significantly outperforming traditional fixed-budget TTS methods in computational efficiency while maintaining high task accuracy, offering a new approach to building more efficient and intelligent AI intelligent体.
+This paper confirms that verbalized confidence is a reliable signal for evaluating an intelligent agent’s performance on complex tasks. Based on this, the proposed BrowseConf method dynamically allocates computational resources, significantly outperforming traditional fixed-budget TTS methods in computational efficiency while maintaining high task accuracy, offering a new approach to building more efficient and intelligent AI intelligent agent.

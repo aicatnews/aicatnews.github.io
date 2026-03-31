@@ -21,7 +21,7 @@ The number of tool calls directly determines the breadth and depth of the Agent�
 
 However, the research found that standard Agents, such as those based on the ReAct framework, cannot effectively use increased tool-call budgets. They often perform shallow searches and, once they think they have found a “good enough” answer or get stuck, they terminate the task early, completely unaware that a large amount of resources remain unused.
 
-<img src="/images/2511.17006v1/x1.jpg" alt="标准ReAct Agent与BATS框架对比" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.17006v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 *Figure 1: The Budget Tracker can be applied to both standard ReAct Agents (top) and the more advanced BATS framework (bottom). The blue boxes indicate modules that are adjusted according to the budget.*
 
 This raises a core question: how can we enable Agents to achieve the most effective performance scaling under a given resource budget?
@@ -32,21 +32,21 @@ The research team first proposed a simple yet highly effective solution: the **B
 
 This is a plug-and-play lightweight module that, after each action taken by the Agent, uses a Prompt to explicitly tell the Agent: “How many tool calls do you still have left?”
 
-<img src="/images/2511.17006v1/x2.jpg" alt="预算追踪器工作原理" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2511.17006v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 *Figure 2: In each round of interaction, before generating the next thought and tool call, the Agent learns its current and remaining budget through the Budget Tracker.*
 
 Don’t underestimate this simple reminder! It gives the Agent a clear sense of resource consumption and remaining budget, allowing it to adjust subsequent reasoning and action strategies.
 
 The experimental results prove its power. As shown below, without budget awareness, the performance of the standard ReAct Agent saturates once the budget reaches 100. After adding the Budget Tracker, the Agent can continue to make use of the increased budget, and performance rises steadily, successfully breaking through the performance ceiling.
 
-<img src="/images/2511.17006v1/x3.jpg" alt="预算追踪器打破性能瓶颈" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.17006v1/x3.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 *Figure 3: On the BrowseComp dataset, the standard ReAct Agent (blue dashed line) quickly saturates, while the budget-aware Agent (orange solid line) continues to scale performance.*
 
 ### BATS: An Intelligent Framework for Dynamic Planning and Verification
 
 After demonstrating the effectiveness of “budget awareness,” the research team further developed a more advanced **BATS** (**Budget Aware Test-time Scaling**) framework, deeply integrating budget awareness into the Agent’s entire workflow.
 
-<img src="/images/2511.17006v1/x6.jpg" alt="BATS框架概览" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.17006v1/x6.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 *Figure 6: Overview of the BATS framework. The Agent starts with budget-aware thinking and planning, and continuously updates its strategy during iteration based on new information and the budget. After proposing an answer, BATS performs verification and decides whether to continue, pivot, or retry based on the remaining budget.*
 
 The core design principle of BATS is to keep budget awareness throughout the entire process, mainly reflected in two intelligent modules:
@@ -75,7 +75,7 @@ Most notably, BATS is a **fully training-free** framework. By introducing budget
 
 The figure below clearly shows BATS’s major advantage in the cost-performance trade-off. It pushes forward the cost-performance **Pareto frontier**, meaning that at the same cost, BATS can achieve higher accuracy; or, to reach the same accuracy, BATS requires lower cost.
 
-<img src="/images/2511.17006v1/x7.jpg" alt="BATS实现更优的成本-性能权衡" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.17006v1/x7.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 *Figure 7: Under the unified cost metric, BATS (orange) shows a superior scaling curve compared with baseline methods (blue), delivering better cost-effectiveness.*
 
 ### Conclusion

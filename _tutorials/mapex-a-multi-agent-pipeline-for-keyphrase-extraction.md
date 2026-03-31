@@ -31,12 +31,12 @@ This paper aims to address the above problem: how to design a more flexible and 
 ## Method
 This paper proposes MAPEX (Multi-Agent Pipeline for Keyphrase Extraction), a multi-agent pipeline framework. The framework works through three Agents and a dual-path strategy dynamically selected according to document length.
 
-<img src="/images/2509.18813v1/x1.jpg" alt="MAPEX框架图" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2509.18813v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Agent Roles and Responsibilities
 The MAPEX framework includes three Agents that work collaboratively, with their behavior guided by carefully designed prompts.
 
-<img src="/images/2509.18813v1/x2.jpg" alt="智能体提示设计" style="width:80%; max-width:300px; margin:auto; display:block;">
+<img src="/images/2509.18813v1/x2.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 1.  **Expert Recruiter**: This Agent first analyzes the document content to determine its professional domain. It then assigns an appropriate expert role to the “domain expert” Agent (for example, “software engineer”) and provides the rationale for the assignment. This makes the subsequent extraction process more professionally informed.
 2.  **Candidate Extractor**: This Agent is responsible for generating a broad pool of candidate keyphrases from the original document. It is not assigned any specific role, with the goal of ensuring diversity in the initial candidate set and avoiding the omission of important lexical variants due to the limitations of a specific expert role.

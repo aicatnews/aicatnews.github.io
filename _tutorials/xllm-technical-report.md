@@ -45,12 +45,12 @@ The xLLM framework proposed in this paper aims to systematically address the abo
 
 The core design of the xLLM framework is a **service-engine decoupled design**. xLLM-Service is responsible for intelligent scheduling and resource management, while xLLM-Engine is responsible for efficiently executing inference computations.
 
-<img src="/images/2510.14686v1/x1.jpg" alt="xLLM整体架构图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.14686v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ## xLLM-Service
 xLLM-Service is designed to achieve efficient, elastic, and highly available request scheduling and resource management. Its workflow is shown in the figure below and mainly includes request preprocessing, intelligent scheduling, and the resource layer.
 
-<img src="/images/2510.14686v1/x2.jpg" alt="xLLM-Service工作流程图" style="width:80%; max-width:300px; margin:auto; display:block;">
+<img src="/images/2510.14686v1/x2.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 Its main innovations include:
 

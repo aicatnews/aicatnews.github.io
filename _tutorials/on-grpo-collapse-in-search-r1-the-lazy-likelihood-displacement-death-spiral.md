@@ -6,15 +6,15 @@ title: "On GRPO Collapse in Search-R1: The Lazy Likelihood-Displacement Death Sp
 
 <img src="/images/2512.04220v1/A__title.jpg" alt="" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-When AI 智能体 (Agent) learn to use external tools such as search engines, their ability to solve complex problems undergoes a qualitative leap. However, a shortcut-like training method—**Group Relative Policy Optimization** (**GRPO**)—hides a fatal flaw: during training, models often “suddenly die” without warning, and performance plummets.
+When AI agent (Agent) learn to use external tools such as search engines, their ability to solve complex problems undergoes a qualitative leap. However, a shortcut-like training method—**Group Relative Policy Optimization** (**GRPO**)—hides a fatal flaw: during training, models often “suddenly die” without warning, and performance plummets.
 
 > ArXiv URL：http://arxiv.org/abs/2512.04220v1
 
 Why does this happen? Recently, researchers from top institutions such as UBC and UC Berkeley finally identified the culprit behind this “tragedy” and proposed an extremely simple yet effective “antidote.” It not only stabilized training, but also sent Qwen2.5 series model performance soaring across multiple question-answering tasks, with gains of up to **37.8%**!
 
-<img src="/images/2512.04220v1/performance_comparison_7b_v2.jpg" alt="Qwen2.5-7B模型性能对比" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2512.04220v1/performance_comparison_7b_v2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### The “Achilles’ Heel” of AI 智能体: GRPO and Training Collapse
+### The “Achilles’ Heel” of AI agent: GRPO and Training Collapse
 
 For large models to learn to use tools, reinforcement learning (RL) is a necessary path.
 
@@ -22,7 +22,7 @@ GRPO is favored in the field of **Tool-Integrated Reinforcement Learning** (**TI
 
 However, beneath the appealing surface lies a harsh reality.
 
-Researchers found that AI 智能体 trained with GRPO, especially on complex tasks requiring multi-turn tool interactions, often suffer catastrophic training collapse.
+Researchers found that AI agent trained with GRPO, especially on complex tasks requiring multi-turn tool interactions, often suffer catastrophic training collapse.
 
 The model’s reward value can suddenly drop off a cliff, as if it had forgotten all its skills overnight.
 
@@ -44,14 +44,14 @@ The whole process can be divided into three alarming stages:
 
 3.  **Accelerated collapse**: The likelihood drops sharply, causing gradient explosion and ultimately triggering a reward avalanche.
 
-<img src="/images/2512.04220v1/LD_dynamic_v3.jpg" alt="似然位移动态过程" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2512.04220v1/LD_dynamic_v3.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 The researchers named this self-reinforcing vicious cycle the **LLD Death Spiral**:
 > Likelihood drops ➡️ the model lacks confidence ➡️ negative gradients from low-likelihood wrong answers are amplified ➡️ the likelihood of the correct answer is further suppressed ➡️ gradient explosion ➡️ total collapse!
 
 As shown in the figure below, on the eve of collapse, the model’s entropy (uncertainty) surges sharply, which is a clear signal that the LLD problem is worsening.
 
-<img src="/images/2512.04220v1/entropy_fig.jpg" alt="训练过程中的熵变化" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.04220v1/entropy_fig.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### Precise “Surgery”: The Lightweight Regularization Method LLDS
 
@@ -90,7 +90,7 @@ The researchers conducted experiments on the Base and Instruct versions of Qwen2
 
 After adding LLDS, however, training for all models became exceptionally stable, rewards kept rising, and the models successfully escaped the fate of the “death spiral.”
 
-<img src="/images/2512.04220v1/comparison_7b_instruct.jpg" alt="不同模型上GRPO与GRPO+LLDS的训练奖励对比" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2512.04220v1/comparison_7b_instruct.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 More importantly, stable training brought tangible performance gains.
 
@@ -106,6 +106,6 @@ These results eloquently demonstrate that LLDS is not only GRPO’s “savior,�
 
 This study not only reveals the deep reason why GRPO frequently collapses in tool-integrated scenarios—**Lazy Likelihood Displacement** (**LLD**)—but also provides a plug-and-play solution with remarkable results: LLDS.
 
-It also offers an important lesson for all AI researchers and engineers: **when training AI 智能体, don’t just stare at the reward curve!**
+It also offers an important lesson for all AI researchers and engineers: **when training AI agent, don’t just stare at the reward curve!**
 
-The dynamic changes in likelihood are a earlier and more reliable “health barometer.” By monitoring and maintaining stable likelihood values, we can build more powerful and more reliable AI 智能体, enabling them to move steadily and far on the road toward artificial general intelligence.
+The dynamic changes in likelihood are a earlier and more reliable “health barometer.” By monitoring and maintaining stable likelihood values, we can build more powerful and more reliable AI agent, enabling them to move steadily and far on the road toward artificial general intelligence.

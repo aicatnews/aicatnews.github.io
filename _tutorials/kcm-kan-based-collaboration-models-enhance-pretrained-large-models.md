@@ -32,7 +32,7 @@ This paper aims to solve this specific problem: designing a general, efficient c
 ## Method
 The core idea of KCM is to build an intelligent, adaptive collaboration system. Its training and inference process are shown in the figure below, where a judgment model determines the data flow, and prompt modification and knowledge distillation are combined to enable the two models to co-evolve.
 
-<img src="/images/2510.20278v1/figure_22.jpg" alt="KCM 协同预训练大模型的训练流程" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.20278v1/figure_22.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 ### Innovations
 The main innovations of this method are reflected in the following aspects:

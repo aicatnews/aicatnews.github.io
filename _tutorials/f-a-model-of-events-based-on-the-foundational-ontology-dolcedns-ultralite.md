@@ -35,7 +35,7 @@ This paper aims to solve the above problems by creating a general event model th
 ## Method
 The design of Event-Model-F (F) strictly follows the foundational ontology DOLCE+DnS Ultralite (DUL) and its pattern-driven design philosophy. Its core innovation lies in using DUL’s Descriptions and Situations (DnS) pattern to break down complex event descriptions into six independent, composable ontology patterns.
 
-<img src="/images/2411.16609v1/MotivationSlide.jpg" alt="一个用于应急响应的分布式事件系统" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2411.16609v1/MotivationSlide.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Innovation
 Unlike previous models that directly describe event attributes, the core mechanism of the F model is to **separate the description of an event (Description) from the situation in which the event itself occurs (Situation)**. This allows the model to distinguish between “what happened in the world” (Situation) and “how we view and describe it” (Description). This design makes it possible for multiple, even contradictory, interpretations of the same event to coexist and be formally modeled.
@@ -43,7 +43,7 @@ Unlike previous models that directly describe event attributes, the core mechani
 ### Model Architecture: Six Ontology Patterns
 The F model consists of the following six DnS-based patterns, which together enable a comprehensive description of events.
 
-<img src="/images/2411.16609v1/x1.jpg" alt="F模型的六种模式及其与DUL的对齐" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2411.16609v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 1.  **Participation Pattern**:
     *   **Function**: Describes how objects (people, things) participate in an event and play specific roles.
@@ -104,7 +104,7 @@ Through comparative analysis with a variety of existing event models such as Eve
 | (6) Event explanation | ◦ | ◦ | ◦ | ◦ | ◦ | ◦ | ● |
 *Caption: ● - Fully supported; ○ - Partially supported; ◦ - Not supported*
 
-<img src="/images/2411.16609v1/x2.jpg" alt="各事件模型的功能对比" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2411.16609v1/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 **Comparison conclusions**:
 *   **Best-performing aspects**: The F model provides full support for all functional requirements. Its most notable advantage lies in the comprehensive modeling of **structural relations (part-whole, causal, related)** and **event explanation**, which are severely lacking in all other existing models.

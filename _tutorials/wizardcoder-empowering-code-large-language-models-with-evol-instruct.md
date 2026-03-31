@@ -59,7 +59,7 @@ Here, $${question}$$ is the original instruction to be evolved, and $${method}$$
 ### Training Process
 The training dataset is built starting from the Code Alpaca dataset. Through multiple rounds of iterative evolution with $$Code Evol-Instruct$$, the data generated in each round is merged with all previous rounds of data and the original data for model fine-tuning. During training, an external development set is used to determine when to stop evolution (Evol Stop) to prevent performance degradation.
 
-**精调提示词格式**:
+**Fine-tuning prompt format**:
 $$`$$
 Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
 ### Instruction:

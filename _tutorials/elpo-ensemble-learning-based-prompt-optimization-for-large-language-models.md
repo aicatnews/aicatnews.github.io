@@ -26,7 +26,7 @@ Existing methods, whether based on evolutionary algorithms or feedback-driven ap
 
 As shown below, traditional methods usually follow a single generation and search path, lacking flexibility.
 
-<img src="/images/2511.16122v1/AutoPe.jpg" alt="传统APO与ELPO框架对比" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.16122v1/AutoPe.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ELPO, by contrast, is like a “think tank.” It does not bet on any single strategy; instead, it pools ideas from multiple angles to perform optimization, resulting in a more comprehensive and robust solution.
 
@@ -58,7 +58,7 @@ To address this, ELPO creatively introduces an intelligent screening mechanism b
 
 *   **MAB**: It acts like a shrewd gambler, balancing “exploration” (trying new prompts) and “exploitation” (evaluating known good prompts) to quickly lock onto the most promising candidates with minimal resources.
 
-![搜索效率对比](images/2511.16122v1/Efficiency_of_search.png)
+![Figure illustration](images/2511.16122v1/Efficiency_of_search.png)
 
 *Figure caption: ELPO’s search strategy shows superior efficiency*
 

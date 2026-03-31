@@ -71,8 +71,8 @@ Rather than conducting traditional quantitative experiments, the paper validates
 <img src="/images/2509.08646v1/page_8_Figure_0.jpg" alt="" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **Implementation**: Modern LangChain implements P-t-E through the **LangGraph** library, modeling the workflow as a **State Machine**. The planner, executor, and other components are defined as nodes in the graph, with control flow managed through edges, especially conditional edges.
-*   **Key Advantage**: LangGraph’s graph structure naturally supports **loops and re-planning**. Through a conditional edge, if a step fails during execution, control flow can be routed to a “re-planning” node, allowing the 智能体 to generate a new plan based on the failure context, greatly improving system robustness and adaptability.
-*   **Security Practice**: The example code shows how to implement the principle of least privilege: the planner specifies the required tool for each step in the plan, and the executor node dynamically creates a temporary 智能体 for each step that is equipped with only that single tool.
+*   **Key Advantage**: LangGraph’s graph structure naturally supports **loops and re-planning**. Through a conditional edge, if a step fails during execution, control flow can be routed to a “re-planning” node, allowing the agent to generate a new plan based on the failure context, greatly improving system robustness and adaptability.
+*   **Security Practice**: The example code shows how to implement the principle of least privilege: the planner specifies the required tool for each step in the plan, and the executor node dynamically creates a temporary agent for each step that is equipped with only that single tool.
 
 ### CrewAI Implementation
 *   **Implementation**: CrewAI naturally maps to the P-t-E pattern through its **Hierarchical Process**. A **Manager Agent** plays the role of planner, responsible for breaking down tasks and delegating them to **Worker Agents**, which act as executors.

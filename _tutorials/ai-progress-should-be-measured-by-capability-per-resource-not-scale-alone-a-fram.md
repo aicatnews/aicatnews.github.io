@@ -42,7 +42,7 @@ The framework in this article is designed with different strategies for two majo
 
 This paradigm builds a bridge between developers and adapters through gradient blueprints, enabling the transfer of efficiency knowledge.
 
-<img src="/images/2511.01077v1/two_stage_transition.jpg" alt="两阶段转换流程图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2511.01077v1/two_stage_transition.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Theoretical Basis
 

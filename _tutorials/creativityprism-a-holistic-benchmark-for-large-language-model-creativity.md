@@ -33,7 +33,7 @@ Therefore, this paper aims to address the current lack of a unified, comprehensi
 ## Method
 This paper proposes $$CreativityPrism$$, a holistic benchmark framework for evaluating machine creativity. Its core idea is that creativity is not a single concept, but a polyhedron that exhibits different traits in different domains (contexts), much like light refracted through a prism into a spectrum of different colors.
 
-<img src="/images/2510.20091v1/x1.jpg" alt="CreativityPrism 框架图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.20091v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Framework Components
 The $$CreativityPrism$$ framework consists of three main parts:
@@ -79,9 +79,9 @@ The most essential innovation of this method is that it **proposes a decomposed,
 ## Experimental Conclusions
 This paper evaluated 17 state-of-the-art closed-source and open-source LLMs, revealing their performance in creativity.
 
-<img src="/images/2510.20091v1/plot-time.jpg" alt="模型发布时间与性能关系" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.20091v1/plot-time.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-<img src="/images/2510.20091v1/plot-perf-diff.jpg" alt="开源与闭源模型性能差距分解" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.20091v1/plot-perf-diff.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Key Experimental Results
 

@@ -36,7 +36,7 @@ This article aims to fill that gap by introducing established theories and exper
 ## Method
 This article designs three progressively more challenging experimental paradigms to evaluate LLM motivational vigilance across different contexts.
 
-<img src="/images/2510.19687v1/x1.jpg" alt="本文设计的三个实验范式，旨在评估LLM警惕性的不同方面" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2510.19687v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Experiment 1: Distinguishing Different Information Sources
 This experiment aims to test whether LLMs possess the most basic vigilance ability: distinguishing between “deliberately communicated information” and “incidentally observed information.”
@@ -86,7 +86,7 @@ This experiment aims to test whether the vigilance learned by LLMs in controlled
 *   LLMs can successfully distinguish between intentionally given advice and unintentionally observed information. When receiving “advice,” they adjust their answers significantly less than when receiving “spied-on” answers, which is consistent with human behavior and indicates that LLMs possess basic motivational vigilance.
 *   An interesting finding is that Chain-of-Thought (CoT) prompting, while enhancing reasoning, also makes LLMs trust external information more, causing their behavior to deviate from human vigilance patterns.
 
-<img src="/images/2510.19687v1/average_info_shift_graph.jpg" alt="LLM在不同信息类型下的平均信念调整" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.19687v1/average_info_shift_graph.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 ### Experiment 2: Frontier LLMs Exhibit Highly Rational Vigilance in Controlled Settings
 *   **Frontier models perform excellently**: Top non-reasoning LLMs (such as GPT-4o and Claude 3.5 Sonnet) exhibit vigilance behavior highly consistent with the rational model, with correlations between their judgments and the model’s predictions (Pearson’s r) generally ranging from 0.8 to 0.9; GPT-4o performs best (average $r = 0.911$).
@@ -117,4 +117,4 @@ This experiment aims to test whether the vigilance learned by LLMs in controlled
 *   **Prompt steering works**: However, a simple intervention—**vigilance-based prompt steering**—that explicitly emphasizes the speaker’s intent and incentives in the prompt can significantly improve LLM performance, greatly increasing the consistency of their judgments with the rational model.
 
 ### Summary
-This study shows that current LLMs possess a latent, foundational motivational vigilance that enables them to reason about the motives behind information sources in simple, controlled settings. However, this ability is very fragile and does not easily generalize to challenging real-world applications without explicit guidance. To enable LLM智能体 to serve users safely and effectively in the real world, future research needs to further improve the model’s ability to robustly apply this latent capability in complex scenarios.
+This study shows that current LLMs possess a latent, foundational motivational vigilance that enables them to reason about the motives behind information sources in simple, controlled settings. However, this ability is very fragile and does not easily generalize to challenging real-world applications without explicit guidance. To enable LLMagent to serve users safely and effectively in the real world, future research needs to further improve the model’s ability to robustly apply this latent capability in complex scenarios.

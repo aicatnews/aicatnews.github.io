@@ -10,11 +10,11 @@ The development of large models is undergoing a profound transformation from “
 
 > ArXiv URL：http://arxiv.org/abs/2512.24873v1
 
-In the past, we were used to giving a model a Prompt and then expecting it to produce a perfect answer. But in real software engineering or complex tasks, this kind of one-shot deal often doesn’t work. True **智能体构建** (**Agentic Crafting**) requires the model to act like a human engineer: plan a solution, write code, observe errors, self-correct, and ultimately solve the problem through multiple interactions.
+In the past, we were used to giving a model a Prompt and then expecting it to produce a perfect answer. But in real software engineering or complex tasks, this kind of one-shot deal often doesn’t work. True **agentic crafting** (**Agentic Crafting**) requires the model to act like a human engineer: plan a solution, write code, observe errors, self-correct, and ultimately solve the problem through multiple interactions.
 
 However, the open-source community has long lacked a proper set of “infrastructure” to support this kind of complex Agent development. Everyone knows that “ROME wasn't built in a day,” but how do you build it systematically?
 
-The Alibaba team recently released a major paper, not only introducing a high-performance Agent model called **ROME**, but more importantly, open-sourcing the entire **智能体学习生态系统** (**Agentic Learning Ecosystem, ALE**) behind it. This system helped the ROME model reach **57.4%** accuracy on the SWE-bench Verified leaderboard, even approaching the performance of models with hundreds of billions of parameters.
+The Alibaba team recently released a major paper, not only introducing a high-performance Agent model called **ROME**, but more importantly, open-sourcing the entire **Agentic Learning Ecosystem** (**Agentic Learning Ecosystem, ALE**) behind it. This system helped the ROME model reach **57.4%** accuracy on the SWE-bench Verified leaderboard, even approaching the performance of models with hundreds of billions of parameters.
 
 Today, let’s break down how Alibaba built this “Rome” city on top of “Rock and Roll” on the road to AGI.
 
@@ -67,7 +67,7 @@ Traditional token-level RL (such as PPO or ReMax) is often too fine-grained, lea
 
 
 
-{% raw %}$$ \nabla J_{\text{RL}}(\pi) = \underbrace{\sum_{\tau \in \mathcal{T}^{+}} \dots}_{\text{正样本加权更新}} + \underbrace{\sum_{\tau \in \mathcal{T}^{-}} \dots}_{\text{负样本截断更新}} $${% endraw %}
+{% raw %}$$ \nabla J_{\text{RL}}(\pi) = \underbrace{\sum_{\tau \in \mathcal{T}^{+}} \dots}_{\text{positive-sample weighted update}} + \underbrace{\sum_{\tau \in \mathcal{T}^{-}} \dots}_{\text{negative-sample truncated update}} $${% endraw %}
 
 
 

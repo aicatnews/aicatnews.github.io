@@ -48,16 +48,16 @@ Research found that the final loss of a well-trained large language model can be
 
 where $L(C)$ is the loss at compute $C$. By training models with compute far smaller than GPT-4’s (up to 10,000 times less), this law successfully predicted GPT-4’s final loss with high accuracy.
 
-<img src="/images/2303.08774v6/x1.jpg" alt="图1：GPT-4及更小模型的性能。纵轴为内部代码库数据集上的最终损失。虚线是根据小模型拟合的幂律，它准确预测了GPT-4的最终损失。" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2303.08774v6/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 #### 2. Capability Prediction
 In addition to loss, this article also developed methods to predict more interpretable capability metrics, such as pass rate on HumanEval, a dataset used to measure Python code generation ability. By extrapolating the performance of models with up to 1,000 times less compute, this article successfully predicted GPT-4’s performance on a subset of HumanEval.
 
-<img src="/images/2303.08774v6/x2.jpg" alt="图2：GPT-4及更小模型在HumanEval子集上的性能。纵轴为平均对数通过率。虚线是根据小模型拟合的幂律，它准确预测了GPT-4的性能。" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2303.08774v6/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 However, not all capabilities can be easily predicted. For example, on the “Hindsight Neglect” task, smaller models’ performance decreased as scale increased, but GPT-4 reversed this trend and exhibited an emergent ability.
 
-<img src="/images/2303.08774v6/x3.jpg" alt="图3：GPT-4及更小模型在Hindsight Neglect任务上的性能。纵轴为准确率，越高越好。GPT-4逆转了小模型上观察到的负向扩展趋势。" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2303.08774v6/x3.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Innovation: Multimodal Input
 GPT-4 can accept prompts composed of arbitrary interleavings of text and images and generate text outputs. This capability allows it to handle documents containing charts, screenshots, and photos, and to perform visual or language tasks.
@@ -92,7 +92,7 @@ This approach significantly improved the model’s safety performance.
 ### Capability Validation
 1.  **Professional and academic exams**: GPT-4 demonstrated human-level performance on a variety of simulated exams designed for humans, significantly outperforming GPT-3.5. For example, on a simulated bar exam, GPT-4 scored in the top 10% of test takers, while GPT-3.5 was in the bottom 10%.
 
-    <img src="/images/2303.08774v6/x4.jpg" alt="图4：GPT在学术和专业考试上的表现。GPT-4在大多数考试中优于GPT-3.5。" style="width:85%; max-width:450px; margin:auto; display:block;">
+    <img src="/images/2303.08774v6/x4.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 
 | Exam | GPT-4 | GPT-4 (No Vision) | GPT-3.5 |
@@ -118,7 +118,7 @@ This approach significantly improved the model’s safety performance.
 
 3.  **Multilingual Capability**: By translating the MMLU benchmark into multiple languages for testing, it was found that GPT-4 outperforms the existing model SOTA in English across most languages, even for low-resource languages such as Latvian and Welsh.
 
-    <img src="/images/2303.08774v6/x5.jpg" alt="图5：GPT-4在多种语言上的MMLU表现，与先前模型在英语上的表现对比。" style="width:80%; max-width:300px; margin:auto; display:block;">
+    <img src="/images/2303.08774v6/x5.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 ### Limitations Analysis
 Despite its strong capabilities, GPT-4 still has limitations similar to earlier models:
@@ -126,7 +126,7 @@ Despite its strong capabilities, GPT-4 still has limitations similar to earlier 
 *   **Knowledge Cutoff**: Most of its knowledge is current only up to September 2021, and it cannot learn from experience.
 *   **Calibration**: The pre-trained model is well calibrated (its predicted confidence matches its accuracy), but calibration drops significantly after the post-training alignment process.
 
-<img src="/images/2303.08774v6/x8.jpg" alt="图8：预训练（左）和后训练（右）GPT-4模型在MMLU子集上的校准图。后训练过程损害了校准度。" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2303.08774v6/x8.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 ### Risks and Mitigations
 This paper substantially improved GPT-4’s safety properties through measures such as expert adversarial testing and model-assisted safety processes:
@@ -134,6 +134,6 @@ This paper substantially improved GPT-4’s safety properties through measures s
 *   **Policy Compliance**: When handling sensitive requests such as medical advice and self-harm, GPT-4 followed policy 29% more often.
 *   **Lower Toxicity**: On the RealToxicityPrompts dataset, GPT-4 generated toxic content in only 0.73% of cases, far below GPT-3.5’s 6.48%.
 
-<img src="/images/2303.08774v6/x10.jpg" alt="图9：在敏感和违禁提示上的不当行为率。数值越低越好。GPT-4 RLHF模型的不当行为率远低于先前模型。" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2303.08774v6/x10.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 Despite these significant improvements, “jailbreaks” that can bypass safety mechanisms still exist. Therefore, deployment-time safeguards such as abuse monitoring, along with rapid iterative model improvements, remain crucial.

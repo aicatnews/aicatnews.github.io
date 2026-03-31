@@ -52,7 +52,7 @@ The innovation of this method lies in its systematic, principled, and scalable c
     *   Covers 45 languages across multiple language families, including Indo-European, Semitic, and Bantu, ensuring linguistic diversity.
     *   The languages are divided into three tiers based on data volume (Tier 1/2/3), corresponding to about 100 million/10 million/1 million equivalent English words, enabling fair cross-lingual comparison.
 
-    <img src="/images/2510.10159v1/x1.jpg" alt="各语言训练数据类别分布" style="width:85%; max-width:600px; margin:auto; display:block;">
+    <img src="/images/2510.10159v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 3.  **Data Preprocessing**: This includes language-specific initial processing and a unified standardization pipeline (such as Unicode normalization and whitespace/punctuation normalization), along with language and script verification using GlotLID v3 to ensure data quality.
 

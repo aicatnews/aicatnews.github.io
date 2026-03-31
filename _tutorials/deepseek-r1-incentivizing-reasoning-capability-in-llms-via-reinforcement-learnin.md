@@ -66,7 +66,7 @@ $${% endraw %}
 #### Emergence and Limitations
 During training, DeepSeek-R1-Zero spontaneously learned to solve complex problems by increasing thinking time (generating longer CoT), and exhibited advanced behaviors such as self-reflection and exploring different solution paths, even showing self-correction similar to an “aha moment.”
 
-<img src="/images/2501.12948v1/plot_length.jpg" alt="DeepSeek-R1-Zero在训练过程中平均响应长度的变化" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2501.12948v1/plot_length.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 However, a model trained purely with RL has poor readability and mixed Chinese-English output, making it unsuitable for direct user-facing deployment.
 
@@ -116,7 +116,7 @@ To enable more efficient small models to also possess strong reasoning ability, 
 
 The experimental results strongly confirm the effectiveness of the proposed method.
 
-<img src="/images/2501.12948v1/x1.jpg" alt="DeepSeek-R1的基准测试性能" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2501.12948v1/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 #### Key Results
 *   **DeepSeek-R1 vs. Top-Tier Models**:

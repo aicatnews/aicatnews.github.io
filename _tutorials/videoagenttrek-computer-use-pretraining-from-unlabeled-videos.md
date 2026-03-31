@@ -13,26 +13,26 @@ title: "VideoAgentTrek: Computer Use Pretraining from Unlabeled Videos"
 ---
 
 ## TL;DR
-This paper proposes a scalable method called VideoAgentTrek, which automatically mines structured training data from unlabeled public screen-recording videos through an inverse dynamics module (VADM), thereby addressing the reliance on large-scale manually annotated data when training computer-use intelligent体 (Agent).
+This paper proposes a scalable method called VideoAgentTrek, which automatically mines structured training data from unlabeled public screen-recording videos through an inverse dynamics module (VADM), thereby addressing the reliance on large-scale manually annotated data when training computer-use intelligent agent (Agent).
 
 ## Key Definitions
-*   **VideoAgentTrek**: A complete, scalable automated pipeline designed to transform unlabeled screen-recording videos into high-quality data for training computer-use intelligent体. The pipeline consists of three main stages: video collection and preprocessing, structured action extraction via the VADM module, and model pretraining and fine-tuning using the extracted data.
+*   **VideoAgentTrek**: A complete, scalable automated pipeline designed to transform unlabeled screen-recording videos into high-quality data for training computer-use intelligent agent. The pipeline consists of three main stages: video collection and preprocessing, structured action extraction via the VADM module, and model pretraining and fine-tuning using the extracted data.
 *   **VADM (VideoAgentTrek inverse Dynamics Module)**: The core component of VideoAgentTrek, an inverse dynamics module responsible for recovering structured action information from raw video clips. It contains two key parts: (1) an **action event detector**, used to precisely locate the start and end times of various GUI interactions in the video down to the millisecond (such as clicks and typing); and (2) an **action parameter recognizer**, used to extract specific action parameters from the localized video clips, such as click coordinates $$(x,y)$$ and typed text content.
 *   **GUI-Filter**: A lightweight video preprocessing tool. Built on the YOLOv8x model, it efficiently filters and retains only video clips containing graphical user interface (GUI) interactions by detecting whether a mouse cursor is present in video frames, thereby removing irrelevant content such as slides and live narration.
 
 ## Related Work
-At present, there are three main ways to obtain training data for computer-use intelligent体:
+At present, there are three main ways to obtain training data for computer-use intelligent agent:
 1.  **Manual annotation**: By manually recording operation trajectories, high-quality and highly accurate annotated data can be generated, but the cost is extremely high, making it difficult to scale, and the covered application scenarios are limited.
 2.  **Programmatic synthesis**: Large amounts of interaction data are automatically generated in simulators or scripted environments. Although the scale is large and the parameters are precise, it often lacks the diversity and complexity of real-world UIs and deviates from real scenarios.
 3.  **Web mining**: Data is obtained from online tutorials, RPA logs, and other resources. This offers broad coverage and good diversity, but it usually lacks precise action time boundaries and structured action parameters, and the data quality is uneven.
 
-The key bottleneck in this research area is the lack of a data acquisition method that can balance **scale, diversity, and quality**. This paper aims to solve this core problem: how to automatically transform the large amount of unstructured screen-recording videos on the internet into structured interaction trajectories with precise parameters that can be directly used for intelligent体 training, thereby eliminating dependence on expensive manual annotation.
+The key bottleneck in this research area is the lack of a data acquisition method that can balance **scale, diversity, and quality**. This paper aims to solve this core problem: how to automatically transform the large amount of unstructured screen-recording videos on the internet into structured interaction trajectories with precise parameters that can be directly used for intelligent agent training, thereby eliminating dependence on expensive manual annotation.
 
 ## Method
-The proposed VideoAgentTrek is a three-stage automated pipeline that converts unlabeled web videos into structured training data for intelligent体.
+The proposed VideoAgentTrek is a three-stage automated pipeline that converts unlabeled web videos into structured training data for intelligent agent.
 
 <img src="/images/2510.19488v1/x1.jpg" alt="VideoAgentTrek Overview" style="width:90%; max-width:700px; margin:auto; display:block;">
-*Overview of VideoAgentTrek. (1) **Video collection and preprocessing**: Crawl screen-recording tutorials and use GUI-Filter to select GUI operation clips. (2) **VADM**: An inverse dynamics module that first performs dense action event detection to localize clips and assign action types, then performs *action parameterization* (e.g., click coordinates, typed text) to produce structured $(\text{screenshot}, \text{action}, \text{parameter})$ trajectories. (3) **Model pretraining and fine-tuning**: Use the mined trajectories for continued pretraining and supervised fine-tuning of computer-use intelligent体.*
+*Overview of VideoAgentTrek. (1) **Video collection and preprocessing**: Crawl screen-recording tutorials and use GUI-Filter to select GUI operation clips. (2) **VADM**: An inverse dynamics module that first performs dense action event detection to localize clips and assign action types, then performs *action parameterization* (e.g., click coordinates, typed text) to produce structured $(\text{screenshot}, \text{action}, \text{parameter})$ trajectories. (3) **Model pretraining and fine-tuning**: Use the mined trajectories for continued pretraining and supervised fine-tuning of computer-use intelligent agent.*
 
 
 ## Video Collection and Preprocessing

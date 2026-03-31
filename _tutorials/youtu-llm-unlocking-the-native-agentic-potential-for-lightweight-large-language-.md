@@ -66,7 +66,7 @@ This framework not only generates successful code paths, but also preserves fail
 
 #### Deep Research: Dual Synthesis with Forward and Reverse Paths
 
-In open-ended deep research tasks, the Agent needs to consult大量资料 and generate reports. Youtu-LLM adopts a two-pronged data synthesis strategy:
+In open-ended deep research tasks, the Agent needs to consulta large amount of material and generate reports. Youtu-LLM adopts a two-pronged data synthesis strategy:
 
 *   **Forward synthesis**: Simulates the real research workflow — planning, searching, reading, summarizing.
 

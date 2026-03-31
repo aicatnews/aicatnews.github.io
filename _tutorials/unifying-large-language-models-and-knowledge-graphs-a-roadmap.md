@@ -16,7 +16,7 @@ title: "Unifying Large Language Models and Knowledge Graphs: A Roadmap"
 
 Large Language Models (LLMs), such as ChatGPT and GPT-4, have sparked a new wave in natural language processing and artificial intelligence due to their emergent capabilities and generalization. However, LLMs are black-box models and often struggle to capture and access factual knowledge. In contrast, Knowledge Graphs (KGs) are structured knowledge models that explicitly store rich entity knowledge. KGs can enhance the reasoning ability and interpretability of LLMs by providing external knowledge. At the same time, KGs themselves face difficulties in construction and evolution, making it hard for existing methods to generate new facts and represent unseen knowledge. Therefore, unifying LLMs and KGs and leveraging their strengths in a complementary way is both necessary and mutually beneficial.
 
-<img src="/images/2306.08302v3/LLM_vs_KG.jpg" alt="LLM与KG的优缺点总结" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/LLM_vs_KG.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *Figure 1: Summary of the strengths and weaknesses of LLMs and KGs. LLM strengths: general knowledge, language processing, generalization ability; LLM weaknesses: implicit knowledge, hallucination, uncertainty, black box, lack of domain/new knowledge. KG strengths: structured knowledge, accuracy, determinism, interpretability, domain-specific knowledge, evolvable knowledge; KG weaknesses: incompleteness, lack of language understanding, inability to handle unseen facts.*
 
@@ -33,11 +33,11 @@ This article reviews and summarizes existing work under these three frameworks a
 
 LLMs are language models pretrained on large-scale corpora and have shown excellent performance across a variety of natural language processing (NLP) tasks. Most LLMs originate from the Transformer architecture, which uses the self-attention mechanism to empower its encoder and decoder modules.
 
-<img src="/images/2306.08302v3/x1.jpg" alt="近年来的代表性大语言模型" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *Figure 2: Representative Large Language Models (LLMs) in recent years. Solid squares indicate open-source models, and hollow squares indicate closed-source models.*
 
-<img src="/images/2306.08302v3/x2.jpg" alt="基于Transformer和自注意力机制的LLM示意图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *Figure 3: An illustration of an LLM based on Transformer and self-attention mechanisms.*
 
@@ -50,7 +50,7 @@ According to their architecture, LLMs can be divided into three categories:
 
 Prompt engineering is an emerging field that maximizes LLM performance in various applications by designing and optimizing prompts. A prompt usually contains an Instruction, Context, and Input Text. For example, Chain-of-thought (CoT) prompting guides the model to perform intermediate-step reasoning to solve complex tasks. Prompt engineering also makes it possible to integrate structured data such as KGs into LLMs, for example by linearizing a KG into text passages through templates.
 
-<img src="/images/2306.08302v3/x3.jpg" alt="情感分类提示示例" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x3.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 *Figure 4: An example of a sentiment classification prompt.*
 
@@ -58,7 +58,7 @@ Prompt engineering is an emerging field that maximizes LLM performance in variou
 
 Knowledge graphs store structured knowledge in the form of triples $\mathcal{KG}=\{(h,r,t)\subseteq\mathcal{E}\times\mathcal{R}\times\mathcal{E}\}$, where $\mathcal{E}$ is the entity set and $\mathcal{R}$ is the relation set.
 
-<img src="/images/2306.08302v3/x4.jpg" alt="不同类别知识图谱示例" style="width:80%; max-width:300px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x4.jpg" alt="Figure illustration" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 *Figure 5: Examples of different types of knowledge graphs, including encyclopedic knowledge graphs, commonsense knowledge graphs, domain knowledge graphs, and multi-modal knowledge graphs.*
 
@@ -99,7 +99,7 @@ This section presents a clear roadmap for unifying LLMs and KGs and categorizes 
 
 The roadmap proposed in this article identifies three frameworks for unifying LLMs and KGs.
 
-<img src="/images/2306.08302v3/x5.jpg" alt="统一KG和LLM的通用路线图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x5.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Figure 6: A general roadmap for unifying KGs and LLMs. (a) KG-enhanced LLMs. (b) LLM-augmented KGs. (c) Synergized LLMs + KGs.*
 
@@ -109,7 +109,7 @@ The roadmap proposed in this article identifies three frameworks for unifying LL
 
 3.  **Synergized LLMs + KGs (Synergized LLMs + KGs)**: This is a unified framework designed to enable LLMs and KGs to mutually promote and work collaboratively.
 
-<img src="/images/2306.08302v3/x6.jpg" alt="协同的LLMs+KGs的通用框架" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x6.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 *Figure 7: A general framework for synergized LLMs + KGs, consisting of four layers: 1) data layer, 2) synergized model layer, 3) technique layer, and 4) application layer.*
 
@@ -123,7 +123,7 @@ This synergistic framework contains four layers:
 
 To better understand research on unifying LLMs and KGs, this article provides a fine-grained taxonomy for each framework.
 
-<img src="/images/2306.08302v3/x7.jpg" alt="统一LLMs与KGs研究的细粒度分类" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x7.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 *Figure 8: Fine-grained taxonomy of research on unifying LLMs and KGs.*
 
@@ -182,7 +182,7 @@ This line of work focuses on designing knowledge-aware training objectives.
 *   **Entity-based objective design**: ERNIE proposed a text-knowledge alignment training objective, enabling the model to learn alignment relationships between text tokens and KG entities. KEPLER combines the objectives of knowledge graph embedding and masked language modeling in a shared encoder for training. WKLM injects knowledge by replacing entities in text and asking the model to determine whether they have been replaced.
 *   **Graph-structure-based objective design**: GLM uses the graph structure of KGs to assign different masking probabilities to entities, with nearby entities having a higher chance of being masked.
 
-<img src="/images/2306.08302v3/x8.jpg" alt="通过文本-知识对齐损失将KG信息注入LLM训练目标" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x8.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *Figure 9: Injecting KG information into LLM training objectives through a text-knowledge alignment loss, where $h$ denotes the hidden representation generated by the LLM.*
 
@@ -191,7 +191,7 @@ This line of work introduces relevant knowledge subgraphs into the input of LLMs
 *   **Avoiding knowledge noise**: Directly serializing KG triples and concatenating them with sentences, as in ERNIE 3.0, may lead to “knowledge noise.” To address this, K-BERT designs a “visible matrix” so that tokens in a sentence can only see each other, while knowledge entities can additionally see triple information. CoLAKE constructs a unified word-knowledge graph that connects text tokens and KG entity nodes.
 *   **Focusing on long-tail entities**: DkLLM focuses on low-frequency and long-tail entities, replacing these entities with pseudo-token embeddings as new inputs to the LLM.
 
-<img src="/images/2306.08302v3/x9.jpg" alt="利用图结构将KG信息注入LLM输入" style="width:85%; max-width:450px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x9.jpg" alt="Figure illustration" style="width:85%; max-width:450px; margin:auto; display:block;">
 
 *Figure 10: Injecting KG information into LLM input using graph structure.*
 
@@ -208,7 +208,7 @@ The core idea of this method is to retrieve relevant knowledge from a large corp
 *   REALM integrates a knowledge retriever during the pretraining stage, enabling it to retrieve and attend to documents from a large corpus during both pretraining and fine-tuning.
 *   KGLM selects facts from the KG based on the current context to generate factual sentences.
 
-<img src="/images/2306.08302v3/x10.jpg" alt="检索外部知识以增强LLM生成" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/x10.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *Figure 11: Retrieving external knowledge to enhance the generation process of LLMs.*
 
@@ -233,7 +233,7 @@ Although LLMs have achieved great success, their black-box nature and lack of in
 
 LLM probing aims to understand the knowledge stored inside LLMs. LLMs implicitly store knowledge through training on large corpora, but it is difficult to know exactly what they have stored, and they also suffer from the problem of “hallucination.”
 
-<img src="/images/2306.08302v3/LLM_probing.jpg" alt="使用知识图谱进行语言模型探测的通用框架" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2306.08302v3/LLM_probing.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *Figure 12: A general framework for probing language models using knowledge graphs.*
 

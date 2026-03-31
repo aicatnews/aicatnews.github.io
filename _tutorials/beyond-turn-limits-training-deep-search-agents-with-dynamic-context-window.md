@@ -34,7 +34,7 @@ This paper proposes the DeepMiner framework, whose core consists of two parts: a
 ### Complex Question Construction
 To generate training tasks that can stimulate the model’s deep reasoning ability, this paper designs a three-stage reverse construction process:
 
-<img src="/images/2510.08276/x1.jpg" alt="复杂问题构建的整体流程" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.08276/x1.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 1.  **Entity-driven information collection**: First, moderately well-known entities are selected from Wikipedia to ensure the information is rich enough while not yet solidified into parametric knowledge by the model. Then, web pages related to the entity are collected through a search engine and filtered in three rounds: verifying the correspondence between the web page and the entity, evaluating whether the information is complementary, and filtering out unreliable sources.
 2.  **Question generation**: Using a large language model, questions are generated based on multiple filtered real web pages (at least 4, and Wikipedia is deliberately excluded). This process forces the model to answer by integrating multiple scattered information sources. To further increase difficulty, the generated questions are also subjected to a second “obfuscation” step, such as replacing specific details with more general descriptions, forcing the intelligent agent to perform more complex reasoning and information integration when solving the problem.
@@ -51,7 +51,7 @@ Based on this, this paper designs a dynamic context management strategy centered
 *   **Innovation**: The core idea of this mechanism is “drop tools, keep thinking.” In an interaction trajectory $\tau=\{q, a\_1, t\_1, \ldots, a\_T\}$ ($a\_i$ denotes the agent’s reasoning, and $t\_i$ denotes tool output), when the number of tool outputs reaches the window size $\mathcal{W}$, the system replaces the earliest tool outputs $t\_i$ with a placeholder (such as $$[Previous tool output skipped. Re-run tool if needed.]$$), while fully preserving all of the agent’s reasoning processes $a\_i$.
 *   **Advantages**: This design preserves the complete reasoning chain that guides strategic planning, while greatly saving context space by compressing older tool outputs that have less impact on the current decision. This allows the model to support nearly 100 interaction turns even within a 32k context. At the same time, it avoids the information loss and optimization blind spots introduced by external summarization models.
 
-<img src="/images/2510.08276/x4.jpg" alt="动态上下文管理的滑动窗口机制" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.08276/x4.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 #### Training-Test Consistency
 To adapt the model to dynamically changing context during inference, this paper decomposes each long trajectory during training. A trajectory containing $T$ tool calls is split into multiple training sequences. Each sequence simulates the state of the sliding window at different stages, where some early tool outputs are replaced by placeholders. A masking mechanism ensures that each agent reasoning output is trained only once across all sequences, thereby achieving consistency between training and test behavior.

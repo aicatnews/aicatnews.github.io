@@ -31,7 +31,7 @@ This paper builds and optimizes the DeepSeekMath model through a three-stage pip
 ### DeepSeekMath Corpus Construction
 To obtain high-quality mathematical pretraining data, the paper designs an iterative process for mining math-related web pages from Common Crawl (CC).
 
-<img src="/images/2402.03300v3/x1.jpg" alt="迭代式数据收集流程" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2402.03300v3/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 1.  **Initial stage**: Use a high-quality mathematical text collection, OpenWebMath, as seed corpus to train a fastText classifier for initially retrieving math-related web pages from massive CC data.
 2.  **Iterative refinement**: To improve the classifier’s diversity and accuracy, the paper analyzes the domains of the initially retrieved pages and identifies domains with a high proportion of mathematical content, such as $$mathoverflow.net$$. Then, by manually labeling specific URL patterns under these domains, more math pages that were not retrieved are added to the seed corpus.
@@ -64,7 +64,7 @@ To further unlock the model’s potential, the paper proposes the innovative GRP
 ### Group Relative Policy Optimization (GRPO)
 The PPO algorithm requires a critic model comparable in size to the policy model to estimate the value function, which brings substantial resource overhead. GRPO addresses this problem in the following way:
 
-<img src="/images/2402.03300v3/x2.jpg" alt="PPO与GRPO对比" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2402.03300v3/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 *   **Core mechanism**: For each problem, GRPO no longer relies on a critic model; instead, it lets the current policy model generate a group of answers (for example, 64). Then a reward model scores these answers.
 *   **Advantage estimation**: GRPO uses the **average reward** of the group as the baseline. The advantage of each answer is the difference between its own reward and the group’s average reward. This relative advantage $$$\hat{A}\_{i,t}$$$ is used to guide policy optimization.

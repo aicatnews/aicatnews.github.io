@@ -102,7 +102,7 @@ The error in $$δ$$, namely $$δ_lp - δ_hp$$, mainly comes from the elementwise
 <img src="/images/2510.04212v1/x12.jpg" alt="error source analysis" style="width:85%; max-width:450px; margin:auto; display:block;">
 <center>On feature dimensions 20 and 29, both $$dO$$ (figure b) and the error in $$O$$, $$O_lp - O_hp$$ (figure c), show significant negative values; their product is positive, leading to a positive $$δ$$ error.</center>
 
-$$O$$ 的误差 $$O_lp - O_hp$$ 为负，意味着BF16计算的输出 $$O_lp$$ 系统性地偏向比FP32结果 $$O_hp$$ 更负的值。这一偏置被追溯到 $$O$$ 计算过程中的一个中间步骤：未归一化的输出 $$Ō = P̄V$$ 的矩阵乘法。
+The error term $$O_lp - O_hp$$ for $$O$$ is negative, which means the BF16-computed output $$O_lp$$ is systematically biased toward values that are more negative than the FP32 result $$O_hp$$. The paper traces this bias to an intermediate step in the computation of $$O$$: the matrix multiplication for the unnormalized output $$Ō = P̄V$$.
 
 **Core Finding 3**: In this matrix multiplication, numerical errors mainly occur at positions where the attention probability $$P̄[T, t]$$ is **exactly 1**. This usually happens when one of the scores before softmax is the maximum value in that row. When $$P̄[T, t] = 1$$, the computation of $$P̄V$$ simplifies to summing certain rows of the $$V$$ matrix.
 

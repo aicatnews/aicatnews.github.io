@@ -39,7 +39,7 @@ The core method of this paper is Dual-Weighted Reinforcement Learning (DWRL), bu
 
 To better decouple the “thought generation” process from the “preference scoring” process, this paper proposes a dialog-based GPM. Its workflow is shown in the figure below:
 
-<img src="/images/2510.15242v1/grm.jpg" alt="对话式GPM流程图" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2510.15242v1/grm.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 1.  **Generate thought**: Given an input $$x$$ and a candidate response $$y$$, the model is first prompted to generate a judgment or thought about the quality of $$y$$, denoted as $$o$$.
 2.  **Score the response**: The model is then asked to score $$y$$ based on the generated thought $$o$$. Specifically, instead of having the model generate a score directly, the output probability $$p(a|x,y,o)$$ on a specific answer token (for example, answering “Yes” to the question “Is this response good? A: Yes, B: No”) is computed and used as the final preference score.
@@ -68,7 +68,7 @@ $${% endraw %}
 
 where $p^{+} = \mathbb{E}\_{o^{+}}[p(a \mid x,y^{+},o^{+})]$ and $p^{-} = \mathbb{E}\_{o^{-}}[p(a \mid x,y^{-},o^{-})]$. This gradient can be decomposed into two key parts, thereby forming the “dual-weighted” mechanism of DWRL.
 
-<img src="/images/2510.15242v1/dwrl.jpg" alt="DWRL梯度估计示意图" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.15242v1/dwrl.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 #### Weight 1: Instance-wise Misalignment Weight
 The first term in the gradient formula, $\frac{p^{-}}{p^{+}+p^{-}}$, is exactly the probability that the model predicts $y^-$ to be better than $y^+$, i.e., $p(y^{+}\prec y^{-}\mid x)$. The paper defines this as the **instance-wise misalignment weight**. Its role is: when the model’s prediction is inconsistent with human preference (i.e., it incorrectly believes $y^-$ is better), this weight becomes larger, thereby amplifying the gradient update for this “hard sample” and prompting the model to correct its mistake.

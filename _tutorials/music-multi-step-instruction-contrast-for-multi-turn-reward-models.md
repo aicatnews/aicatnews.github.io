@@ -40,11 +40,11 @@ MUSIC’s workflow is quite clever. It uses an LLM to simulate the user and assi
 
 *   **Chosen**: the assistant follows the instruction normally and generates a high-quality response.
 
-*   **Rejected**: this is the essence of MUSIC. At some intermediate step, the system quietly modifies the user’s instruction (Instruction Contrast),诱导 the assistant to answer a “related but wrong” question.
+*   **Rejected**: this is the essence of MUSIC. At some intermediate step, the system quietly modifies the user’s instruction (Instruction Contrast),inducing the assistant to answer a “related but wrong” question.
 
 For example, if the user originally asks “How do I make braised pork belly?”, in the Rejected branch the system secretly changes the instruction to “How do I make twice-cooked pork?”, and although the assistant writes a perfect twice-cooked pork recipe, for the user’s original “braised pork belly” request, this is a serious **instruction-following error**. This error is preserved as the conversation continues, thereby creating a quality difference that runs through multiple turns.
 
-<img src="/images/2512.24693v1/x1.jpg" alt="MUSIC 数据增强流程概览" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.24693v1/x1.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Figure 1: Overview of the MUSIC data augmentation pipeline. By introducing a Contrastive Instruction Prompt, quality degradation is induced in the Rejected branch, thereby generating preference pairs with multi-turn differences.*
 
@@ -71,7 +71,7 @@ The research team conducted experiments based on the **Gemma-2-9B-Instruct** mod
 
 In the Best-of-N (BoN) inference task, the MUSIC-enhanced RM was able to select higher-quality dialogues. Evaluated by Gemini 1.5 Pro, the dialogues guided by MUSIC outperformed the Baseline on both the Anthropic HH and UltraInteract datasets.
 
-<img src="/images/2512.24693v1/x2.jpg" alt="Best-of-N 推理胜率对比" style="width:90%; max-width:700px; margin:auto; display:block;">
+<img src="/images/2512.24693v1/x2.jpg" alt="Figure illustration" style="width:90%; max-width:700px; margin:auto; display:block;">
 
 *Figure 2: Win-rate comparison between the MUSIC-enhanced RM and the Baseline RM under the Best-of-N ($N\in\{2,4,8\}$) setting. As $N$ increases, MUSIC’s ability to leverage the candidate pool becomes stronger.*
 

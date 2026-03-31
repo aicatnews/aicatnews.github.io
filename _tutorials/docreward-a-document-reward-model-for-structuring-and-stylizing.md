@@ -38,7 +38,7 @@ This paper proposes DocReward, a reward model focused on evaluating the structur
 ### Dataset Construction (DocStruct-117K)
 To enable the model to learn professionalism evaluation that is independent of text content, the paper designs an elaborate dataset construction pipeline:
 
-<img src="/images/2510.11391v1/x2.jpg" alt="DocStruct-117K 的数据构建流程" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2510.11391v1/x2.jpg" alt="Figure illustration" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 1.  **Collect high-quality source documents**: First, a large number of human-created, high-quality professional documents were collected from sources such as GovDocs1, NapierOne, and CommonCrawl (e.g., government reports, business proposals, academic papers). After filtering, examples with strong structure and style were retained.
 
