@@ -6,52 +6,52 @@ title: "MAPEX: A Multi-Agent Pipeline for Keyphrase Extraction"
 
 - **ArXiv URL**: http://arxiv.org/abs/2509.18813v2
 
-- **作者**: Qicheng Li; Shiwan Zhao; Aobo Kong
+- **Authors**: Qicheng Li; Shiwan Zhao; Aobo Kong
 
-- **发布机构**: Nankai University
+- **Publishing Organization**: Nankai University
 
 ---
 
 ## TL;DR
-本文提出了MAPEX，一个用于关键词提取的多智能体协作框架，它通过为不同长度的文档设计动态的双路径策略（知识驱动与主题引导），显著提升了大型语言模型（LLM）在零样本场景下的关键词提取性能。
+This paper proposes MAPEX, a multi-agent collaborative framework for keyphrase extraction. By designing a dynamic dual-path strategy for documents of different lengths—knowledge-driven and topic-guided—it significantly improves the zero-shot keyphrase extraction performance of large language models (LLMs).
 
-## 关键定义
-本文提出或沿用了以下关键概念：
-*   **多智能体协作 (Multi-Agent Collaboration)**：一种系统设计范式，其中多个独立的智能体（Agents）通过协作完成复杂任务。在本文中，框架由专家招募官、候选词提取器和领域专家三个智能体协同工作。
-*   **双路径策略 (Dual-Path Pipeline Strategy)**：针对不同长度的文档采用不同处理流程的核心机制。
-    *   **知识驱动提取 (Knowledge-driven extraction)**：为短文本设计的路径。通过从外部知识库（如维基百科）检索信息，来增强对候选关键词的语义理解。
-    *   **主题引导提取 (Topic-guided extraction)**：为长文本设计的路径。通过首先识别文档的核心主题，来指导后续的关键词重排序和筛选过程，以应对长文本中的语义稀释问题。
-*   **专家招募 (Expert Recruitment)**：框架中的一个特定模块，由“专家招募官”智能体负责。该智能体分析文档内容，并为“领域专家”智能体动态分配合适的专家角色（如“计算机图形学专家”），从而使提取过程更具领域针对性。
+## Key Definitions
+This paper introduces or adopts the following key concepts:
+*   **Multi-Agent Collaboration**: A system design paradigm in which multiple independent Agents work together to complete complex tasks. In this paper, the framework is jointly operated by three Agents: an expert recruiter, a candidate extractor, and a domain expert.
+*   **Dual-Path Pipeline Strategy**: The core mechanism that applies different processing flows to documents of different lengths.
+    *   **Knowledge-driven extraction**: The path designed for short texts. It enhances the semantic understanding of candidate keyphrases by retrieving information from external knowledge bases such as Wikipedia.
+    *   **Topic-guided extraction**: The path designed for long texts. It first identifies the document’s core topics to guide the subsequent keyphrase reranking and selection process, addressing semantic dilution in long documents.
+*   **Expert Recruitment**: A specific module in the framework, handled by the “expert recruiter” Agent. This Agent analyzes the document content and dynamically assigns an appropriate expert role to the “domain expert” Agent (for example, “computer graphics expert”), making the extraction process more domain-specific.
 
-## 相关工作
-当前的无监督关键词提取技术主要分为传统方法（统计、图、嵌入）和基于语言模型的提示（prompt-based）方法。随着大型语言模型（LLM）的兴起，基于提示的方法成为主流。然而，现有方法普遍存在一个关键瓶颈：它们大多采用单一、固定的推理流程和提示策略，不区分文档长度或底层LLM模型。这种“一刀切”的设计无法充分发挥LLM在处理多样化场景时的推理和生成潜力，限制了其在关键词提取任务上的泛化能力。
+## Related Work
+Current unsupervised keyphrase extraction techniques are mainly divided into traditional methods (statistics, graph, embedding) and language-model-based prompt-based methods. With the rise of large language models (LLMs), prompt-based methods have become mainstream. However, existing methods generally suffer from a key bottleneck: most of them adopt a single, fixed inference flow and prompt strategy, without distinguishing between document length or the underlying LLM model. This one-size-fits-all design cannot fully exploit the reasoning and generation potential of LLMs in diverse scenarios, limiting their generalization ability on keyphrase extraction tasks.
 
-本文旨在解决上述问题，即如何设计一个更灵活、更强大的框架，以充分利用LLM的能力，特别是应对不同长度文档带来的挑战，从而提升零样本关键词提取的准确性和鲁棒性。
+This paper aims to address the above problem: how to design a more flexible and powerful framework that fully leverages the capabilities of LLMs, especially in handling the challenges posed by documents of different lengths, thereby improving the accuracy and robustness of zero-shot keyphrase extraction.
 
-## 本文方法
-本文提出了一个名为MAPEX（Multi-Agent Pipeline for Keyphrase Extraction）的多智能体流水线框架。该框架通过三个智能体和一个根据文档长度动态选择的双路径策略来协同工作。
+## Method
+This paper proposes MAPEX (Multi-Agent Pipeline for Keyphrase Extraction), a multi-agent pipeline framework. The framework works through three Agents and a dual-path strategy dynamically selected according to document length.
 
 <img src="/images/2509.18813v1/x1.jpg" alt="MAPEX框架图" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-### 智能体角色与分工
-MAPEX框架包含三个协同工作的智能体，其行为通过精心设计的提示（prompt）进行引导。
+### Agent Roles and Responsibilities
+The MAPEX framework includes three Agents that work collaboratively, with their behavior guided by carefully designed prompts.
 
 <img src="/images/2509.18813v1/x2.jpg" alt="智能体提示设计" style="width:80%; max-width:300px; margin:auto; display:block;">
 
-1.  **专家招募官 (Expert Recruiter)**：此智能体首先分析文档内容，以确定其所属的专业领域。随后，它为“领域专家”智能体分配合适的专家角色（例如，“软件工程师”），并提供分配理由。这使得后续的提取过程更具专业视角。
-2.  **候选词提取器 (Candidate Extractor)**：此智能体负责从原始文档中生成一个广泛的候选关键词池。它不被赋予任何特定角色，目的是为了确保初始候选集的多样性，避免因专家角色的局限性而遗漏重要的词汇变体。
+1.  **Expert Recruiter**: This Agent first analyzes the document content to determine its professional domain. It then assigns an appropriate expert role to the “domain expert” Agent (for example, “software engineer”) and provides the rationale for the assignment. This makes the subsequent extraction process more professionally informed.
+2.  **Candidate Extractor**: This Agent is responsible for generating a broad pool of candidate keyphrases from the original document. It is not assigned any specific role, with the goal of ensuring diversity in the initial candidate set and avoiding the omission of important lexical variants due to the limitations of a specific expert role.
 
-### 核心创新：双路径策略
-为了有效处理不同长度的文档，MAPEX引入了一个长度阈值 $$ℓ$$，并根据该阈值将文档分派到两条不同的处理路径。这一设计的核心动机是：外部知识对于短文本的语义补充效果显著，但对于长文本，由于上下文窗口限制和语义稀释，其优势会减弱。
+### Core Innovation: Dual-Path Strategy
+To effectively handle documents of different lengths, MAPEX introduces a length threshold $$ℓ$$ and dispatches documents to two different processing paths based on this threshold. The core motivation behind this design is that external knowledge provides significant semantic supplementation for short texts, but its advantage weakens for long texts due to context window limitations and semantic dilution.
 
-*   **长文本路径（主题引导）**: 当文档长度 $$|d_i| ≥ ℓ$$ 时，激活此路径。
-    1.  **领域专家 (Domain Expert)** 首先识别并生成一系列代表文档核心思想的显著主题（topic）。
-    2.  这些主题与“候选词提取器”生成的候选词合并。
-    3.  最后，领域专家对这个增强后的候选列表进行重新排序和筛选，生成初步的关键词列表。
+*   **Long-text path (topic-guided)**: This path is activated when the document length $$|d_i| ≥ ℓ$$.
+    1.  **Domain Expert** first identifies and generates a series of prominent topics that represent the document’s core ideas.
+    2.  These topics are merged with the candidate keyphrases generated by the “Candidate Extractor”.
+    3.  Finally, the domain expert reranks and filters this enhanced candidate list to produce an initial keyphrase list.
 
-*   **短文本路径（知识驱动）**: 当文档长度 $$|d_i| < ℓ$$ 时，激活此路径。
-    1.  为了弥补短文本上下文信息的不足，“领域专家”会为每个候选关键词 $c\_{ij}$ 调用外部知识检索工具（如$$WikiQuery$$）来获取其定义和背景信息。
-    2.  所有候选词的外部知识被聚合成一个知识字典：
+*   **Short-text path (knowledge-driven)**: This path is activated when the document length $$|d_i| < ℓ$$.
+    1.  To compensate for the lack of contextual information in short texts, the “domain expert” invokes an external knowledge retrieval tool (such as $$WikiQuery$$) for each candidate keyphrase $c\_{ij}$ to obtain its definition and background information.
+    2.  The external knowledge for all candidate terms is aggregated into a knowledge dictionary:
         
 
         {% raw %}$$
@@ -59,58 +59,58 @@ MAPEX框架包含三个协同工作的智能体，其行为通过精心设计的
         $${% endraw %}
 
 
-    3.  基于这些增强的知识，“领域专家”对候选词进行重排序，输出初步的关键词列表。
+3.  Based on this enhanced knowledge, the “domain expert” reranks the candidate terms and outputs an initial keyphrase list.
 
-### 后处理
-在“领域专家”生成初步结果后，框架会执行一个后处理步骤以提升最终输出的质量。该步骤包含三个子任务：
-1.  **移除冗余**：删除重复的短语。
-2.  **标准化**：统一处理缩写词及其全称。
-3.  **过滤幻觉**：移除未在原文中出现的短语，确保所有关键词均源于文本。
+### Post-processing
+After the “domain expert” generates the initial results, the framework performs a post-processing step to improve the quality of the final output. This step includes three subtasks:
+1.  **Remove redundancy**: Delete duplicate phrases.
+2.  **Standardization**: Unify abbreviations and their full forms.
+3.  **Filter hallucinations**: Remove phrases that do not appear in the original text, ensuring that all keyphrases are derived from the document.
 
-### 优点
-*   **自适应性**：双路径策略使模型能够根据文档长度自动选择最优处理方式，解决了“一刀切”方法的局限性。
-*   **专业性**：专家招募机制引入了领域视角，使关键词提取更贴合文本的专业背景。
-*   **鲁棒性**：通过通用候选词提取与专家筛选相结合，扩大了候选范围并保证了最终质量。
-*   **高保真度**：后处理步骤有效抑制了LLM的“幻觉”现象，确保了关键词的准确性和来源可靠性。
+### Advantages
+*   **Adaptability**: The dual-path strategy allows the model to automatically choose the optimal processing method based on document length, addressing the limitations of one-size-fits-all approaches.
+*   **Professionalism**: The expert recruitment mechanism introduces a domain perspective, making keyphrase extraction better aligned with the text’s professional background.
+*   **Robustness**: By combining general candidate extraction with expert filtering, the framework expands the candidate space while ensuring final quality.
+*   **High fidelity**: The post-processing step effectively suppresses LLM hallucinations, ensuring the accuracy and source reliability of the keyphrases.
 
-## 实验结论
+## Experimental Results
 
-### 整体性能
-实验在Inspec、SemEval-2010等六个基准数据集上进行，并使用了Mistral-7B、Qwen2-7B等三种不同的LLM作为底层模型。
+### Overall Performance
+Experiments were conducted on six benchmark datasets, including Inspec and SemEval-2010, using three different LLMs such as Mistral-7B and Qwen2-7B as the underlying models.
 
 <br>
 
 
-| 方法 | 模型 | Inspec | SemEval-10 | SemEval-17 | DUC-2001 | NUS | Krapivin | 平均 |
+| Method | Model | Inspec | SemEval-10 | SemEval-17 | DUC-2001 | NUS | Krapivin | Average |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **传统无监督** | | | | | | | | |
+| **Traditional Unsupervised** | | | | | | | | |
 | SIFRank | - | 35.15 | 29.56 | 38.38 | 26.68 | 27.69 | 22.09 | 30.03 |
 | MDERank | - | 36.31 | 30.13 | 42.17 | 27.35 | 29.80 | 25.12 | 31.81 |
 | PromptRank | BART | 39.56 | 32.55 | 45.34 | **31.33** | 30.65 | 27.48 | 34.49 |
-| **LLM 基线** | | | | | | | | |
+| **LLM Baselines** | | | | | | | | |
 | Base | Mistral-7B | 37.98 | 29.59 | 42.16 | 28.52 | 27.91 | 25.26 | 31.90 |
 | Hybrid | Mistral-7B | 38.45 | 30.11 | 42.94 | 29.07 | 28.98 | 26.17 | 32.62 |
-| **MAPEX (本文)** | Mistral-7B | **40.31** | **32.88** | **45.92** | 30.64 | **33.34** | **28.75** | **35.31** |
-| (其他LLM结果) | ... | ... | ... | ... | ... | ... | ... | ... |
+| **MAPEX (this paper)** | Mistral-7B | **40.31** | **32.88** | **45.92** | 30.64 | **33.34** | **28.75** | **35.31** |
+| (Other LLM results) | ... | ... | ... | ... | ... | ... | ... | ... |
 
 <br>
 
-*   **超越SOTA**：结果显示，MAPEX在所有LLM和数据集上都显著优于基线方法。以Qwen2.5-7B为骨干时，其平均F1@5得分达到24.30%，比之前最先进的无监督方法PromptRank（22.81%）高出2.44%。
-*   **提升LLM性能**：与标准的LLM基线（Base）相比，MAPEX为所有底层LLM带来了显著增益。例如，它将Mistral-7B模型的平均F1@5得分从18.23%提升至22.24%，增幅达4.01%。
-*   **长文本优势**：MAPEX在长文档数据集（如NUS）上表现尤为出色，绝对F1@5提升高达5.22%，证明了主题引导策略的有效性。
+*   **Beyond SOTA**: The results show that MAPEX significantly outperforms baseline methods across all LLMs and datasets. Using Qwen2.5-7B as the backbone, its average F1@5 score reaches 24.30%, which is 2.44% higher than the previous state-of-the-art unsupervised method, PromptRank (22.81%).
+*   **Improved LLM Performance**: Compared with the standard LLM baseline (Base), MAPEX brings significant gains to all underlying LLMs. For example, it raises the average F1@5 score of Mistral-7B from 18.23% to 22.24%, an increase of 4.01%.
+*   **Long-Text Advantage**: MAPEX performs especially well on long-document datasets such as NUS, with an absolute F1@5 improvement of up to 5.22%, demonstrating the effectiveness of the topic-guided strategy.
 
-### 消融研究
-为了验证各模块的贡献，本文在Mistral-7B模型上进行了消融研究。
-*   **各模块均有效**：从最基础的“候选词提取”，逐步加入“专家角色”、“主题/知识分支”和“后处理”，每一步都带来了性能提升。这证明了MAPEX框架中每个组件都起到了积极作用。
-*   **专家角色**对长文本数据集的提升更明显；**主题和知识分支**无论在哪种情况下都贡献了显著的性能增益；**后处理**进一步优化了结果的准确性。
+### Ablation Study
+To verify the contribution of each module, this paper conducted an ablation study on the Mistral-7B model.
+*   **All modules are effective**: Starting from the most basic “candidate word extraction,” the model progressively adds “expert roles,” “topic/knowledge branches,” and “post-processing,” with each step bringing performance improvements. This shows that every component in the MAPEX framework plays a positive role.
+*   The **expert role** brings more obvious improvements on long-document datasets; the **topic and knowledge branches** contribute significant performance gains in all cases; **post-processing** further improves result accuracy.
 
-<img src="/images/2509.18813v1/x3.jpg" alt="相对基线方法的性能增益" style="width:85%; max-width:450px; margin:auto; display:block;">
-(a) 相对基线的性能增益
+<img src="/images/2509.18813v1/x3.jpg" alt="Performance gains relative to baseline methods" style="width:85%; max-width:450px; margin:auto; display:block;">
+(a) Performance gains relative to the baseline
 
-<img src="/images/2509.18813v1/x4.jpg" alt="不同路径的性能差异" style="width:85%; max-width:450px; margin:auto; display:block;">
-(b) 知识驱动与主题引导路径的性能差异
+<img src="/images/2509.18813v1/x4.jpg" alt="Performance differences across different paths" style="width:85%; max-width:450px; margin:auto; display:block;">
+(b) Performance differences between the knowledge-driven and topic-guided paths
 
-*   **路径选择阈值的合理性**：通过分析不同长度文本上两条路径的性能表现，实验发现了一个明显的性能交叉区域（上图b）。知识驱动路径在短文本上相对优势更大（上图a中的蓝线），而主题引导路径在长文本上表现更优。本文选择的长度阈值 $$ℓ = 512$$ tokens（约等于$$ln(length) ≈ 6.24$$）正位于该交叉区域的中心，经验证是一个合理的选择。
+*   **Rationality of the path-selection threshold**: By analyzing the performance of the two paths on texts of different lengths, the experiment found a clear performance crossover region (Figure b above). The knowledge-driven path has a relatively greater advantage on short texts (the blue line in Figure a above), while the topic-guided path performs better on long texts. The length threshold chosen in this paper, $$ℓ = 512$$ tokens (approximately $$ln(length) ≈ 6.24$$), is right in the center of this crossover region and has been verified as a reasonable choice.
 
-### 最终结论
-本文提出的MAPEX框架通过引入多智能体协作和动态双路径策略，成功地解决了传统LLM方法在关键词提取任务中的“一刀切”问题。实验证明，该框架具有强大的泛化能力和通用性，在多个LLM上均取得了超越现有SOTA方法的性能，尤其在处理复杂和长篇文档时表现稳健。
+### Final Conclusion
+The MAPEX framework proposed in this paper successfully addresses the “one-size-fits-all” problem of traditional LLM methods in keyword extraction tasks by introducing multi-agent collaboration and a dynamic dual-path strategy. Experiments demonstrate that the framework has strong generalization ability and versatility, achieving performance that surpasses existing SOTA methods across multiple LLMs, especially when handling complex and long documents.

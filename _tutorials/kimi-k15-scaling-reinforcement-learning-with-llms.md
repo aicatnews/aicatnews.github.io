@@ -6,43 +6,43 @@ title: "Kimi k1.5: Scaling Reinforcement Learning with LLMs"
 
 - **ArXiv URL**: http://arxiv.org/abs/2501.12599v4
 
-- **作者**: Huabin Zheng; Haochen Ding; Xingzhe Wu; Han Zhu; Weiran He; Jin Zhang; Yibo Liu; Y. Charles; Zhengxin Zhu; Yingbo Yang; 等84人
+- **Authors**: Huabin Zheng; Haochen Ding; Xingzhe Wu; Han Zhu; Weiran He; Jin Zhang; Yibo Liu; Y. Charles; Zhengxin Zhu; Yingbo Yang; and 84 others
 
 ---
 
 ## TL;DR
-本文提出了一种通过强化学习（RL）扩展大型语言模型（LLM）能力的方法，其核心是利用长上下文（long context）和改进的策略优化算法，构建了一个无需蒙特卡洛树搜索等复杂技术的简化框架，从而在多项推理基准上取得了顶尖性能。
+This paper proposes a method for scaling the capabilities of large language models (LLM) through reinforcement learning (RL). Its core idea is to leverage long context and an improved policy optimization algorithm to build a simplified framework that does not require complex techniques such as Monte Carlo tree search, achieving state-of-the-art performance on multiple reasoning benchmarks.
 
-## 关键定义
-*   **长思维链 (Long Chain-of-Thought, Long-CoT)**: 本文的核心概念，指模型在长达128k的上下文窗口中生成非常长的、包含规划、评估、反思和探索等复杂认知过程的推理路径。与传统的思维链（CoT）相比，它不仅是步骤的罗列，更是一种在长文本中模拟搜索和试错的隐式规划过程。
-*   **部分 Rollout (Partial Rollout)**: 一种为长上下文强化学习设计的关键训练优化技术。它将长的生成轨迹（rollout）分解成多个片段，在不同的训练迭代中分步完成。这避免了单次生成过长序列带来的高昂计算成本和资源垄断，使得对超长上下文进行强化学习训练成为可能。
-*   **在线策略镜像下降 (Online Policy Mirror Descent)**: 本文采用的核心策略优化算法。它是一种离策略（off-policy）强化学习算法，通过最大化奖励的同时，用相对熵（KL散度）来约束新策略与旧策略（参考策略）之间的距离，从而保证训练的稳定性。
-*   **长文转短文 (Long2short)**: 一种模型压缩或知识蒸馏技术，旨在将强大的长思维链（Long-CoT）模型所具备的复杂推理能力，迁移到一个在推理时仅使用短思维链（Short-CoT）的高效模型中，从而在保证高性能的同时，降低实际部署成本。
+## Key Definitions
+*   **Long Chain-of-Thought, Long-CoT**: The core concept of this paper, referring to the model generating extremely long reasoning trajectories within a context window of up to 128k tokens, involving complex cognitive processes such as planning, evaluation, reflection, and exploration. Compared with traditional Chain-of-Thought (CoT), it is not just a list of steps, but an implicit planning process that simulates search and trial-and-error in long text.
+*   **Partial Rollout**: A key training optimization technique designed for long-context reinforcement learning. It breaks a long generation trajectory (rollout) into multiple segments and completes them step by step across different training iterations. This avoids the high computational cost and resource monopolization caused by generating overly long sequences in a single pass, making RL training on ultra-long contexts possible.
+*   **Online Policy Mirror Descent**: The core policy optimization algorithm used in this paper. It is an off-policy reinforcement learning algorithm that maximizes reward while constraining the distance between the new policy and the old policy (reference policy) using relative entropy (KL divergence), thereby ensuring training stability.
+*   **Long2short**: A model compression or knowledge distillation technique aimed at transferring the complex reasoning ability of a powerful Long-CoT model to an efficient model that uses only Short-CoT at inference time, thereby reducing deployment cost while maintaining high performance.
 
-## 相关工作
-当前，通过下一词元预测（next token prediction）来预训练语言模型是主流方法，但其效果受限于高质量训练数据的数量。强化学习（RL）为持续提升人工智能开辟了一个新方向，它让模型能够通过奖励信号进行探索性学习，从而摆脱对静态数据集的依赖。
+## Related Work
+Currently, pretraining language models through next token prediction is the mainstream approach, but its effectiveness is limited by the amount of high-quality training data available. Reinforcement learning (RL) opens up a new direction for continuously improving artificial intelligence, enabling models to learn through exploration guided by reward signals and thereby reducing dependence on static datasets.
 
-然而，以往将RL应用于LLM的工作尚未取得具有竞争力的结果。本文旨在解决这一问题，即如何设计一个有效且可扩展的RL框架，使其能够充分利用LLM的能力，特别是在复杂推理任务上，并且在框架设计上比依赖蒙特卡洛树搜索（MCTS）、价值函数等传统规划算法的方案更为简洁。
+However, previous work applying RL to LLM has not achieved competitive results. This paper aims to address this problem: how to design an effective and scalable RL framework that can fully leverage the capabilities of LLM, especially on complex reasoning tasks, while being simpler in framework design than approaches that rely on traditional planning algorithms such as Monte Carlo tree search (MCTS) and value functions.
 
-## 本文方法
+## Method
 
-本文提出的Kimi k1.5模型的训练流程包含多个阶段：预训练、常规监督微调（SFT）、长思维链监督微调（Long-CoT SFT）以及核心的强化学习（RL）。报告重点阐述了RL阶段。
+The training pipeline of the Kimi k1.5 model proposed in this paper includes multiple stages: pretraining, standard supervised fine-tuning (SFT), Long-CoT supervised fine-tuning (Long-CoT SFT), and the core reinforcement learning (RL) stage. The report focuses on the RL stage.
 
-### RL准备工作
+### RL Preparation
 
-在进行强化学习之前，需要进行两个关键的准备步骤：
+Before reinforcement learning, two key preparation steps are required:
 
-1.  **RL提示集构建**: 构建一个高质量的RL提示集至关重要。本文遵循三个原则：
-    *   **多样性覆盖**: 提示应涵盖STEM、编程、通用推理等多个领域。
-    *   **难度均衡**: 通过一个基于模型的评估方法（让SFT模型多次生成答案，根据成功率判断难度）来确保问题难度分布均衡。
-    *   **可准确评估**: 排除容易“奖励 hacking” 的问题（如选择题、判断题），并设计方法过滤掉那些无需推理也能轻易猜对答案的问题，确保奖励信号的有效性。
+1.  **RL Prompt Set Construction**: Building a high-quality RL prompt set is crucial. This paper follows three principles:
+    *   **Diversity Coverage**: Prompts should cover multiple domains such as STEM, programming, and general reasoning.
+    *   **Balanced Difficulty**: A model-based evaluation method is used to ensure a balanced difficulty distribution of questions by having the SFT model generate answers multiple times and judging difficulty based on the success rate.
+    *   **Accurate Evaluation**: Questions that are easy to “reward hack” are excluded (such as multiple-choice and true/false questions), and methods are designed to filter out questions whose answers can be easily guessed without reasoning, ensuring the effectiveness of the reward signal.
 
-2.  **长思维链监督微调 (Long-CoT SFT)**: 在正式RL训练前，本文使用一个精心构建的小规模、高质量的Long-CoT数据集对模型进行轻量级的SFT。该数据集通过提示工程（prompt engineering）生成，包含了模拟人类规划、评估、反思和探索等认知过程的推理路径。这一“预热”步骤旨在让模型初步掌握生成结构化、长篇推理的能力。
+2.  **Long Chain-of-Thought Supervised Fine-Tuning (Long-CoT SFT)**: Before formal RL training, the paper uses a carefully constructed small-scale, high-quality Long-CoT dataset to perform lightweight SFT on the model. This dataset is generated through prompt engineering and contains reasoning trajectories that simulate human cognitive processes such as planning, evaluation, reflection, and exploration. This “warm-up” step is intended to help the model initially acquire the ability to generate structured, long-form reasoning.
 
-### 强化学习
+### Reinforcement Learning
 
-#### 问题设定
-本文将复杂的推理过程视为一个RL问题。给定问题 $x$，策略模型 $\pi\_{\theta}$ 需要自回归地生成一系列中间思考步骤 $z$（即CoT）和最终答案 $y$。目标是最大化一个奖励函数 $r(x,y,y^{\*})$ 的期望值，该函数根据模型答案 $y$ 和标准答案 $y^{\*}$ 判断正确性（奖励为0或1）。
+#### Problem Formulation
+This paper treats the complex reasoning process as an RL problem. Given a question $x$, the policy model $\pi\_{\theta}$ needs to autoregressively generate a series of intermediate thought steps $z$ (i.e., CoT) and the final answer $y$. The goal is to maximize the expected value of a reward function $r(x,y,y^{\*})$, which determines correctness based on the model answer $y$ and the ground-truth answer $y^{\*}$ (reward is 0 or 1).
 
 
 {% raw %}$$
@@ -50,10 +50,10 @@ title: "Kimi k1.5: Scaling Reinforcement Learning with LLMs"
 $${% endraw %}
 
 
-本文的核心洞见在于，利用LLM的长上下文能力，可以将显式的规划算法（如树搜索）转化为模型内部的隐式搜索过程。模型在长长的思维链中进行试错、回溯和修正，其效果类似于规划算法的搜索，但实现方式仅为简单的自回归生成。
+The core insight of this paper is that, by leveraging the long-context capability of LLM, explicit planning algorithms such as tree search can be transformed into an implicit search process inside the model. The model performs trial and error, backtracking, and correction within a long chain of thought, achieving effects similar to the search of planning algorithms, but implemented simply through autoregressive generation.
 
-#### 策略优化
-本文采用了一种**在线策略镜像下降**的变体算法。在每次迭代中，该算法优化一个带相对熵正则化的目标函数，以当前策略 $\pi\_{\theta\_i}$ 为参考，防止策略更新步子过大：
+#### Policy Optimization
+This paper adopts a variant of **online policy mirror descent**. In each iteration, the algorithm optimizes an objective with relative entropy regularization, using the current policy $\pi\_{\theta\_i}$ as the reference to prevent overly large policy updates:
 
 
 {% raw %}$$
@@ -61,7 +61,7 @@ $${% endraw %}
 $${% endraw %}
 
 
-最终的梯度更新形式如下，它类似于一个带基线（baseline）的策略梯度，但样本来自离策略的参考模型 $\pi\_{\theta\_i}$，并增加了一个 $l\_2$ 正则项：
+The final gradient update form is as follows. It is similar to policy gradient with a baseline, but the samples come from the off-policy reference model $\pi\_{\theta\_i}$, and an $l\_2$ regularization term is added:
 
 
 {% raw %}$$
@@ -69,55 +69,55 @@ $${% endraw %}
 $${% endraw %}
 
 
-值得注意的是，该框架**没有使用价值网络 (value function)**。作者假设，在长思维链生成中，传统的信用分配（credit assignment）是有害的。探索错误的路径并最终从中恢复，对于学习复杂问题的解决模式至关重要。若使用价值函数，会过早地惩罚这些有价值的探索行为。
+It is worth noting that this framework **does not use a value function**. The authors assume that, in long chain-of-thought generation, traditional credit assignment is harmful. Exploring wrong paths and eventually recovering from them is crucial for learning how to solve complex problems. If a value function were used, these valuable exploratory behaviors would be penalized too early.
 
-#### 关键技术与策略
-*   **长度惩罚**: 为了解决模型在RL训练中倾向于生成过长回复（“过度思考”）的问题，本文引入了长度奖励。在所有正确的回答中，它奖励较短的回答；同时会惩罚错误的、且冗长的回答。
-*   **采样策略**:
-    *   **课程学习采样 (Curriculum Sampling)**: 从易到难地对问题进行采样，以提高训练初期的效率。
-    *   **优先采样 (Prioritized Sampling)**: 追踪模型在每个问题上的成功率 $s\_i$，并以 $1-s\_i$ 的概率进行采样，从而重点训练模型表现不佳的问题。
-*   **多模态与领域特定方法**:
-    *   **编码**: 设计了一套自动化流程，利用 CYaRon 等工具为没有测试用例的编程题生成高质量的测试用例，作为奖励信号。
-    *   **数学**: 训练了一个基于CoT的奖励模型（Chain-of-Thought RM），它不仅给出对错判断，还能生成判断依据的推理过程，准确率高达98.5%，远超传统RM。
-    *   **视觉**: RL训练数据涵盖了真实世界数据、合成视觉推理数据和文本渲染数据三大类，以提升模型处理图表、真实场景和图文混合内容的能力。
+#### Key Techniques and Strategies
+*   **Length Penalty**: To address the tendency of the model to generate overly long responses during RL training (“overthinking”), the paper introduces a length reward. Among all correct answers, shorter answers are rewarded; at the same time, incorrect and verbose answers are penalized.
+*   **Sampling Strategies**:
+    *   **Curriculum Sampling**: Questions are sampled from easy to hard to improve efficiency in the early stage of training.
+    *   **Prioritized Sampling**: The model’s success rate $s\_i$ on each question is tracked, and questions are sampled with probability $1-s\_i$, thereby focusing training on questions where the model performs poorly.
+*   **Multimodal and Domain-Specific Methods**:
+    *   **Coding**: An automated pipeline is designed to use tools such as CYaRon to generate high-quality test cases for programming problems without test cases, serving as the reward signal.
+    *   **Mathematics**: A Chain-of-Thought reward model (Chain-of-Thought RM) is trained that not only gives a correct/incorrect judgment but also generates the reasoning process behind the judgment, achieving an accuracy of 98.5%, far surpassing traditional RMs.
+    *   **Vision**: The RL training data covers three major categories: real-world data, synthetic visual reasoning data, and text-rendered data, in order to improve the model’s ability to handle charts, real scenes, and mixed image-text content.
 
-### 长文转短文 (Long2short)
-为了让模型在保持高性能的同时变得更高效，本文提出了几种将Long-CoT模型能力迁移到Short-CoT模型的方法：
-*   **模型合并 (Model Merging)**: 直接将Long-CoT模型和Short-CoT模型的权重进行平均。
-*   **最短拒绝采样 (Shortest Rejection Sampling)**: 对一个问题多次采样，选择其中最短的正确回答作为SFT数据。
-*   **DPO**: 将最短的正确答案作为正例，将其他较长的（无论对错）答案作为负例，构建偏好对进行DPO训练。
-*   **Long2short RL**: 在标准RL后，进行一个专门的RL阶段，施加更强的长度惩罚并限制rollout的最大长度。
+### Long2short
+To make the model more efficient while maintaining high performance, this paper proposes several methods for transferring the capabilities of a Long-CoT model to a Short-CoT model:
+*   **Model Merging**: Directly average the weights of the Long-CoT model and the Short-CoT model.
+*   **Shortest Rejection Sampling**: Sample multiple times for a question and select the shortest correct answer as SFT data.
+*   **DPO**: Use the shortest correct answer as the positive example and other longer answers (whether correct or not) as negative examples to construct preference pairs for DPO training.
+*   **Long2short RL**: After standard RL, perform a dedicated RL stage with a stronger length penalty and a restricted maximum rollout length.
 
-### 基础设施创新
+### Infrastructure Innovation
 
 <img src="/images/2501.12599v4/x3.jpg" alt="系统总览" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-*   **大规模RL训练系统**: 本文构建了一个同步迭代的RL训练系统。系统包含一个中央主节点（central master）、rollout工作节点和训练工作节点。Rollout节点负责生成经验存入Replay Buffer，训练节点则从中取数据更新模型。
+*   **Large-scale RL training system**: This paper builds a synchronous iterative RL training system. The system includes a central master, rollout worker nodes, and training worker nodes. The rollout nodes are responsible for generating experience and storing it in the Replay Buffer, while the training nodes fetch data from it to update the model.
 
 <img src="/images/2501.12599v4/x4.jpg" alt="部分Rollout示意图" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-*   **部分Rollout (Partial Rollouts)**: 这是支持长上下文RL的核心技术。系统为每次rollout设定一个固定的Token预算。如果一次生成没有完成，未完成的部分会被存入Replay Buffer，在下一次迭代中继续生成。这样，前序内容可以被高效复用，极大地降低了生成长序列的计算开销。
+*   **Partial Rollouts**: This is the core technique that enables long-context RL. The system sets a fixed token budget for each rollout. If a generation is not completed in one pass, the unfinished part is stored in the Replay Buffer and continued in the next iteration. In this way, prior content can be efficiently reused, greatly reducing the computational cost of generating long sequences.
 
 <img src="/images/2501.12599v4/x5.jpg" alt="混合部署框架" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-*   **训练与推理的混合部署**: 为了极致地利用GPU资源，本文设计了一个混合部署框架。该框架利用Kubernetes Sidecar容器，在同一个Pod中同时部署训练框架（Megatron）和推理框架（vLLM）。在RL的训练阶段，GPU用于Megatron；在rollout（推理）阶段，模型权重通过内存高效传递给vLLM执行，训练进程则暂停。这避免了在On-Policy RL中因等待推理而导致的训练GPU闲置问题。
+*   **Hybrid deployment of training and inference**: To maximize GPU utilization, this paper designs a hybrid deployment framework. The framework uses Kubernetes Sidecar containers to deploy both the training framework (Megatron) and the inference framework (vLLM) in the same Pod. During the RL training phase, the GPU is used by Megatron; during the rollout (inference) phase, the model weights are transferred to vLLM in a memory-efficient way for execution, while the training process is paused. This avoids the GPU idling problem in on-policy RL caused by waiting for inference.
 
-## 实验结论
+## Experimental conclusions
 
 <img src="/images/2501.12599v4/x1.jpg" alt="Kimi k1.5 long-CoT 结果" style="width:85%; max-width:600px; margin:auto; display:block;">
 
 <img src="/images/2501.12599v4/x2.jpg" alt="Kimi k1.5 short-CoT 结果" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-本文通过在多个权威基准测试上进行评估，验证了所提出方法的有效性。
+This paper validates the effectiveness of the proposed method through evaluations on multiple authoritative benchmarks.
 
-*   **主要优势与SOTA表现**:
-    *   **Long-CoT模型**: Kimi k1.5 在多个高难度的推理基准上取得了业界顶尖的性能，与OpenAI的o1模型表现相当。例如，在AIME上达到77.5分，在MATH 500上达到96.2分，在Codeforces上达到94百分位，在多模态推理MathVista上达到74.9分。
-    *   **Short-CoT模型**: 通过本文提出的long2short技术，得到的Short-CoT模型同样取得了SOTA性能，并且大幅超越了现有的同类模型（如GPT-4o、Claude Sonnet 3.5）。例如，在AIME上达到60.8分，在MATH500上达到94.6分，在LiveCodeBench上达到47.3分。
+*   **Main advantages and SOTA performance**:
+    *   **Long-CoT model**: Kimi k1.5 achieves industry-leading performance on multiple highly challenging reasoning benchmarks, comparable to OpenAI's o1 model. For example, it reaches 77.5 on AIME, 96.2 on MATH 500, the 94th percentile on Codeforces, and 74.9 on the multimodal reasoning benchmark MathVista.
+    *   **Short-CoT model**: The Short-CoT model obtained through the long2short technique proposed in this paper also achieves SOTA performance, significantly surpassing existing similar models (such as GPT-4o and Claude Sonnet 3.5). For example, it reaches 60.8 on AIME, 94.6 on MATH500, and 47.3 on LiveCodeBench.
 
-*   **验证的结论**:
-    *   实验结果有力地证明，**将RL与长上下文扩展相结合，是提升LLM推理能力的有效路径**。
-    *   本文提出的**简化RL框架**（无价值网络、无MCTS）是可行的，并且能够达到顶尖性能。
-    *   **Long2short**技术被证明是一种有效的知识蒸馏方法，能够成功地将大型、高成本模型的强大能力迁移到小型、高效的模型上，兼顾了性能与实用性。
+*   **Verified conclusions**:
+    *   The experimental results strongly demonstrate that **combining RL with long-context scaling is an effective path to improving LLM reasoning ability**.
+    *   The **simplified RL framework** proposed in this paper (without a value network or MCTS) is feasible and can achieve top-tier performance.
+    *   The **long2short** technique is proven to be an effective knowledge distillation method, capable of successfully transferring the powerful capabilities of large, high-cost models to smaller, more efficient models, balancing performance and practicality.
 
-*   **表现平平或不佳的场景**:
-    *   论文中未明确提及方法表现不佳或存在明显短板的场景，主要聚焦于其取得的SOTA成果。
+*   **Scenarios with mediocre or poor performance**:
+    *   The paper does not explicitly mention scenarios where the method performs poorly or has obvious shortcomings, and mainly focuses on the SOTA results it achieves.

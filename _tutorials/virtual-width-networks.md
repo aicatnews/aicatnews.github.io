@@ -2,87 +2,86 @@
 layout: default
 title: "Virtual Width Networks"
 ---
-
-## 字节跳动VWN：不加算力“拓宽”Transformer，训练提速高达3倍！
+## ByteDance VWN: Widening Transformer Without Extra Compute, Training Speed Up to 3x!
 
 <img src="/images/2511.11238v1/A__title.jpg" alt="" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-想让大模型更强，最直接的方法就是“加宽”——增加其隐藏层维度。但这会导致计算成本呈二次方爆炸式增长，成为一个难以逾越的瓶颈。
+If you want a large model to become stronger, the most direct way is to “widen” it—by increasing the hidden-layer dimension. But this causes compute costs to explode quadratically, becoming a hard bottleneck to overcome.
 
-> **论文标题**：Virtual Width Networks
+> **Paper Title**: Virtual Width Networks
 
 > **ArXiv URL**：http://arxiv.org/abs/2511.11238v1
 
-有没有办法只享受“变宽”的好处，却不付出昂贵的代价？
+Is there a way to enjoy the benefits of “going wider” without paying the hefty price?
 
-字节跳动最新的研究**虚拟宽度网络**（**Virtual Width Networks, VWN**）给出了一个极为巧妙的答案。它通过一种创新的方式，在几乎不增加核心计算负载的前提下，实现了模型“虚拟宽度”的扩展，并带来了惊人的性能提升。
+ByteDance’s latest research, **Virtual Width Networks** (**VWN**), offers an extremely clever answer. Through an innovative approach, it expands the model’s “virtual width” with almost no increase in core compute load, delivering astonishing performance gains.
 
 <img src="/images/2511.11238v1/x4.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-*图注：(a) 标准Transformer，(b) 朴素加宽（计算量二次方增长），(c) VWN解耦了表征宽度和骨干网络宽度。*
+*Caption: (a) Standard Transformer, (b) naive widening (quadratic compute growth), (c) VWN decouples representation width from backbone width.*
 
-### VWN的核心思想：解耦表征与计算
+### The Core Idea of VWN: Decoupling Representation and Computation
 
-传统Transformer中，词嵌入（Embedding）的维度和网络骨干（Backbone）的隐藏层维度 $D$ 是相同的。如果想把 $D$ 翻倍，那么注意力机制和前馈网络的参数量与计算量都会增长约四倍。
+In a traditional Transformer, the dimension of the token embedding (Embedding) and the hidden dimension $D$ of the network backbone (Backbone) are the same. If you want to double $D$, the parameter count and compute of both the attention mechanism and the feed-forward network will increase by about four times.
 
-VWN的核心洞见在于：**将表征宽度与骨干宽度解耦**。
+The key insight of VWN is: **decouple representation width from backbone width**.
 
-简单来说，VWN允许我们使用一个非常宽的词嵌入维度 $D^{\prime}$（例如，是原始宽度 $D$ 的8倍），但在每一层Transformer的核心计算模块（如自注意力层和FFN）处理时，通过一个轻量级操作将其“压缩”回原始宽度 $D$。
+Simply put, VWN allows us to use a very wide token embedding dimension $D^{\prime}$ (for example, 8 times the original width $D$), but when the core computation modules of each Transformer layer (such as self-attention and FFN) process it, a lightweight operation “compresses” it back to the original width $D$.
 
-处理完毕后，再将其“扩展”回宽维度 $D^{\prime}$，并传递给下一层。这样一来，模型在层与层之间传递的是信息更丰富的“宽”表征，而计算最昂贵的部分依然在“窄”维度上进行，从而巧妙地规避了二次方增长的计算成本。
+After processing, it is then “expanded” back to the wide dimension $D^{\prime}$ and passed to the next layer. In this way, the model passes richer “wide” representations between layers, while the most expensive computations still happen in the “narrow” dimension, cleverly avoiding the quadratic growth in compute cost.
 
-### GHC：连接虚拟与现实的桥梁
+### GHC: The Bridge Between Virtual and Reality
 
-实现上述“压缩-扩展”操作的关键，是一种名为**广义超连接**（**Generalized Hyper-Connections, GHC**）的全新模块。
+The key to implementing the above “compress-expand” operation is a new module called **Generalized Hyper-Connections (GHC)**.
 
 <img src="/images/2511.11238v1/x5.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-*图注：VWN架构概览，GHC通过轻量级的矩阵A和B实现宽窄维度的灵活交互。*
+*Caption: Overview of the VWN architecture. GHC enables flexible interaction between wide and narrow dimensions through lightweight matrices A and B.*
 
-GHC本质上是一组轻量级的线性变换。在每个Transformer层中：
+GHC is essentially a set of lightweight linear transformations. In each Transformer layer:
 
-1.  **压缩**：GHC使用一个投影矩阵 $\mathbf{A}^{l}$ 将输入的宽隐状态（Over-Width Hidden States）压缩到骨干网络所需的标准宽度。
+1.  **Compression**: GHC uses a projection matrix $\mathbf{A}^{l}$ to compress the input over-width hidden states (Over-Width Hidden States) to the standard width required by the backbone network.
 
-2.  **扩展**：在骨干网络处理完后，GHC再用另一个投影矩阵 $\mathbf{B}^{l}$ 将输出扩展回宽维度，并与原始的宽隐状态进行融合。
+2.  **Expansion**: After the backbone network finishes processing, GHC uses another projection matrix $\mathbf{B}^{l}$ to expand the output back to the wide dimension and fuse it with the original over-width hidden states.
 
-更进一步，研究还提出了**动态GHC**（**Dynamic GHC, DGHC**），其变换矩阵 $\mathbf{A}$ 和 $\mathbf{B}$ 可以根据输入动态生成，赋予模型更强的适应性。整个GHC模块的计算和内存开销都非常小，几乎可以忽略不计。
+Going further, the study also proposes **Dynamic GHC (DGHC)**, where the transformation matrices $\mathbf{A}$ and $\mathbf{B}$ can be generated dynamically based on the input, giving the model stronger adaptability. The compute and memory overhead of the entire GHC module is very small, almost negligible.
 
-### 协同效应：当VWN遇上多令牌预测
+### Synergy: When VWN Meets Multi-Token Prediction
 
-为了更好地利用VWN带来的更宽表征空间，该研究将其与**多令牌预测**（**Multi-Token Prediction, MTP**）相结合。
+To better leverage the wider representation space brought by VWN, the study combines it with **Multi-Token Prediction (MTP)**.
 
-MTP要求模型同时预测未来多个Token，这本身就需要模型具备更强的短程组合建模能力。而VWN提供的超宽表征空间，恰好为学习这种复杂关系提供了充足的“带宽”。
+MTP requires the model to predict multiple future tokens at the same time, which itself demands stronger short-range compositional modeling ability. The ultra-wide representation space provided by VWN happens to offer sufficient “bandwidth” for learning such complex relationships.
 
-反过来，MTP提供的密集监督信号，也有效地驱动了VWN宽表征的学习。两者形成了完美的协同效应。
+Conversely, the dense supervision signal provided by MTP also effectively drives the learning of VWN’s wide representations. The two form a perfect synergy.
 
-### 惊人的实验效果
+### Astonishing Experimental Results
 
-VWN的效果到底如何？研究在一系列大规模MoE模型上进行了验证，结果令人印象深刻。
+How effective is VWN? The study validated it on a series of large-scale MoE models, and the results are impressive.
 
 <img src="/images/2511.11238v1/x1.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-*图注：在一个3.3B参数的MoE模型上，VWN（橙线）与基线（蓝线）的训练损失对比。*
+*Caption: Training loss comparison between VWN (orange line) and the baseline (blue line) on a 3.3B-parameter MoE model.*
 
-在一个激活参数为3.3B的MoE模型上，采用8倍虚拟宽度扩展的VWN（VWNx8）展现了巨大优势：
+On an MoE model with 3.3B active parameters, VWN with 8x virtual width expansion (VWNx8) showed major advantages:
 
-- **训练加速**：在单令牌预测任务上，优化速度提升超过**2倍**；在双令牌预测任务上，加速比更是高达**3倍**。
+- **Training speedup**: On single-token prediction tasks, optimization speed improved by more than **2x**; on two-token prediction tasks, the speedup reached as high as **3x**.
 
-- **数据效率**：VWN仅用基线模型**2.5倍到3.5倍分之一**的数据量，就达到了相同的损失水平。
+- **Data efficiency**: VWN achieved the same loss level using only **1/2.5 to 1/3.5** of the data required by the baseline model.
 
-- **优势放大**：随着训练的进行，VWN与基线模型之间的性能差距越来越大，显示出其强大的扩展潜力。
+- **Amplified advantage**: As training progressed, the performance gap between VWN and the baseline model kept widening, showing strong scaling potential.
 
-研究还发现，虚拟宽度与模型损失之间存在近似的**对数线性关系**，这意味着“虚拟宽度缩放”可能成为继模型参数、数据量之后的第三条有效提升大模型效率的缩放法则（Scaling Law）。
+The study also found an approximate **log-linear relationship** between virtual width and model loss, suggesting that “virtual width scaling” may become a third effective scaling law for improving large-model efficiency, following model parameters and data size.
 
-### 深度注意力：一个全新的视角
+### Deep Attention: A New Perspective
 
-论文还提供了一个非常精彩的解读视角：将VWN理解为一种**沿深度轴的注意力机制**。
+The paper also offers a very insightful interpretation: viewing VWN as a kind of **attention mechanism along the depth axis**.
 
-如果把Transformer的堆叠层看作一个“深度序列”，那么：
+If we treat the stacked Transformer layers as a “depth sequence,” then:
 
-- **标准残差连接**：只关注前一层的输出，相当于一个大小为2的滑动窗口。
+- **Standard residual connections**: only focus on the output of the previous layer, equivalent to a sliding window of size 2.
 
-- **VWN/GHC**：通过在层间传递和融合宽表征，实现了一种**跨多层的、类似线性注意力的信息聚合机制**。它允许当前层“看到”前面多个层的压缩信息，极大地扩展了模型的“深度感受野”。
+- **VWN/GHC**: by passing and fusing wide representations across layers, it realizes a **multi-layer, linear-attention-like information aggregation mechanism**. It allows the current layer to “see” compressed information from multiple previous layers, greatly expanding the model’s “depth receptive field.”
 
-### 总结
+### Summary
 
-Virtual Width Networks (VWN) 提出了一种极具前瞻性的模型架构范式。它通过解耦表征宽度和计算宽度，让我们能够以极小的成本获得“更宽”模型所带来的巨大优势。这项工作不仅显著提升了模型训练的效率和性能，更重要的是，它为大模型缩放探索出了一个全新的、充满潜力的维度。简单而有效，VWN再次证明了架构创新在AI发展中的关键作用。
+Virtual Width Networks (VWN) proposes a highly forward-looking model architecture paradigm. By decoupling representation width from compute width, it allows us to gain the huge benefits of a “wider” model at very low cost. This work not only significantly improves training efficiency and performance, but more importantly, it opens up a brand-new and highly promising dimension for scaling large models. Simple and effective, VWN once again demonstrates the crucial role of architectural innovation in the development of AI.

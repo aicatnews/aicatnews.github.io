@@ -2,72 +2,71 @@
 layout: default
 title: "Larger Datasets Can Be Repeated More: A Theoretical Analysis of Multi-Epoch Scaling in Linear Regression"
 ---
-
-## 数据告急？北大清华发现：数据集越大，重复训练收益越高，价值可达logN倍
+## Data Shortage? Peking University and Tsinghua Find: The Larger the Dataset, the Greater the Benefit of Repeated Training, with Value Reaching logN Times
 
 <img src="/images/2511.13421v1/A__title.jpg" alt="" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-AI的飞速发展正以前所未有的速度消耗着全球的高质量数据，甚至有预测称我们将在2028年耗尽公开可用的数据。面对日益严峻的数据荒，一个看似直接的办法摆在所有研究者面前：在有限的数据集上进行多轮次（multi-epoch）重复训练。
+The rapid development of AI is consuming the world’s high-quality data at an unprecedented pace, and some forecasts even suggest that we will run out of publicly available data by 2028. Faced with an increasingly severe data shortage, one seemingly straightforward solution is in front of all researchers: multi-epoch repeated training on a limited dataset.
 
-> **论文标题**：Larger Datasets Can Be Repeated More: A Theoretical Analysis of Multi-Epoch Scaling in Linear Regression
+> **Paper Title**: Larger Datasets Can Be Repeated More: A Theoretical Analysis of Multi-Epoch Scaling in Linear Regression
 
 > **ArXiv URL**：http://arxiv.org/abs/2511.13421v1
 
-但这引出了一个核心问题：重复“刷题”究竟能在多大程度上替代“新题”？在1TB的数据集上训练4轮，和在全新的4TB数据集上训练1轮，效果一样吗？
+But this raises a core question: to what extent can repeatedly “doing the same problems” replace “new problems”? Is training for 4 epochs on a 1TB dataset the same as training for 1 epoch on a brand-new 4TB dataset?
 
-来自北京大学、鹏城实验室和清华大学的一项最新研究，从理论上给出了一个颠覆性的答案：**重复训练的效果，与你手头数据集的规模$N$密切相关。**
+A recent study from Peking University, Peng Cheng Laboratory, and Tsinghua University provides a theoretically disruptive answer: **the effect of repeated training is closely tied to the size $N$ of the dataset you have.**
 
-### 数据复用的“有效性”之问
+### The “Effectiveness” of Data Reuse
 
-为了量化数据复用的价值，研究者们提出了一个关键指标：**有效复用率**（**Effective Reuse Rate**），记为 $E(K, N)$。
+To quantify the value of data reuse, the researchers introduced a key metric: **Effective Reuse Rate** ($E(K, N)$).
 
-它的定义非常直观：在大小为$N$的数据集上训练$K$轮，为了达到相同的模型性能，如果只训练1轮，你需要多大规模的新数据集？这个新数据集大小与原始大小$N$的比值，就是$E(K, N)$。
+Its definition is very intuitive: if you train for $K$ epochs on a dataset of size $N$, then to achieve the same model performance with only 1 epoch, how much new data would you need? The ratio of that new dataset size to the original size $N$ is $E(K, N)$.
 
-如果$E(4, N) \approx 4$，就意味着在$N$个数据上训练4轮，几乎等同于在$4N$个新数据上训练1轮，数据复用非常高效。
+If $E(4, N) \approx 4$, it means that training for 4 epochs on $N$ data points is almost equivalent to training for 1 epoch on $4N$ new data points, making data reuse highly efficient.
 
-此前，一项广受关注的实证研究（Muennighoff et al., 2023）发现，对于大语言模型，在$K \le 4$时，$E(K, N)$近似等于$K$，但随着$K$的增加，收益会迅速饱和。然而，他们的模型忽略了一个关键变量——数据集的初始大小$N$。
+Previously, a widely discussed empirical study (Muennighoff et al., 2023) found that for large language models, when $K \le 4$, $E(K, N)$ is approximately equal to $K$, but as $K$ increases, the gains quickly saturate. However, their model ignored a key variable—the initial dataset size $N$.
 
-### 理论新洞察：从线性回归出发
+### A New Theoretical Insight: Starting from Linear Regression
 
-为了精准剖析数据复用背后的机制，本文选择了一个理论分析的“黄金试验场”——**线性回归**（**Linear Regression**）。通过对随机梯度下降（SGD）的训练动态进行严谨的数学推导，研究者们得出了关于$E(K, N)$的精确刻画。
+To precisely analyze the mechanism behind data reuse, this paper chose a “golden testbed” for theoretical analysis—**Linear Regression**. By rigorously deriving the training dynamics of stochastic gradient descent (SGD), the researchers obtained an exact characterization of $E(K, N)$.
 
-研究的核心发现在两个不同阶段展现出截然不同的行为：
+The core findings show two distinctly different behaviors in two stages:
 
-1.  **当训练轮数$K$较小时**（严格来说是$K=o(\log N)$）：
+1.  **When the number of training epochs $K$ is small** (strictly speaking, $K=o(\log N)$):
 
-    研究证明，$E(K, N) \approx K$。
+The paper proves that $E(K, N) \approx K$.
 
-    这说明在训练初期，每一轮重复训练都像是在使用全新的数据，收益是线性的、几乎无损的。这与之前的经验观察相符。
+This means that in the early stage of training, each repeated epoch is almost like using entirely new data, with linear and nearly lossless gains. This is consistent with previous empirical observations.
 
-2.  **当训练轮数$K$较大时**（$K=\omega(\log N)$）：
+2.  **When the number of training epochs $K$ is large** ($K=\omega(\log N)$):
 
-    $E(K, N)$的增长会放缓并趋于一个平台期。但关键在于，这个平台的高度并非一个固定的常数，而是与数据集大小$N$正相关，具体为$\Theta(\log N)$。
+The growth of $E(K, N)$ slows down and approaches a plateau. But the key point is that this plateau is not a fixed constant; it is positively correlated with the dataset size $N$, specifically $\Theta(\log N)$.
 
 
-<center>图1：有效复用率 $E(K,N)$ 随训练轮数 $K$ 的变化趋势。在 $K$ 较小时呈线性增长，随后进入平台期，且平台高度随数据集规模 $N$ 的增大而提升。</center>
+<center>Figure 1: The trend of the effective reuse rate $E(K,N)$ as the number of training epochs $K$ changes. It grows linearly when $K$ is small, then enters a plateau, and the plateau height increases as the dataset size $N$ grows.</center>
 
-### 核心结论：数据集越大，越能“吃老本”
+### Core Conclusion: The Larger the Dataset, the More You Can “Live Off the Past”
 
-这个理论结果带来了一个极其重要的实践启示：**数据集越大，重复训练的边际效益递减得越慢，数据复用的上限也越高。**
+This theoretical result brings an extremely important practical implication: **the larger the dataset, the more slowly the marginal benefit of repeated training declines, and the higher the upper bound of data reuse.**
 
-换句话说，拥有一个10TB数据集的研究者，可能会发现训练8轮、10轮依然有显著收益；而对于一个只有1TB数据集的团队，可能在4轮之后效果就大打折扣了。
+In other words, a researcher with a 10TB dataset may still find significant gains from training for 8 or 10 epochs; whereas for a team with only a 1TB dataset, the effect may drop off sharply after 4 epochs.
 
-这意味着，过去那种“重复训练超过4轮就没用”的粗略经验法则，可能需要被修正。正确的做法是，需要根据你拥有的数据集规模$N$来动态判断最佳的训练轮数。对于拥有海量数据的机构而言，他们可以更从容地通过增加训练轮次来“榨干”数据的价值，达到一个远超线性增长的等效数据规模。
+This means that the old rough rule of thumb—“repeated training beyond 4 epochs is useless”—may need to be revised. The correct approach is to dynamically determine the optimal number of training epochs based on the dataset size $N$ you have. For organizations with massive amounts of data, they can more calmly “squeeze out” the value of the data by increasing the number of training epochs, achieving an equivalent data scale far beyond linear growth.
 
-### 从理论到LLM的实证
+### From Theory to Empirical Results on LLMs
 
-尽管上述理论推导基于简化的线性模型，但它的洞察力是否适用于复杂的大语言模型呢？
+Although the above theoretical derivation is based on a simplified linear model, does its insight also apply to complex large language models?
 
-为了验证这一点，研究团队进行了LLM预训练实验。结果令人振奋：**LLM的实际表现与理论预测高度吻合。**
+To verify this, the research team conducted LLM pretraining experiments. The results were encouraging: **the actual performance of LLMs closely matches the theoretical predictions.**
 
-实验证实，在LLM预训练中，对于固定的训练轮数$K$，有效复用率$E(K, N)$确实随着数据集规模$N$的增加而单调递增。这为“数据集越大，越能有效复用”这一核心结论提供了强有力的实证支持。
+The experiments confirmed that in LLM pretraining, for a fixed number of training epochs $K$, the effective reuse rate $E(K, N)$ does indeed increase monotonically as the dataset size $N$ grows. This provides strong empirical support for the core conclusion that “the larger the dataset, the more effectively it can be reused.”
 
-### 总结与启示
+### Summary and Takeaways
 
-在通往更强通用人工智能的道路上，数据瓶颈已成为一个无法回避的挑战。这项研究为我们理解和应对这一挑战提供了全新的理论视角。
+On the road toward stronger general artificial intelligence, the data bottleneck has become an unavoidable challenge. This study offers a new theoretical perspective for understanding and addressing that challenge.
 
-它精确地揭示了多轮次训练的缩放规律，并指出了一个被长期忽视的关键因素：数据集规模$N$。
+It precisely reveals the scaling law of multi-epoch training and points out a key factor that has long been overlooked: the dataset size $N$.
 
-对于所有AI从业者和研究者而言，这项工作传递了一个清晰的信号：在规划计算资源和训练策略时，我们不能再简单地设定一个固定的重复训练上限。相反，我们应该认识到，**手握的数据越多，我们就越有底气去重复利用它，从而在数据有限的时代，撬动起超越数据本身规模的模型性能。**
+For all AI practitioners and researchers, this work sends a clear signal: when planning compute resources and training strategies, we can no longer simply set a fixed upper limit on repeated training. Instead, we should recognize that **the more data we have, the more confidently we can reuse it, thereby leveraging model performance that exceeds the scale of the data itself in an era of limited data.**
 
-论文链接：https://arxiv.org/abs/2405.18385
+Paper link: https://arxiv.org/abs/2405.18385

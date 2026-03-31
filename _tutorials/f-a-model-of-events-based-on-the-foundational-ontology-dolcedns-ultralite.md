@@ -6,109 +6,109 @@ title: "F -- A Model of Events based on the Foundational Ontology DOLCE+DnS Ultr
 
 - **ArXiv URL**: http://arxiv.org/abs/2411.16609v1
 
-- **作者**: Steffen Staab; C. Saathoff; Thomas Franz; A. Scherp
+- **Author**: Steffen Staab; C. Saathoff; Thomas Franz; A. Scherp
 
-- **发布机构**: University of Koblenz-Landau
+- **Publisher**: University of Koblenz-Landau
 
 ---
 
 ## TL;DR
-本文提出了一种名为 Event-Model-F (F) 的事件形式化模型，该模型基于 foundational ontology (基础本体) DOLCE+DnS Ultralite (DUL)，通过一种模式驱动的方法，全面地表示事件中的时间、空间、参与对象、结构关系（部分-整体、因果、相关）以及对同一事件的不同主观解释，以解决分布式事件系统中互操作性差的问题。
+This paper proposes an event formalization model called Event-Model-F (F), which is based on the foundational ontology DOLCE+DnS Ultralite (DUL). Using a pattern-driven approach, it comprehensively represents time, space, participating entities, structural relations (part-whole, causal, correlative), and different subjective interpretations of the same event, in order to address poor interoperability in distributed event systems.
 
-## 关键定义
-*   **Event-Model-F (F)**: 本文提出的一个用于捕获和表示人类经验的事件形式化模型。它不关注计算机系统内部的技术性事件，而是关注人类参与的、可被讨论和解释的真实世界事件。
-*   **Foundational Ontology (DOLCE+DnS Ultralite)**: F模型所基于的顶层基础本体。DOLCE 提供了对事件(Event)、对象(Object)、品质(Quality)和抽象(Abstract)等基本范畴的区分。F模型遵循其设计原则，特别是利用了其 Descriptions and Situations (DnS) 模式。
-*   **Ontology Patterns (本体模式)**: F模型的核心设计方法。它将对事件的复杂描述分解为一系列独立的、可复用的模式模块，每个模式负责描述事件的一个特定方面。
-*   **Descriptions and Situations (DnS)**: DUL 中的一个核心模式，F模型广泛采用它来形式化地表示对事件的不同语境化观点。该模式允许将事件（现实世界的发生）与对其的描述（主观的、可解释的观点）分离开来，从而能够对同一事件的不同解释进行建模。
-*   **Mereology (部分-整体关系)**: 描述事件之间构成关系的哲学概念。在F模型中，指代事件可以由其他子事件构成的结构关系。
+## Key Definitions
+*   **Event-Model-F (F)**: An event formalization model proposed in this paper for capturing and representing human experience. It does not focus on technical events inside computer systems, but on real-world events involving human participation that can be discussed and interpreted.
+*   **Foundational Ontology (DOLCE+DnS Ultralite)**: The upper-level foundational ontology on which the F model is based. DOLCE provides distinctions among basic categories such as Event, Object, Quality, and Abstract. The F model follows its design principles, especially by leveraging its Descriptions and Situations (DnS) pattern.
+*   **Ontology Patterns**: The core design method of the F model. It breaks down complex event descriptions into a series of independent, reusable pattern modules, each responsible for describing one specific aspect of an event.
+*   **Descriptions and Situations (DnS)**: A core pattern in DUL that the F model extensively adopts to formally represent different contextualized views of events. This pattern separates events (occurrences in the real world) from their descriptions (subjective, interpretable views), making it possible to model different interpretations of the same event.
+*   **Mereology**: A philosophical concept describing compositional relations between events. In the F model, it refers to structural relations in which an event can be composed of other sub-events.
 
-## 相关工作
-当前，处理事件的系统（如媒体分发、应急响应）日益增多，但这些系统通常使用不同的内部数据模型，导致互操作性差。现有的事件模型（如 Eventory, CIDOC CRM, EventML 等）大多是为特定领域设计的，缺乏系统性的开发方法，概念上较为狭隘，且语义模糊。
+## Related Work
+At present, the number of systems that handle events, such as media distribution and emergency response systems, is growing rapidly, but these systems usually use different internal data models, resulting in poor interoperability. Existing event models, such as Eventory, CIDOC CRM, and EventML, are mostly designed for specific domains, lack a systematic development methodology, are conceptually narrow, and are semantically ambiguous.
 
-这些模型的主要瓶颈在于：
-1.  **结构关系支持不足**：对事件之间的部分-整体（mereological）、因果（causal）和相关（correlative）关系的建模能力非常有限或完全缺失。
-2.  **缺乏主观性建模**：无法表示不同观察者对同一事件的不同主观解释或观点。
-3.  **形式化程度低**：缺乏严格的形式化和公理化，机器难以进行自动的语义校验和推理，阻碍了系统间的互操作。
+The main bottlenecks of these models are:
+1.  **Insufficient support for structural relations**: Their ability to model part-whole (mereological), causal, and correlative relations between events is very limited or completely absent.
+2.  **Lack of subjectivity modeling**: They cannot represent different subjective interpretations or viewpoints of the same event from different observers.
+3.  **Low degree of formalization**: They lack strict formalization and axiomatization, making it difficult for machines to perform automatic semantic validation and reasoning, which hinders interoperability between systems.
 
-本文旨在解决上述问题，创建一个具有形式化、可扩展、模块化和可重用性的通用事件模型，以支持对复杂事件（尤其是其结构关系和多重解释）的精确表示。
+This paper aims to solve the above problems by creating a general event model that is formal, extensible, modular, and reusable, so as to support precise representation of complex events, especially their structural relations and multiple interpretations.
 
-## 本文方法
-Event-Model-F (F) 的设计严格遵循基础本体 DOLCE+DnS Ultralite (DUL) 及其模式驱动的设计哲学。其核心创新在于利用 DUL 的 Descriptions and Situations (DnS) 模式将对事件的复杂描述分解为六个独立的、可组合的本体模式。
+## Method
+The design of Event-Model-F (F) strictly follows the foundational ontology DOLCE+DnS Ultralite (DUL) and its pattern-driven design philosophy. Its core innovation lies in using DUL’s Descriptions and Situations (DnS) pattern to break down complex event descriptions into six independent, composable ontology patterns.
 
 <img src="/images/2411.16609v1/MotivationSlide.jpg" alt="一个用于应急响应的分布式事件系统" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 创新点
-与以往模型直接描述事件属性不同，F模型的核心机制是**将对事件的描述（Description）与事件本身所处的状况（Situation）分离开来**。这使得模型能够区分“世界中发生了什么”（Situation）和“我们如何看待和描述它”（Description）。这一设计使得对同一事件的多重、甚至矛盾的解释进行共存和形式化建模成为可能。
+### Innovation
+Unlike previous models that directly describe event attributes, the core mechanism of the F model is to **separate the description of an event (Description) from the situation in which the event itself occurs (Situation)**. This allows the model to distinguish between “what happened in the world” (Situation) and “how we view and describe it” (Description). This design makes it possible for multiple, even contradictory, interpretations of the same event to coexist and be formally modeled.
 
-### 模型架构：六大本体模式
-F模型由以下六个基于 DnS 的模式构成，它们共同实现对事件的全面描述。
+### Model Architecture: Six Ontology Patterns
+The F model consists of the following six DnS-based patterns, which together enable a comprehensive description of events.
 
 <img src="/images/2411.16609v1/x1.jpg" alt="F模型的六种模式及其与DUL的对齐" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-1.  **Participation Pattern (参与模式)**:
-    *   **作用**: 描述对象（人、物）如何参与到事件中，并扮演特定角色。
-    *   **实现**: 通过 $$F:EventParticipationSituation$$ 将事件 ($$DUL:Event$$) 和参与对象 ($$DUL:Object$$) 关联起来。通过 $$F:EventParticipationDescription$$ 定义具体的事件类型 ($$F:DescribedEvent$$) 和参与者角色 ($$F:Participant$$)。同时，它还可以定义事件发生的绝对时间和对象存在的绝对空间。
+1.  **Participation Pattern**:
+    *   **Function**: Describes how objects (people, things) participate in an event and play specific roles.
+    *   **Implementation**: It links an event ($$DUL:Event$$) and participating objects ($$DUL:Object$$) through $$F:EventParticipationSituation$$. $$F:EventParticipationDescription$$ is used to define the specific event type ($$F:DescribedEvent$$) and participant roles ($$F:Participant$$). At the same time, it can also define the absolute time at which the event occurs and the absolute space in which the object exists.
 
-2.  **Mereology Pattern (部分-整体关系模式)**:
-    *   **作用**: 表达事件之间的组合关系，即一个复杂的“复合事件”由多个“组件事件”构成。
-    *   **实现**: $$F:EventCompositionSituation$$ 包含一个复合事件（被分类为 $$F:Composite$$）和多个组件事件（被分类为 $$F:Component$$）。该模式还允许对组件事件施加时空约束，从而支持相对时间和空间关系的建模。
+2.  **Mereology Pattern**:
+    *   **Function**: Expresses compositional relations between events, that is, a complex “composite event” is made up of multiple “component events.”
+    *   **Implementation**: $$F:EventCompositionSituation$$ contains a composite event (classified as $$F:Composite$$) and multiple component events (classified as $$F:Component$$). This pattern also allows spatiotemporal constraints to be imposed on component events, thereby supporting the modeling of relative temporal and spatial relations.
 
-3.  **Causality Pattern (因果关系模式)**:
-    *   **作用**: 形式化地表示事件之间的因果链，即一个事件（原因）导致了另一个事件（结果）。
-    *   **实现**: 定义了两个事件类型 $$F:Cause$$ 和 $$F:Effect$$。关键在于，它还引入了 $$F:Justification$$ (理由) 的概念，用以说明该因果关系所依据的理论或信念（如物理定律、个人观点等），使因果关系的判定变得明确和可追溯。
+3.  **Causality Pattern**:
+    *   **Function**: Formally represents causal chains between events, that is, one event (the cause) leads to another event (the effect).
+    *   **Implementation**: It defines two event types, $$F:Cause$$ and $$F:Effect$$. The key point is that it also introduces the concept of $$F:Justification$$, used to explain the theory or belief on which the causal relation is based (such as physical laws or personal opinions), making the determination of causality explicit and traceable.
 
-4.  **Correlation Pattern (相关关系模式)**:
-    *   **作用**: 描述两个或多个事件之间存在相关性，即它们可能由一个共同的、但未知的“共同原因”引起，但它们之间没有直接的因果关系。
-    *   **实现**: 定义 $$F:Correlate$$ 角色来分类相关的事件，并同样通过 $$F:Justification$$ 来解释这种相关性背后的理论或规律。这在因果关系难以确定时非常有用。
+4.  **Correlation Pattern**:
+    *   **Function**: Describes correlations between two or more events, meaning they may be caused by a common but unknown “common cause,” without a direct causal relation between them.
+    *   **Implementation**: It defines the $$F:Correlate$$ role to classify correlated events, and likewise uses $$F:Justification$$ to explain the theory or rule behind the correlation. This is very useful when causality is difficult to determine.
 
-5.  **Documentation Pattern (文档化模式)**:
-    *   **作用**: 为事件的发生提供证据支持。
-    *   **实现**: 定义了 $$F:DocumentedEvent$$ (被文档化的事件) 和 $$F:Documenter$$ (文档提供者)。$$Documenter$$ 可以是任意 $$DUL:Object$$（如照片、传感器数据）或 $$DUL:Event$$，为事件的真实性提供依据。
+5.  **Documentation Pattern**:
+    *   **Function**: Provides evidential support for the occurrence of an event.
+    *   **Implementation**: It defines $$F:DocumentedEvent$$ (the documented event) and $$F:Documenter$$ (the document provider). $$Documenter$$ can be any $$DUL:Object$$ (such as photos or sensor data) or $$DUL:Event$$, providing a basis for the event’s authenticity.
 
-6.  **Interpretation Pattern (解释模式)**:
-    *   **作用**: 这是整个模型的核心粘合剂，用于整合上述所有模式，形成对一个事件的特定、自洽的“解释”或“观点”。
-    *   **实现**: 定义 $$F:Interpretant$$ 来分类被解释的事件。一个解释由一系列相关的状况 ($$F:RelevantSituations$$) 构成，这些状况是参与、组合、因果、相关和文档化模式的具体实例。通过创建多个不同的解释实例，可以对同一事件（如“停电”）形成不同甚至冲突的观点（如“电线杆被风刮断了” vs “发电厂出故障了”）。
+6.  **Interpretation Pattern**:
+    *   **Function**: This is the core glue of the entire model, used to integrate all the above patterns into a specific, self-consistent “interpretation” or “viewpoint” of an event.
+    *   **Implementation**: It defines $$F:Interpretant$$ to classify the interpreted event. An interpretation consists of a series of relevant situations ($$F:RelevantSituations$$), which are concrete instances of the participation, composition, causality, correlation, and documentation patterns. By creating multiple different interpretation instances, different or even conflicting viewpoints of the same event (such as a “power outage”) can be formed, for example “a utility pole was blown down by the wind” vs. “the power plant malfunctioned.”
 
-### 优点
-*   **形式化与公理化**: 基于DUL，具有严格的语义，支持机器推理和有效性验证。
-*   **模块化与可重用性**: 模式化的设计使得用户可以根据需要选择和组合不同的模块，简化了开发和应用。
-*   **可扩展性**: 很容易通过定义新的模式或与领域本体结合来进行扩展。
-*   **关注点分离**: 清晰地将事件的结构知识（由F定义）与领域特定知识（由领域本体定义）分离开来。
+### Advantages
+*   **Formalization and axiomatization**: Based on DUL, it has rigorous semantics and supports machine reasoning and validity verification.
+*   **Modularity and reusability**: The pattern-based design allows users to select and combine different modules as needed, simplifying development and application.
+*   **Scalability**: It can be easily extended by defining new patterns or combining it with domain ontologies.
+*   **Separation of concerns**: It clearly separates the structural knowledge of events (defined by F) from domain-specific knowledge (defined by the domain ontology).
 
-## 实验结论
+## Experimental Conclusions
 
-本文没有进行传统的定量实验，而是通过一个应急响应场景的应用示例和与现有模型的对比分析来验证其优势。
+This paper did not conduct traditional quantitative experiments, but instead validated its advantages through an application example in an emergency response scenario and a comparative analysis with existing models.
 
-### 应用示例验证
-在应急响应场景中，F模型能够清晰地描述复杂事件。例如，对于“停电”事件：
-*   **因果模式**可以表示“电线杆折断”导致了“停电”。
-*   **参与模式**可以描述具体的市民和房屋受到了停电事件的影响，并定义他们在事件中的角色。
-*   **解释模式**可以将上述模式实例组合成一个完整的解释，并且允许存在另一个关于“发电厂故障”导致停电的竞争性解释，这两个解释可以共享同一个“停电”事件实例，但关联不同的原因。
+### Validation Through an Application Example
+In an emergency response scenario, the F model can clearly describe complex events. For example, for a “power outage” event:
+*   **The causal pattern** can represent that “a utility pole breaking” caused the “power outage.”
+*   **The participation pattern** can describe which citizens and houses were affected by the power outage and define their roles in the event.
+*   **The explanation pattern** can combine the above pattern instances into a complete explanation, and it also allows for a competing explanation in which a “power plant failure” caused the outage. These two explanations can share the same “power outage” event instance while associating different causes.
 
-<img src="/images/2411.16609v1/x1.jpg" alt="应用F模型本体的示例" style="width:85%; max-width:450px; margin:auto; display:block;">
-*(注：上图中的(g)部分展示了如何结合因果关系模式和参与模式来描述一个具体的停电事件场景。)*
+<img src="/images/2411.16609v1/x1.jpg" alt="Example of applying the F model ontology" style="width:85%; max-width:450px; margin:auto; display:block;">
+*(Note: Part (g) in the figure above shows how the causal relation pattern and participation pattern can be combined to describe a specific power outage event scenario.)*
 
-### 与现有模型对比
-通过与Eventory、CIDOC CRM、EventML等多种现有事件模型进行对比分析，F模型的优越性得到了凸显。
+### Comparison with Existing Models
+Through comparative analysis with a variety of existing event models such as Eventory, CIDOC CRM, and EventML, the superiority of the F model is highlighted.
 
 
-| 功能需求 | Eventory | Event Ont. | CIDOC CRM | EventML | VERL | E | F (本文) |
+| Functional Requirement | Eventory | Event Ont. | CIDOC CRM | EventML | VERL | E | F (this paper) |
 |---|---|---|---|---|---|---|---|
-| (1) 对象参与 | ● | ● | ● | ● | ● | ● | ● |
-| (2) 时间 | ● | ● | ● | ● | ● | ● | ● |
-| (3) 空间 | ● | ● | ● | ● | ● | ● | ● |
-| (4a) 部分-整体关系 | ○ | ○ | ○ | ◦ | ● | ○ | ● |
-| (4b) 因果关系 | ◦ | ○ | ○ | ◦ | ◦ | ○ | ● |
-| (4c) 相关关系 | ◦ | ◦ | ◦ | ◦ | ◦ | ◦ | ● |
-| (5) 文档化支持 | ● | ◦ | ○ | ◦ | ● | ● | ● |
-| (6) 事件解释 | ◦ | ◦ | ◦ | ◦ | ◦ | ◦ | ● |
-*图注：● - 完全支持; ○ - 部分支持; ◦ - 不支持*
+| (1) Object participation | ● | ● | ● | ● | ● | ● | ● |
+| (2) Time | ● | ● | ● | ● | ● | ● | ● |
+| (3) Space | ● | ● | ● | ● | ● | ● | ● |
+| (4a) Part-whole relation | ○ | ○ | ○ | ◦ | ● | ○ | ● |
+| (4b) Causal relation | ◦ | ○ | ○ | ◦ | ◦ | ○ | ● |
+| (4c) Related relation | ◦ | ◦ | ◦ | ◦ | ◦ | ◦ | ● |
+| (5) Documentation support | ● | ◦ | ○ | ◦ | ● | ● | ● |
+| (6) Event explanation | ◦ | ◦ | ◦ | ◦ | ◦ | ◦ | ● |
+*Caption: ● - Fully supported; ○ - Partially supported; ◦ - Not supported*
 
 <img src="/images/2411.16609v1/x2.jpg" alt="各事件模型的功能对比" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-**对比结论**:
-*   **表现最佳的方面**: F模型在所有功能需求上均提供完全支持。其最显著的优势在于对**结构关系（部分-整体、因果、相关）**和**事件解释**的全面建模，而这是所有其他现有模型都严重缺乏的。
-*   **其他模型表现**: 现有模型大多能很好地处理对象参与、时间和空间等基本方面，但在更复杂的结构关系和主观解释方面支持非常有限。
+**Comparison conclusions**:
+*   **Best-performing aspects**: The F model provides full support for all functional requirements. Its most notable advantage lies in the comprehensive modeling of **structural relations (part-whole, causal, related)** and **event explanation**, which are severely lacking in all other existing models.
+*   **Performance of other models**: Existing models generally handle basic aspects such as object participation, time, and space well, but offer very limited support for more complex structural relations and subjective explanations.
 
-### 总结
-本文成功设计了一个基于基础本体和模式驱动方法的事件模型Event-Model-F。该模型通过其独特的模块化设计，特别是对事件结构关系和多重解释的支持，显著超越了现有模型，为构建可互操作的、能够理解复杂人类经验的分布式事件系统提供了坚实的形式化基础。
+### Summary
+This paper successfully designed an event model, Event-Model-F, based on a foundational ontology and a pattern-driven approach. Through its unique modular design, especially its support for event structural relations and multiple explanations, the model significantly surpasses existing models and provides a solid formal foundation for building interoperable distributed event systems capable of understanding complex human experiences.

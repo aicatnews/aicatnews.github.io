@@ -6,64 +6,64 @@ title: "Scaling Test-Time Compute to Achieve IOI Gold Medal with Open-Weight Mod
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.14232v1
 
-- **作者**: Mehrzad Samadi; Aleksander Ficek; Boris Ginsburg; Sean Narenthiran; Somshubra Majumdar; Wasi Uddin Ahmad; Siddhartha Jain
+- **Authors**: Mehrzad Samadi; Aleksander Ficek; Boris Ginsburg; Sean Narenthiran; Somshubra Majumdar; Wasi Uddin Ahmad; Siddhartha Jain
 
-- **发布机构**: NVIDIA
+- **Publisher**: NVIDIA
 
 ---
 
 ## TL;DR
-本文证明，通过将大规模测试时搜索算法（test-time search）应用于开源代码大语言模型（如 Code Llama-70B），可以在国际信息学奥林匹克（IOI）竞赛级别的算法问题上达到金牌水平，这一成就先前被认为只有顶级的专有模型才能实现。
+This paper shows that by applying large-scale test-time search to open-source code large language models, such as Code Llama-70B, it is possible to reach gold-medal performance on algorithmic problems at the International Olympiad in Informatics (IOI) level—a feat previously thought to be achievable only by top-tier proprietary models.
 
-## 关键定义
-本文的核心方法建立在 AlphaCode 2 的基础上，并将其应用于开源模型。关键定义如下：
+## Key Definitions
+The core method in this paper is built on AlphaCode 2 and applies it to open-source models. The key definitions are as follows:
 
-1.  **测试时计算/搜索 (Test-Time Compute/Search)**：指在模型推理阶段（即解决问题时）投入大量计算资源，而非在训练阶段。本文中，它特指一个多步骤过程：首先从模型中生成海量（可达一百万个）候选代码解决方案，然后通过一系列筛选、聚类和重排序步骤，从庞大的样本空间中智能地选出最优解。
-2.  **AlphaCode 2-风格搜索 (AlphaCode 2-style search)**：一种强大的测试时搜索算法，其流程主要包括：(1) **大规模采样**：生成大量多样的代码。(2) **过滤**：使用问题描述中提供的公共测试用例剔除不正确的代码。(3) **聚类**：将通过过滤的代码按其背后实现的算法逻辑进行分组，以识别出独特的解法。(4) **重排序**：使用一个独立的评分模型（scoring model）评估每个聚类的代表性代码，并选出最有可能在隐藏测试用例上正确的最终答案。
-3.  **评分模型 (Scoring Model)**：一个经过特殊训练的、规模较小的语言模型。它的任务不是生成代码，而是评估一个给定的代码解决方案对于一个特定问题描述的正确性概率。本文使用一个7B参数的模型作为评分器，来对通过聚类的候选解进行打分和排序。
+1.  **Test-Time Compute/Search**: Refers to investing substantial compute during the model inference stage, rather than during training. In this paper, it specifically denotes a multi-step process: first generating a massive number of candidate code solutions from the model (up to one million), then intelligently selecting the best solution from the huge sample space through a series of filtering, clustering, and reranking steps.
+2.  **AlphaCode 2-style search**: A powerful test-time search algorithm whose workflow mainly includes: (1) **Large-scale sampling**: generating a large amount of diverse code. (2) **Filtering**: using the public test cases provided in the problem statement to eliminate incorrect code. (3) **Clustering**: grouping the filtered code by the underlying algorithmic logic to identify distinct solutions. (4) **Reranking**: using an independent scoring model to evaluate representative code from each cluster and select the final answer most likely to be correct on hidden test cases.
+3.  **Scoring Model**: A specially trained, smaller language model. Its task is not to generate code, but to estimate the probability that a given code solution is correct for a specific problem statement. In this paper, a 7B-parameter model is used as the scorer to evaluate and rank the clustered candidate solutions.
 
-## 相关工作
-在此前的研究中，使用大语言模型（LLM）解决竞赛级编程问题取得了显著进展。最初的方法依赖于简单的束搜索（beam search）或少量样本采样（$$pass@k$$）。随后，DeepMind 的 AlphaCode 首次引入了大规模采样和搜索的范式，通过生成数百万个样本并进行筛选，大幅提升了模型的解题能力。
+## Related Work
+In prior research, using large language models (LLMs) to solve competition-level programming problems has made significant progress. Early methods relied on simple beam search or a small number of samples ($$pass@k$$). Later, DeepMind’s AlphaCode first introduced the paradigm of large-scale sampling and search, greatly improving problem-solving ability by generating millions of samples and filtering them.
 
-然而，该领域的最高性能一直由基于顶级专有模型（如 Google 的 Gemini）的系统（如 AlphaCode 2）所占据。这些系统在 Codeforces 等平台上展现了接近甚至超越顶尖人类选手的实力。这就形成了一个关键问题：**开源模型与这些顶级专有模型之间存在巨大的性能鸿沟，尚不清楚开源模型是否具备达到同等水平的潜力。**
+However, the field’s highest performance has long been held by systems based on top-tier proprietary models, such as Google’s Gemini, like AlphaCode 2. These systems have demonstrated capabilities on platforms such as Codeforces that approach or even surpass those of the best human competitors. This raises a key question: **there is a huge performance gap between open-source models and these top proprietary models, and it remains unclear whether open-source models have the potential to reach the same level.**
 
-本文旨在解决这一问题，探索通过将强大的测试时计算策略与现有最强的开源代码模型相结合，能否弥补这一性能差距，从而在不依赖下一代专有模型的前提下，实现世界顶级的算法问题解决能力。
+This paper aims to address this question by exploring whether combining powerful test-time compute strategies with the strongest existing open-source code models can close this performance gap and achieve world-class algorithmic problem-solving ability without relying on next-generation proprietary models.
 
-## 本文方法
-本文的核心是一种基于开源模型的搜索增强语言模型系统（search-enhanced LLM system）。该系统借鉴并改进了 AlphaCode 2 的设计，证明了通过扩展测试时计算，一个强大的、公开可用的模型（Code Llama-70B）也能够达到精英水平的性能。其方法主要分为以下几个步骤：
+## Method
+The core of this paper is a search-enhanced LLM system based on open-source models. The system borrows from and improves upon the design of AlphaCode 2, demonstrating that by scaling test-time compute, a powerful publicly available model (Code Llama-70B) can also reach elite-level performance. The method mainly consists of the following steps:
 
-### 核心思想：搜索而非单一生成
-与传统的单次或少量几次代码生成不同，本方法的核心在于“广度优先”的探索。系统首先生成一个巨大的、多样化的解决方案池，然后通过一系列智能过滤和选择机制，逐步收敛到最有可能正确的单个解决方案。这种方法承认单个样本的正确率可能很低，但相信在足够多的样本中，正确的解决方案是存在的，并且可以通过后续步骤被识别出来。
+### Core Idea: Search Instead of Single-Shot Generation
+Unlike traditional one-shot or few-shot code generation, the core of this method is breadth-first exploration. The system first generates a huge, diverse pool of solutions, then gradually converges on the single most likely correct solution through a series of intelligent filtering and selection mechanisms. This approach acknowledges that the correctness rate of any single sample may be low, but believes that among enough samples, the correct solution exists and can be identified by subsequent steps.
 
-### 第一步：超大规模代码采样
-系统以一个经过指令微调的 Code Llama-70B 模型为基础。对于每个给定的编程问题，它会以较高的温度（temperature）$$T$$（例如 $$T=1.2$$）进行采样，生成多达一百万个（$$N = 10^6$$）候选Python代码。高温度的设置是为了确保生成样本的多样性，从而覆盖更多可能的算法思路。
+### Step 1: Ultra-Large-Scale Code Sampling
+The system is built on an instruction-tuned Code Llama-70B model. For each programming problem, it samples with a relatively high temperature $$T$$ (for example, $$T=1.2$$), generating up to one million ($$N = 10^6$$) candidate Python code solutions. The high temperature is used to ensure diversity among the generated samples, thereby covering more possible algorithmic ideas.
 
-### 第二步：基于公共测试用例的过滤
-这是效率最高的筛选环节。每个编程问题通常会提供几个简单的公共测试用例。系统会执行所有 $$N$$ 个生成的代码样本，并将它们分别在这些公共测试用例上运行。任何未能通过全部公共测试用例的代码都将被直接丢弃。这一步能过滤掉绝大多数存在语法错误、逻辑缺陷或未能理解问题基本要求的代码，将候选解的数量从百万级降低到数千甚至数百的规模。
+### Step 2: Filtering Based on Public Test Cases
+This is the most efficient screening stage. Each programming problem usually provides a few simple public test cases. The system executes all $$N$$ generated code samples and runs them on these public test cases. Any code that fails to pass all public test cases is discarded immediately. This step filters out the vast majority of code with syntax errors, logical flaws, or a failure to understand the basic requirements of the problem, reducing the number of candidate solutions from the million scale to thousands or even hundreds.
 
-### 第三步：基于行为的聚类
-通过过滤的代码虽然在公共测试用E例上表现一致，但其背后的算法逻辑可能完全不同。为了识别出这些本质上不同的解法，系统采用了一种基于行为的聚类方法。它会生成一些新的、简单的输入，并观察每个代码在这些输入上的输出。行为（即输入-输出对）相同的代码被归为一类（一个簇）。聚类的目的是去重，确保每个簇代表一种独特的算法实现，避免因变量名或代码风格的微小差异而重复评估相同的逻辑。
+### Step 3: Behavior-Based Clustering
+Although the filtered code behaves consistently on the public test cases, the underlying algorithmic logic may be completely different. To identify these fundamentally distinct solutions, the system uses a behavior-based clustering method. It generates some new, simple inputs and observes the output of each code sample on those inputs. Code with the same behavior (i.e., the same input-output pairs) is grouped into one cluster. The purpose of clustering is deduplication, ensuring that each cluster represents a unique algorithmic implementation and avoiding repeated evaluation of the same logic due to minor differences in variable names or coding style.
 
-### 第四步：基于评分模型的重排序与选择
-在聚类之后，系统从每个簇中选出一个代表性样本。此时，候选解的数量已经大大减少，且每个都代表一种独特的、通过了公共测试的算法。最后一步是决定哪个才是“最佳”答案。
+### Step 4: Reranking and Selection Based on the Scoring Model
+After clustering, the system selects one representative sample from each cluster. At this point, the number of candidate solutions has been greatly reduced, and each one represents a unique algorithm that has passed the public tests. The final step is to decide which one is the “best” answer.
 
-为此，系统使用了一个专门训练的、规模较小的 **评分模型**（一个 7B 参数的 Llama 模型）。该模型接收问题描述和候选代码作为输入，输出一个介于0和1之间的分数，代表该代码在隐藏测试用例上完全正确的概率。系统用这个评分模型为每个簇的代表性代码打分，并最终选择得分最高的那个作为最终提交的答案。
+To do this, the system uses a specially trained, smaller **scoring model** (a 7B-parameter Llama model). The model takes the problem description and candidate code as input and outputs a score between 0 and 1, representing the probability that the code is fully correct on the hidden test cases. The system uses this scoring model to score the representative code from each cluster and ultimately selects the one with the highest score as the final submission.
 
-### 创新点
-本文方法的创新并非在于提出一个全新的模型架构，而在于**系统性地验证了将大规模测试时搜索策略应用于现有最强开源模型的可行性与巨大潜力**。它证明了像 Code Llama-70B 这样的模型内部已经蕴含了解决复杂算法问题的能力，但这种能力需要通过强大的搜索过程来“挖掘”和“提炼”。这项工作将领域内的关注点从“必须依赖更大、更强的专有模型”转移到了“在足够好的开源模型上应用更智能、更大规模的搜索算法”同样是一条通往SOTA的有效路径。
+### Innovation
+The innovation of this paper is not in proposing a brand-new model architecture, but in **systematically validating the feasibility and huge potential of applying large-scale test-time search strategies to the strongest existing open-source models**. It shows that models like Code Llama-70B already contain the ability to solve complex algorithmic problems, but this ability needs to be “mined” and “refined” through a powerful search process. This work shifts the field’s focus from “we must rely on larger, stronger proprietary models” to “applying smarter, larger-scale search algorithms to sufficiently good open-source models is also a viable path to SOTA.”
 
-## 实验结论
-本文通过在两个极具挑战性的竞赛编程数据集上的实验，有力地验证了其方法的有效性。
+## Experimental Conclusions
+Through experiments on two highly challenging competitive programming datasets, this paper strongly validates the effectiveness of its method.
 
-### 关键实验结果
-1.  **国际信息学奥林匹克（IOI）数据集**：在包含近年IOI竞赛真题的评估中，本文系统（基于Code Llama-70B，采样$$N=1M$$）在40个问题上平均获得29.8分。这一成绩已经达到了在实际IOI竞赛中获得**金牌**所需的分数水平。这首次证明了开源模型系统有能力在最顶级的算法竞赛中与人类精英选手一较高下。
+### Key Experimental Results
+1.  **International Olympiad in Informatics (IOI) Dataset**: In an evaluation containing recent IOI contest problems, the system in this paper (based on Code Llama-70B, with sampling $$N=1M$$) achieved an average score of 29.8 points on 40 problems. This score already reaches the level required to win a **gold medal** in an actual IOI competition. This is the first demonstration that an open-source model system can compete with elite human contestants in the world’s top algorithmic competition.
 
-2.  **CodeContests 数据集**：在DeepMind用于评估AlphaCode的基准数据集上，本文系统平均解决了13.9个问题中的10.6个。这一结果非常接近原版AlphaCode 2（基于更强大的专有Gemini模型）的性能，并显著超越了之前所有基于公开模型的方法。
+2.  **CodeContests Dataset**: On the benchmark dataset used by DeepMind to evaluate AlphaCode, the system in this paper solved an average of 10.6 out of 13.9 problems. This result is very close to the performance of the original AlphaCode 2 (based on the more powerful proprietary Gemini model) and significantly surpasses all previous methods based on public models.
 
-### 验证的优势
-*   **开源模型潜力巨大**：实验结果最有力地证明，通过扩展测试时计算，开源模型能够达到与顶级专有模型相媲美的性能。模型的“潜能”可以通过搜索算法来有效释放。
-*   **计算规模与性能的换取**：研究显示，模型的最终性能（解题率）与采样数量 $$N$$ 之间存在清晰的对数线性关系（log-linear scaling）。即，投入越多的计算资源进行采样搜索，得到的回报（性能提升）也越显著，直到达到饱和点。
-*   **搜索流程各环节不可或缺**：通过消融实验（ablation studies），本文证明了其方法流程中的每一步（过滤、聚类、重排序）都至关重要。若仅增加采样数量而不进行智能筛选，性能提升非常有限。特别是使用评分模型进行重排序，对最终能否选出正确解起到了决定性作用。
+### Advantages of Verification
+*   **Open-source models have enormous potential**: The experimental results most strongly demonstrate that, by scaling up test-time computation, open-source models can achieve performance comparable to top-tier proprietary models. A model’s “potential” can be effectively unlocked through search algorithms.
+*   **Trading compute scale for performance**: The study shows a clear log-linear relationship between the model’s final performance (solve rate) and the number of samples $$N$$. In other words, the more computational resources invested in sampling search, the more significant the return in performance improvement, up to the saturation point.
+*   **Every stage of the search pipeline is indispensable**: Through ablation studies, this paper proves that each step in its method pipeline—filtering, clustering, and reranking—is crucial. Simply increasing the number of samples without intelligent selection yields only very limited performance gains. In particular, reranking with a scoring model plays a decisive role in determining whether the correct solution can ultimately be selected.
 
-### 最终结论
-本文的结论清晰而有力：通过将大规模测试时搜索算法与当前最先进的开源代码模型相结合，可以在被视为算法推理能力“试金石”的竞赛编程任务上，达到世界顶尖水平。这一发现表明，未来在复杂推理任务上取得突破，不仅可以依赖于研发更大规模的基础模型，还可以通过设计和扩展更高效、更智能的搜索算法来实现。这项工作为开源社区利用现有模型冲击更高难度的AI任务开辟了一条新的道路。
+### Final Conclusion
+The conclusion of this paper is clear and compelling: by combining large-scale test-time search algorithms with today’s state-of-the-art open-source code models, it is possible to reach world-class performance on competitive programming tasks, which are regarded as a “litmus test” for algorithmic reasoning ability. This finding suggests that future breakthroughs on complex reasoning tasks can be achieved not only by developing larger foundation models, but also by designing and scaling more efficient and intelligent search algorithms. This work opens up a new path for the open-source community to leverage existing models to tackle more difficult AI tasks.

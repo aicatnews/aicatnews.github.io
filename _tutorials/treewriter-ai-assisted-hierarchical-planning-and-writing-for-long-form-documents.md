@@ -2,89 +2,88 @@
 layout: default
 title: "TreeWriter: AI-Assisted Hierarchical Planning and Writing for Long-Form Documents"
 ---
-
-## TreeWriter来了：打破线性束缚，用“树状结构”让AI长文写作更可控
+## TreeWriter Is Here: Breaking Free from Linearity and Making Long-Form AI Writing More Controllable with a “Tree Structure”
 
 <img src="/images/2601.12740v1/A__title.jpg" alt="" style="width:80%; max-width:300px; margin:auto; display:block;">
 
-写过长篇论文、项目标书或技术文档的人都知道，这简直是一场“记忆力灾难”。
+Anyone who has written a long paper, project proposal, or technical document knows it can feel like a total “memory disaster.”
 
 > ArXiv URL：http://arxiv.org/abs/2601.12740v1
 
-当你面对几十页的文档时，大脑的内存往往不够用：前文的术语定义是什么？这段论证和第三章的逻辑冲突了吗？现有的AI助手（如ChatGPT或Notion AI）虽然能帮你润色段落，但它们通常是“线性”的——它们擅长处理局部文本，却很难理解你宏大的篇章结构。
+When you’re facing a document that spans dozens of pages, your brain’s memory often just isn’t enough: what was the terminology defined earlier? Does this argument conflict with the logic in Chapter 3? Existing AI assistants, such as ChatGPT or Notion AI, can help polish paragraphs, but they are usually “linear” — they’re good at handling local text, yet struggle to understand the larger structure of your writing.
 
-**为什么我们不能像写代码一样，模块化、分层级地写文章？**
+**Why can’t we write articles the way we write code: modularly and in layers?**
 
-来自多伦多大学、英伟达（NVIDIA）等机构的研究团队给出了答案。他们推出了一款名为 **TreeWriter** 的新型写作系统，通过将文档建模为“树状结构”，并深度集成AI代理，完美解决了长文档写作中的结构混乱和上下文丢失问题。
+A research team from the University of Toronto, NVIDIA, and other institutions has provided the answer. They introduced a new writing system called **TreeWriter**, which models documents as a “tree structure” and deeply integrates AI agents, perfectly solving the problems of structural confusion and context loss in long-form writing.
 
-### 长文档写作的痛点：认知过载
+### The Pain Points of Long-Form Writing: Cognitive Overload
 
-心理学研究表明，写作是一个非线性的过程，包含规划、生成和修改的反复循环。在长文写作中，作者需要构建大量的“认知脚手架”（Cognitive Scaffolds）——比如大纲、草稿、碎片想法。
+Psychological research shows that writing is a non-linear process involving repeated cycles of planning, generation, and revision. In long-form writing, authors need to build a large amount of “Cognitive Scaffolds” — such as outlines, drafts, and fragmented ideas.
 
-然而，现有的AI写作工具主要分为两类：
+However, existing AI writing tools mainly fall into two categories:
 
-1.  **行内编辑器（Inline Editors）**：如Wordcraft，专注于局部文本的润色和续写。
+1.  **Inline Editors**: such as Wordcraft, which focus on polishing and continuing local text.
 
-2.  **概念编辑器（Conceptual Editors）**：提供一些大纲功能，但往往与正文割裂。
+2.  **Conceptual Editors**: which provide some outlining features, but are often disconnected from the main text.
 
-这些工具都忽略了一个关键点：**层级化（Hierarchy）**。当文档变得复杂时，线性视图会让作者迷失在细节中，难以进行高维度的规划。
+These tools all overlook a key point: **Hierarchy**. When a document becomes complex, a linear view can leave the author lost in the details, making high-level planning difficult.
 
-### TreeWriter：文档即“树”
+### TreeWriter: The Document as a “Tree”
 
-该研究的核心理念是：**文档本质上是一棵树。**
+The core idea of this research is: **a document is essentially a tree.**
 
-**TreeWriter** 并没有强迫用户在一个长长的页面里打字，而是提供了两个互补的视图：
+**TreeWriter** does not force users to type in one long page; instead, it provides two complementary views:
 
-1.  **树状视图（Tree View）**：这是核心创作区。用户可以创建节点（Node），每个节点代表一个章节、段落或想法。你可以随意拖拽、层级化这些节点。
+1.  **Tree View**: This is the core creation area. Users can create nodes, each representing a chapter, paragraph, or idea. You can freely drag and rearrange these nodes into a hierarchy.
 
-2.  **线性视图（Linear View）**：这是最终读者的视角。系统会遍历树状结构，将所有节点的内容拼接成一篇完整的文章。
+2.  **Linear View**: This is the reader’s final perspective. The system traverses the tree structure and stitches together the content of all nodes into a complete article.
 
 <img src="/images/2601.12740v1/x1.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-这种设计最大的好处是实现了**关注点分离**。在树状视图中，你可以专注于逻辑架构；在线性视图中，你可以检查行文的流畅度。
+The biggest advantage of this design is that it achieves **separation of concerns**. In Tree View, you can focus on the logical architecture; in Linear View, you can check the flow and readability of the writing.
 
-### AI如何融入“树”中？
+### How Does AI Fit into the “Tree”?
 
-**TreeWriter** 的AI不仅仅是一个聊天机器人，它是一个**上下文感知（Context-Aware）**的智能代理。它理解你当前所在的“节点”以及它在整棵树中的位置。
+The AI in **TreeWriter** is not just a chatbot; it is a **Context-Aware** intelligent agent. It understands the “node” you are currently in and its position within the entire tree.
 
-系统设计了几个非常实用的AI协作功能：
+The system has designed several highly practical AI collaboration features:
 
-#### 1. 自动拆解与摘要（Split & Summarize）
+#### 1. Automatic Split & Summarize
 
-当你写了一大段混乱的草稿时，可以一键让AI将其“拆解”为多个子节点，形成更清晰的结构。反之，你也可以让AI读取所有子节点的内容，自动在父节点生成一个高层级的摘要大纲。
+When you’ve written a long, messy draft, you can let the AI “split” it into multiple child nodes with one click, creating a clearer structure. Conversely, you can also have the AI read the content of all child nodes and automatically generate a high-level summary outline in the parent node.
 
 <img src="/images/2601.12740v1/x3.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-#### 2. 双向同步生成
+#### 2. Bidirectional Synchronized Generation
 
-这是 **TreeWriter** 最酷的功能之一。它允许“大纲”和“正文”双向驱动：
+This is one of **TreeWriter**’s coolest features. It allows the “outline” and the “body text” to drive each other in both directions:
 
-*   **大纲生成正文**：写好一句话大纲，AI自动扩展成一段详实的文字。
+*   **Outline to Body Text**: Write a one-sentence outline, and the AI automatically expands it into a detailed paragraph.
 
-*   **正文反推大纲**：写好正文，AI自动提炼出核心大纲，方便你后续回顾。
+*   **Body Text to Outline**: Write the body text, and the AI automatically distills the core outline, making it easier to review later.
 
-这种机制确保了“宏观规划”和“微观写作”始终保持一致。
+This mechanism ensures that “macro planning” and “micro writing” always stay aligned.
 
-#### 3. 智能一致性检查
+#### 3. Intelligent Consistency Checking
 
-在长文中，修改了第一章的设定，往往忘了改第五章的结论。**TreeWriter** 的AI代理可以遍历整棵树，根据你的指令（例如“将所有提到的‘模型A’改为‘模型B’并更新相关论据”），跨节点进行修改。
+In long documents, you may change the setup in Chapter 1 and then forget to update the conclusion in Chapter 5. **TreeWriter**’s AI agents can traverse the entire tree and make cross-node edits according to your instructions (for example, “change all mentions of ‘Model A’ to ‘Model B’ and update the related arguments”).
 
-### 实验结果：完胜传统文档编辑器
+### Experimental Results: Outperforming Traditional Document Editors
 
-为了验证效果，研究团队进行了一项受试者内实验（$N=12$），对比了 **TreeWriter** 与 **Google Docs + Gemini**（谷歌最强的AI文档组合）。
+To validate the system, the research team conducted a within-subject experiment ($N=12$), comparing **TreeWriter** with **Google Docs + Gemini** (Google’s strongest AI document combination).
 
-任务包括修改一篇4000字的长文和撰写一篇800字的新文。结果显示：
+The tasks included revising a 4,000-word long article and writing a new 800-word piece. The results showed:
 
-*   **更好的想法探索**：用户认为树状结构极大地促进了思维的发散和整理。
+*   **Better idea exploration**: Users felt that the tree structure greatly promoted divergent thinking and organization.
 
-*   **更高的AI有用性**：用户觉得这里的AI比在Google Docs里单纯对话更有帮助，因为AI“懂”结构。
+*   **Higher AI usefulness**: Users found the AI here more helpful than simply chatting in Google Docs, because the AI “understands” structure.
 
-*   **更强的掌控感**：尽管AI参与了很多，但用户感觉自己对文章的把控力反而增强了。
+*   **Stronger sense of control**: Even though the AI was involved a lot, users felt they had even more control over the article.
 
-此外，在一个为期两个月的实地部署研究（$N=8$）中，参与者将其用于真实的协作写作，发现层级化结构显著降低了多人协作时的沟通成本。
+In addition, in a two-month field deployment study ($N=8$), participants used it for real collaborative writing and found that the hierarchical structure significantly reduced communication costs in multi-person collaboration.
 
-### 总结
+### Conclusion
 
-**TreeWriter** 向我们展示了AI辅助写作的未来形态：**从“帮我写这句话”进化到“帮我规划这篇文章”**。
+**TreeWriter** shows us the future of AI-assisted writing: **evolving from “help me write this sentence” to “help me plan this article.”**
 
-通过将文档结构化为“树”，它不仅解决了长文档的认知负载问题，还为AI提供了一个可以精准操作的“抓手”。对于经常需要撰写长篇大论的技术人员和研究者来说，这种“结构化思维 + AI生成”的模式，或许才是真正的生产力革命。
+By structuring documents as a “tree,” it not only solves the cognitive load problem of long-form writing, but also gives AI a precise handle to operate on. For engineers and researchers who often need to write lengthy, detailed documents, this mode of “structured thinking + AI generation” may be the real productivity revolution.

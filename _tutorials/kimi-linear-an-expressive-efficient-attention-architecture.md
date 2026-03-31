@@ -2,80 +2,79 @@
 layout: default
 title: "Kimi Linear: An Expressive, Efficient Attention Architecture"
 ---
+## KimiLinear Unveiled: The First Full Surpass of Full Attention, 6x Faster Decoding at 1M Context!
 
-## KimiLinear揭秘：首次全面超越全注意力，1M上下文解码提速6倍！
+On the path toward more powerful AI 智能体, long-text processing has become an unavoidable “performance wall.” The traditional Transformer architecture, with its $O(N^2)$ attention computation complexity and linearly growing KV cache, becomes increasingly inadequate when handling ultra-long sequences, making efficiency and cost major bottlenecks.
 
-在追求更强AI智能体的道路上，长文本处理能力已成为一道绕不开的“性能墙”。传统的Transformer架构因其$O(N^2)$的注意力计算复杂度和线性增长的KV缓存，在处理超长序列时变得力不从心，效率和成本成为巨大瓶颈。
+> **Paper Title**: Kimi Linear: An Expressive, Efficient Attention Architecture
+> **ArXiv URL**: http://arxiv.org/abs/2510.26692v2
 
-> **论文标题**：Kimi Linear: An Expressive, Efficient Attention Architecture
-> **ArXiv URL**：http://arxiv.org/abs/2510.26692v2
+People once hoped that linear attention would solve this problem, but it often comes at the cost of model performance, especially on short-text tasks. It seemed like an impossible trade-off: performance or efficiency, you could only choose one.
 
-人们曾寄望于线性注意力来解决这一难题，但它们往往以牺牲模型性能为代价，尤其在短文本任务上表现不佳。这似乎是一个无法两全的困境：性能和效率，你只能选一个。
+Now, the Kimi team has offered a new answer: **Kimi Linear**.
 
-现在，Kimi团队给出了新的答案：**Kimi Linear**。
+This is a new hybrid linear attention architecture that, under strict fair comparisons, has for the first time comprehensively outperformed traditional Full Attention models across all scenarios, including short text, long text, and even reinforcement learning (RL).
 
-这是一种新型的混合线性注意力架构，它在严格的公平对比下，首次在短文本、长文本乃至强化学习（RL）等所有场景中，全面超越了传统的全注意力（Full Attention）模型。
+It not only achieves up to a **6x** throughput improvement in 1-million-token ultra-long-context decoding, but also reduces KV cache usage by **75%**.
 
-它不仅在100万Token的超长上下文解码中实现了高达**6倍**的吞吐量提升，还将KV缓存的使用量降低了**75%**。
+### Kimi Delta Attention (KDA): A More Fine-Grained Memory Controller
 
-### Kimi Delta Attention (KDA)：更精细的记忆控制器
+At the core of the Kimi Linear architecture is a brand-new linear attention module called **Kimi Delta Attention (KDA)**. To understand the elegance of KDA, we can think of it as an upgraded “memory management system.”
 
-Kimi Linear架构的核心，是一种名为**Kimi Delta Attention（KDA）**的全新线性注意力模块。要理解KDA的巧妙之处，我们可以把它想象成一个升级版的“记忆管理系统”。
+Traditional linear attention is like a brain with limited memory: in order to remember new things, it has to crudely forget old information, leading to the loss of key details.
 
-传统的线性注意力，就像一个记忆力有限的大脑，为了记住新东西，不得不粗暴地遗忘旧信息，导致关键信息丢失。
+Some improved methods, such as Gated DeltaNet (GDN), introduce a “forget gate” that allows the model to decide what to forget by “topic” (head-wise). It is like adding a few coarse switches to the memory system, letting it decide to forget the broad category of “history” while keeping “physics.” This is better than random forgetting, but still not fine-grained enough.
 
-一些改进方法，如Gated DeltaNet（GDN），引入了“遗忘门”，允许模型按“主题”（head-wise）来决定遗忘哪些内容。这就像给记忆系统装了几个粗糙的开关，可以决定忘掉“历史”这个大类，但保留“物理”。这比胡乱遗忘要好，但仍然不够精细。
-
-而KDA则实现了革命性的升级：它引入了**更细粒度的门控机制**（fine-grained gating）。
+KDA, however, makes a revolutionary upgrade: it introduces a **fine-grained gating mechanism**.
 
 <img src="/images/2510.26692v2/page_3_Figure_4.jpg" alt="KDA架构的可视化" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-这个机制就像为大脑的每个“记忆神经元”（channel-wise）都安装了独立的开关。模型不再是按“主题”来遗忘，而是可以精确到某个“知识点”。比如，在处理历史信息时，可以选择性地忘记某个不重要的年份，同时牢牢记住关键的历史事件脉络。
+This mechanism is like installing an independent switch for each “memory neuron” (channel-wise) in the brain. The model no longer forgets by “topic,” but can instead target a specific “knowledge point.” For example, when processing historical information, it can selectively forget an unimportant year while firmly retaining the key chain of historical events.
 
-这种对记忆状态的“像素级”精准调控，让KDA在有限的RNN状态容量下，能更高效地利用记忆，极大地增强了模型的表达能力。
+This “pixel-level” precise control over memory states allows KDA to use memory more efficiently within a limited RNN state capacity, greatly enhancing the model’s expressiveness.
 
-### 为效率而生：定制化的并行算法
+### Built for Efficiency: A Customized Parallel Algorithm
 
-精细的控制虽好，但会不会拖慢速度？Kimi团队通过一个定制化的**分块并行算法**（chunkwise algorithm）解决了这个问题。
+Fine-grained control is great, but will it slow things down? The Kimi team solved this with a customized **chunkwise algorithm**.
 
-KDA的状态转移矩阵采用了一种特殊的**对角加低秩**（**Diagonal-Plus-Low-Rank, DPLR**）结构。团队为这种结构量身打造了一套计算方法，能够在硬件（如GPU Tensor Cores）上高效并行。
+KDA’s state transition matrix adopts a special **Diagonal-Plus-Low-Rank (DPLR)** structure. The team designed a computation method tailored to this structure, enabling efficient parallel execution on hardware such as GPU Tensor Cores.
 
 <img src="/images/2510.26692v2/page_4_Figure_2.jpg" alt="KDA分块并行计算流程" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-该算法巧妙地将复杂的递归计算转换为分块并行处理，不仅规避了其他细粒度门控方法中常见的数值精度问题，还大幅减少了计算量。相比通用的DPLR实现，KDA的算子效率提升了近**100%**。
+This algorithm cleverly transforms complex recursive computation into chunkwise parallel processing, not only avoiding the numerical precision issues common in other fine-grained gating methods, but also greatly reducing computation. Compared with a general DPLR implementation, KDA’s operator efficiency improves by nearly **100%**.
 
-这意味着KDA在拥有强大表达能力的同时，也保持了极高的硬件效率。
+This means KDA maintains extremely high hardware efficiency while also delivering strong expressive power.
 
-### Kimi Linear架构：线性与全局的黄金配比
+### The Kimi Linear Architecture: The Golden Ratio of Linear and Global
 
-Kimi Linear并非一个纯粹的线性注意力模型，而是一个精心设计的混合架构。它巧妙地将高效的KDA层和传统的全注意力层（论文中为MLA）以**3:1**的比例交错排列。
+Kimi Linear is not a purely linear attention model, but a carefully designed hybrid architecture. It interleaves efficient KDA layers and traditional Full Attention layers (MLA in the paper) in a **3:1** ratio.
 
 <img src="/images/2510.26692v2/page_5_Figure_1.jpg" alt="Kimi Linear整体架构图" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-这种设计堪称神来之笔：
-- **3个KDA层**：作为主力，它们负责处理绝大部分的序列信息，保证了模型在长文本处理上的速度和低内存占用。
-- **1个全注意力层**：作为“全局信息枢纽”，周期性地出现，确保模型不会因为线性注意力的局部性而丢失全局上下文的关联，解决了纯线性模型常见的“远距离检索”难题。
+This design is nothing short of brilliant:
+- **3 KDA layers**: As the main workhorse, they handle the vast majority of sequence information, ensuring speed and low memory usage for long-text processing.
+- **1 Full Attention layer**: As a “global information hub,” it appears periodically to ensure the model does not lose global contextual relationships due to the locality of linear attention, solving the common “long-range retrieval” problem in pure linear models.
 
-这个 **3:1** 的比例，是经过实验验证的“黄金配比”，在性能和效率之间取得了最佳平衡。
+This **3:1** ratio is the experimentally validated “golden ratio,” achieving the best balance between performance and efficiency.
 
-### 碾压全注意力：惊人的实验结果
+### Crushing Full Attention: Stunning Experimental Results
 
-口说无凭，实验数据展示了Kimi Linear的真正实力。在与配置、参数和训练数据完全相同的全注意力基线模型（MLA）的“公平对决”中，Kimi Linear取得了压倒性优势。
+Talk is cheap; the experimental data shows Kimi Linear’s true strength. In a “fair duel” against a Full Attention baseline model (MLA) with exactly the same configuration, parameters, and training data, Kimi Linear achieved overwhelming advantages.
 
 <img src="/images/2510.26692v2/page_0_Figure_8.jpg" alt="性能与加速效果图" style="width:90%; max-width:700px; margin:auto; display:block;">
-*图注：Kimi Linear在性能和加速上实现了帕累托最优*
+*Caption: Kimi Linear achieves Pareto optimality in both performance and acceleration*
 
-- **性能全面领先**：无论是在短文本的通用知识评测（如MMLU-Pro），还是长文本的RULER基准测试，Kimi Linear的得分都显著高于全注意力模型。这证明它并非“偏科生”，而是一个全能选手。
-- **效率大幅提升**：在百万Token级别的解码任务中，得益于恒定的RNN状态大小，Kimi Linear的吞吐量是全注意力模型的**6.3倍**。这意味着生成相同数量的Token，它的速度要快得多。
-- **显存显著节省**：KV缓存占用降低高达**75%**，使得在同等硬件条件下可以支持更大的批处理大小（batch size），进一步提升了整体吞吐率。
+- **Comprehensive performance lead**: Whether on short-text general knowledge benchmarks (such as MMLU-Pro) or long-text RULER benchmarks, Kimi Linear scores significantly higher than the Full Attention model. This proves it is not a “one-trick pony,” but a true all-rounder.
+- **Massive efficiency gains**: In million-token decoding tasks, thanks to the constant RNN state size, Kimi Linear’s throughput is **6.3x** that of the Full Attention model. This means it can generate the same number of tokens much faster.
+- **Significant memory savings**: KV cache usage is reduced by up to **75%**, enabling larger batch sizes under the same hardware conditions and further improving overall throughput.
 
 ![长序列解码速度对比](images://page_12_Figure_2.jpg)
-*图注：在1M上下文长度下，Kimi Linear解码速度比全注意力快6倍*
+*Caption: At a 1M context length, Kimi Linear decodes 6x faster than Full Attention*
 
-### 结论
+### Conclusion
 
-Kimi Linear的出现，标志着大模型注意力机制的一次重要突破。它不仅解决了线性注意力长期以来“性能不如全注意力”的固有印象，更在多个维度上实现了超越。
+The emergence of Kimi Linear marks an important breakthrough in the attention mechanism of large models. It not only overturns the long-standing impression that linear attention is “inferior to Full Attention,” but also surpasses it across multiple dimensions.
 
-这项研究证明，通过精巧的门控设计（KDA）、高效的硬件感知算法（定制化并行计算）和明智的混合架构（3:1比例），我们完全可以构建出**既比全注意力更强、又比它更高效**的模型。
+This research shows that through sophisticated gating design (KDA), efficient hardware-aware algorithms (customized parallel computation), and a smart hybrid architecture (the 3:1 ratio), we can absolutely build models that are **both stronger than Full Attention and more efficient than it**.
 
-Kimi Linear不再是一个实验室里的“玩具”，而是一个可以无缝替换现有全注意力架构的“即插即用”方案。为了推动社区发展，Kimi团队已经**开源了KDA的核心算子、vLLM集成实现以及预训练和指令微调的模型权重**，为下一代更高效、更强大的AI智能体铺平了道路。
+Kimi Linear is no longer a “toy” in the lab, but a “plug-and-play” solution that can seamlessly replace existing Full Attention architectures. To advance the community, the Kimi team has already **open-sourced the core KDA operators, the vLLM integration implementation, and the model weights for pretraining and instruction fine-tuning**, paving the way for the next generation of more efficient and more powerful AI 智能体.

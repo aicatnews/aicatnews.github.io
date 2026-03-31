@@ -6,117 +6,117 @@ title: "A Survey on LLM Mid-training"
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.23081v1
 
-- **作者**: Yang Bai; Xuemiao Zhang; Rongxiang Weng; Hongfei Yan; Rumei Li; Chen Zhang; Xunliang Cai; Jingang Wang
+- **Authors**: Yang Bai; Xuemiao Zhang; Rongxiang Weng; Hongfei Yan; Rumei Li; Chen Zhang; Xunliang Cai; Jingang Wang
 
-- **发布机构**: Meituan; Peking University
+- **Publishing Organization**: Meituan; Peking University
 
 ---
 
-## LLM 中间训练综述
+## A Survey of Mid-Training in LLMs
 
-## 概览
+## Overview
 
-当代大型语言模型 (LLM) 的开发已从单一的预训练模式演变为复杂的多阶段优化框架。预训练通过接触大规模多样化语料库为模型奠定基础能力，而后续的优化阶段则系统性地增强特定能力。**中间训练 (mid-training)** 作为连接预训练和后训练的关键桥梁，其重要性日益凸显。
+The development of contemporary large language models (LLMs) has evolved from a single pre-training paradigm into a complex multi-stage optimization framework. Pre-training lays the foundation for model capabilities by exposing the model to large-scale, diverse corpora, while subsequent optimization stages systematically enhance specific abilities. **Mid-training** serves as a key bridge connecting pre-training and post-training, and its importance has become increasingly prominent.
 
-中间训练的特点是利用中等规模的计算资源和目标明确的大规模数据。它通过课程引导的方式接触领域特定数据，前向传播专业能力的潜力；同时通过保留一定比例的通用数据，后向保留基础通用能力。经验证据表明，相比预训练，中间训练能以更少的数据和计算量带来更显著的性能提升。
+Mid-training is characterized by the use of moderate computational resources and large-scale data with clear objectives. It exposes the model to domain-specific data in a curriculum-guided manner, forwarding specialized capabilities; at the same time, by retaining a certain proportion of general data, it preserves foundational general abilities. Empirical evidence shows that, compared with pre-training, mid-training can deliver more significant performance gains with less data and computation.
 
-本文将中间训练正式定义为一个独特的模型开发阶段，它保留了预训练的下一词元 (token) 预测目标，但通过精心策划的数据混合（通常包含高质量的领域数据和指令数据）来系统性地提升特定技能。这与**持续预训练 (continued pre-training)** 不同，后者通常不考虑优化器状态或分布保持，可能导致通用能力丧失。中间训练则是一个有过渡意图的、审慎的设计阶段。
+This article formally defines mid-training as a distinct stage of model development that retains the next-token prediction objective of pre-training, but systematically improves specific skills through carefully curated data mixtures, typically including high-quality domain data and instruction data. This differs from **continued pre-training**, which usually does not consider optimizer state or distribution preservation and may lead to a loss of general capabilities. Mid-training, by contrast, is a deliberate design stage with transitional intent.
 
-中间训练协调三大能力领域：
-1.  **核心认知技能**：如数学、推理。
-2.  **任务执行**：如指令遵循、编码、智能体 (Agent) 行为。
-3.  **可扩展性**：如长上下文处理、多语言能力。
+Mid-training coordinates three major capability areas:
+1.  **Core cognitive skills**: such as mathematics and reasoning.
+2.  **Task execution**: such as instruction following, coding, and Agent behavior.
+3.  **Scalability**: such as long-context processing and multilingual capabilities.
 
-下图展示了中间训练在 LLM 开发全景中的位置。
+The figure below shows where mid-training sits in the overall landscape of LLM development.
 
 <img src="/images/2510.23081v1/x1.jpg" alt="中间训练在LLM能力渐进发展中的作用" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-## 数据策管
+## Data Curation
 
-中间训练的数据通常是通用高质量语料库与专业格式数据（如问答对、指令数据、数学和代码等领域数据）的混合。本节将详细探讨数据策管的端到端工作流程，包括数据收集、合成、选择、去污染和混合，如下图所示，各环节顺序可根据需求调整。
+The data used in mid-training is typically a mixture of general high-quality corpora and specially formatted data, such as QA pairs, instruction data, and domain data in mathematics and code. This section will examine the end-to-end workflow of data curation in detail, including data collection, synthesis, selection, decontamination, and mixing; as shown in the figure below, the order of these steps can be adjusted as needed.
 
 <img src="/images/2510.23081v1/x2.jpg" alt="中间训练数据策管流程" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 数据收集
+### Data Collection
 
-中间训练的数据来源与预训练类似，包括网络爬取语料、数字化书籍和人工标注材料。常用的网络爬取工具有 Trafilatura，广泛使用的数据集有 CommonCrawl、Wikipedia、C4、Pile 等。此外，中间训练还会收集特定格式的数据，如 Stack Exchange QA、RedStone、MegaMath 等问答对数据集。所有收集的数据都会经过初步清洗和质量过滤，以确保数据的完整性和可靠性。
+The data sources for mid-training are similar to those for pre-training, including web-crawled corpora, digitized books, and human-annotated materials. Commonly used web-crawling tools include Trafilatura, and widely used datasets include CommonCrawl, Wikipedia, C4, and Pile. In addition, mid-training also collects specially formatted data, such as QA pair datasets like Stack Exchange QA, RedStone, and MegaMath. All collected data undergoes initial cleaning and quality filtering to ensure integrity and reliability.
 
-### 数据合成
+### Data Synthesis
 
-数据合成通过重构、转换或生成稀缺数据类型（如智能体数据）来提升数据的信息密度和整体质量，有效解决了数据稀缺、多样性不足等问题。鉴于中间训练的数据规模，目前主流的合成方法都由 LLM 驱动，可分为三类：
+Data synthesis improves the information density and overall quality of data by reconstructing, transforming, or generating scarce data types, such as Agent data, effectively addressing issues like data scarcity and insufficient diversity. Given the scale of mid-training data, the mainstream synthesis methods are currently all LLM-driven and can be divided into three categories:
 
-1.  **蒸馏 (Distillation)**：利用强大的 LLM 通过精心设计的提示词直接生成数据，或蒸馏出更小的合成模型。此方法高度依赖 LLM 的能力，后续常伴有严格的质量过滤。具体技术包括：
-    *   **风格改写**：将低质量、嘈杂的语料库转化为信息密度更高的表达。
-    *   **特定格式的扩散合成**：设计特定提示词，基于语料库生成海量的问答对或指令数据。
-    *   **低资源语言翻译与多模态合成**。
+1.  **Distillation**: Use powerful LLMs to directly generate data through carefully designed prompts, or distill smaller synthesis models. This method depends heavily on the capabilities of the LLM and is often followed by strict quality filtering. Specific techniques include:
+    *   **Style rewriting**: Transform low-quality, noisy corpora into more information-dense expressions.
+    *   **Diffusion synthesis in specific formats**: Design specific prompts to generate massive QA pairs or instruction data from corpora.
+    *   **Translation for low-resource languages and multimodal synthesis**.
 
-2.  **提取 (Extraction)**：利用 LLM 从收集的语料库中直接提取自然的问答对或其他格式的数据，然后进行后续精炼。例如，WebInstruct 通过“召回-提取-精炼”的流程从网页内容中获取高质量问答对。
+2.  **Extraction**: Use LLMs to directly extract natural QA pairs or other formatted data from collected corpora, followed by further refinement. For example, WebInstruct obtains high-quality QA pairs from web content through a “recall-extract-refine” pipeline.
 
-3.  **演化 (Evolution)**：通过设计的循环迭代过程生成增强版的问题和解决方案，尤其适用于数学领域。例如，MathGenie 从种子数据中增强解题方案，然后逆向翻译成新的数学问题，从而创造出多样且可靠的合成数据。
+3.  **Evolution**: Generate enhanced versions of questions and solutions through a designed iterative loop, especially suitable for mathematics. For example, MathGenie augments solution strategies from seed data and then back-translates them into new math problems, thereby creating diverse and reliable synthetic data.
 
-### 数据选择
+### Data Selection
 
-数据选择是在中间训练阶段从原始数据中筛选出高质量或领域特定样本的过程，其粒度比预训练阶段更细。主要方法有两种：
+Data selection is the process of filtering high-quality or domain-specific samples from raw data during mid-training, with finer granularity than in pre-training. There are two main methods:
 
-1.  **目标采样 (Targeted sampling)**：通过降采样相关性较低的领域或升采样领域特定内容来调整数据分布。
-2.  **评估器过滤 (Rater-based filtering)**：使用专门的评分模型（Rater）来评估数据质量。常用的评估器包括 FastText 分类器、FineWeb-Edu 分类器和 QuRater 评估模型。
+1.  **Targeted sampling**: Adjust the data distribution by downsampling less relevant domains or upsampling domain-specific content.
+2.  **Rater-based filtering**: Use specialized scoring models (Rater) to evaluate data quality. Common raters include FastText classifiers, FineWeb-Edu classifiers, and QuRater evaluation models.
 
-目前的瓶颈在于如何将预训练数据高效地筛选为高质量的通用数据集，这通常需要协同组合多个评估器来精挑细选。
+The current bottleneck is how to efficiently filter pre-training data into a high-quality general dataset, which usually requires the coordinated combination of multiple raters for careful selection.
 
-### 数据去污染
+### Data Decontamination
 
-数据去污染是基础模型预处理的关键步骤，旨在从训练语料中剔除无意义、敏感或与基准测试相关的内容，以减轻数据泄露风险并确保公平评估。主要挑战在于平衡数据移除与模型性能保持，因为现有方法都存在**假阳性**（过度过滤导致泛化能力下降）和**假阴性**（去污染不彻底导致基准分数虚高）的问题。
+Data decontamination is a key preprocessing step for foundation models, aiming to remove meaningless, sensitive, or benchmark-related content from training corpora to reduce data leakage risks and ensure fair evaluation. The main challenge is balancing data removal with model performance retention, because existing methods all suffer from **false positives** (over-filtering that degrades generalization) and **false negatives** (incomplete decontamination that inflates benchmark scores).
 
-目前最主流的实现方法是 **N-gram 匹配**，因其简单且可扩展。然而，它无法捕捉词汇变化的语义等价性。基于嵌入的方法（如余弦相似度）语义敏感性更强，但计算成本高昂。混合方法（如 N-gram 结合最长公共子序列）显示出效果提升，但缺乏普适性。
+The most mainstream implementation method at present is **N-gram matching**, because it is simple and scalable. However, it cannot capture semantic equivalence under lexical variation. Embedding-based methods (such as cosine similarity) are more semantically sensitive, but computationally expensive. Hybrid methods (such as N-gram combined with longest common subsequence) show improved results, but lack universality.
 
-### 数据混合
+### Data Mixing
 
-中间训练通过策略性地混合不同形式的数据来增强特定能力。数据构成通常是高质量通用语料与特殊格式数据的融合，其比例根据特定目标量身定制。
+Mid-training enhances specific capabilities by strategically mixing different forms of data. The data composition is usually a blend of high-quality general corpora and special-format data, with the proportions tailored to specific goals.
 
-**高质量通用语料**通常从预训练数据中筛选而来，用于维持模型基础的语言鲁棒性，并减轻分布偏移风险。
+**High-quality general corpora** are usually selected from pre-training data and are used to maintain the model’s foundational language robustness and reduce the risk of distribution shift.
 
-**特殊格式数据**主要包括：
-*   **问答 (QA) 数据**：以知识密集或推理驱动为特点，擅长构建显式知识表示和增强少样本适应性。不同类型的 QA 数据可针对不同能力，如短 CoT QA 强化事实知识，长 CoT QA 培养迭代推理能力。
-*   **指令 (Instruction) 数据**：结构上与后训练阶段的指令微调数据相似。研究表明，在中间训练中加入少量（如1%）指令数据，可以显著减少 SFT 阶段所需的指令微调量，并提升 RL 效果。
-*   **长上下文 (Long-context) 数据**：通常来源于书籍、维基和高质量论文，通过升采样或合成来增强模型处理长序列的能力。
+**Special-format data** mainly includes:
+*   **QA data**: Characterized by being knowledge-intensive or reasoning-driven, it is good at building explicit knowledge representations and enhancing few-shot adaptability. Different types of QA data can target different capabilities; for example, short CoT QA strengthens factual knowledge, while long CoT QA cultivates iterative reasoning ability.
+*   **Instruction data**: Structurally similar to the instruction fine-tuning data used in the post-training stage. Studies show that adding a small amount of instruction data (e.g., 1%) during mid-training can significantly reduce the amount of instruction fine-tuning required in the SFT stage and improve RL performance.
+*   **Long-context data**: Usually sourced from books, Wikipedia, and high-quality papers, and enhanced through upsampling or synthesis to improve the model’s ability to handle long sequences.
 
-确定最佳混合比例的方法主要有：
-*   **经验驱动分配**：如 Llama-3 为新数据集分配 30% 的权重。
-*   **代理实验推断**：OLMo 2 使用 **microanneals**（在小数据子集上进行缩减的退火运行）来从小规模试验中推断大规模混合的效果。RegMix 则将比例优化视为一个回归任务，通过在多种混合配置上训练许多小模型来预测未知混合的性能。这些方法依赖于**稳定性假说**，即数据混合比例的性能排序在不同模型规模和 Token 数量下保持一致。
+The main ways to determine the optimal mixing ratio are:
+*   **Empirical allocation**: For example, Llama-3 assigns a 30% weight to the new dataset.
+*   **Proxy experiment inference**: OLMo 2 uses **microanneals** (reduced annealing runs on small data subsets) to infer the effects of large-scale mixtures from small-scale trials. RegMix treats ratio optimization as a regression task, predicting the performance of unknown mixtures by training many small models on various mixing configurations. These methods rely on the **stability hypothesis**, namely that the performance ranking of data-mixing ratios remains consistent across different model scales and token counts.
 
-## 训练策略
+## Training Strategy
 
-中间训练的训练策略主要集中在学习率（LR）调度上，同时其他超参数配置也对结果有显著影响。
+The training strategy for mid-training mainly focuses on learning rate (LR) scheduling, while other hyperparameter settings also have a significant impact on the results.
 
-### 学习率调度
+### Learning Rate Scheduling
 
-学习率调度对训练的稳定性、效率和最终性能至关重要。典型的学习率调度包含**预热 (warm-up)** 阶段和**衰减 (decay)** 阶段。预热阶段通常采用线性预热，能提高训练稳定性。衰减阶段则可以采用线性、余弦或指数衰减等策略。
+Learning rate scheduling is crucial to training stability, efficiency, and final performance. A typical learning rate schedule includes a **warm-up** phase and a **decay** phase. The warm-up phase usually uses linear warm-up, which improves training stability. The decay phase can use strategies such as linear, cosine, or exponential decay.
 
-值得注意的是，衰减阶段常被分为**缓速衰减期**和**快速衰减期**，而高质量数据通常在快速衰减期引入。此外，像 **Warmup-Stable-Decay (WSD)** 这样的多阶段调度器，引入了一个稳定的高学习率训练阶段，帮助模型探索参数空间，从而提升优化效率和泛化性能，已成为当前广泛采用的实践。
+It is worth noting that the decay phase is often divided into a **slow-decay period** and a **fast-decay period**, and high-quality data is usually introduced during the fast-decay period. In addition, multi-stage schedulers such as **Warmup-Stable-Decay (WSD)** introduce a stable high-learning-rate training stage that helps the model explore the parameter space, thereby improving optimization efficiency and generalization performance, and have become a widely adopted practice today.
 
-不同学习率调度器对比。
+Comparison of different learning rate schedulers.
 
 
-| 阶段 | 调度器类型 | 公式 |
+| Stage | Scheduler Type | Formula |
 | :--- | :--- | :--- |
-| **预热 (Warm-up)** | 线性 (Linear) | $$ \eta=\frac{s}{W}{\eta}_{\max},\quad 0\leq s\leq W $$ |
-| **稳定 (Stable)** | - | $$ \eta=\eta,\quad 0\leq s\leq T $$ |
-| **衰减 (Decay)** | 线性 (Linear) | $$ \eta={\eta}_{\max}-({\eta}_{\max}-{\eta}_{\min})\cdot\frac{s}{S},\quad 0\leq s\leq S $$ |
-|  | 余弦 (Cosine) | $$ \eta={\eta}_{\min}+\frac{1}{2}({\eta}_{\max}-{\eta}_{\min})(1+\cos(\pi\frac{s}{S})),\quad 0\leq s\leq S $$ |
-|  | 指数 (Exponential) | $$ \eta={\eta}_{\max}\cdot e^{-ks} $$ |
-| **多阶段** | WSD | $$ WSD(T;s)=\begin{cases}\frac{s}{W}\eta, & s<W \\ \eta, & W<s<T \\ f(s-T)\eta, & T<s<S \end{cases} $$ |
+| **Warm-up** | Linear | $$ \eta=\frac{s}{W}{\eta}_{\max},\quad 0\leq s\leq W $$ |
+| **Stable** | - | $$ \eta=\eta,\quad 0\leq s\leq T $$ |
+| **Decay** | Linear | $$ \eta={\eta}_{\max}-({\eta}_{\max}-{\eta}_{\min})\cdot\frac{s}{S},\quad 0\leq s\leq S $$ |
+|  | Cosine | $$ \eta={\eta}_{\min}+\frac{1}{2}({\eta}_{\max}-{\eta}_{\min})(1+\cos(\pi\frac{s}{S})),\quad 0\leq s\leq S $$ |
+|  | Exponential | $$ \eta={\eta}_{\max}\cdot e^{-ks} $$ |
+| **Multi-stage** | WSD | $$ WSD(T;s)=\begin{cases}\frac{s}{W}\eta, & s<W \\ \eta, & W<s<T \\ f(s-T)\eta, & T<s<S \end{cases} $$ |
 
-### 其他训练设置
+### Other Training Settings
 
-与学习率调度一同配置的关键超参数主要是**批量大小 (batch size)**。增加批量大小可以减小随机梯度估计的方差，从而允许在训练中采用更高的学习率。在退火阶段，批量大小通常受数据规模影响，并可能进行动态调整。
+The key hyperparameter configured together with the learning rate schedule is mainly **batch size**. Increasing the batch size reduces the variance of the stochastic gradient estimate, thereby allowing a higher learning rate during training. In the annealing stage, the batch size is usually constrained by the data scale and may be adjusted dynamically.
 
-## 模型架构优化
+## Model Architecture Optimization
 
-### 长上下文扩展
+### Long Context Extension
 
-**旋转位置编码 (Rotary Position Embedding, RoPE)** 已成为 LLM 的标准位置编码方法。然而，在固定上下文长度上预训练的 LLM 在处理更长序列时会性能下降，因此需要基于 RoPE 的长上下文扩展方法。
+**Rotary Position Embedding (RoPE)** has become the standard positional encoding method for LLMs. However, LLMs pretrained on a fixed context length suffer performance degradation when handling longer sequences, so RoPE-based long-context extension methods are needed.
 
-RoPE 通过一个旋转张量来编码词元的位置信息。给定一个隐藏向量 $h=[h\_{0},h\_{1},...,h\_{d-1}]$ 和一个位置索引 $m$，RoPE 的操作如下：
+RoPE encodes token position information through a rotation tensor. Given a hidden vector $h=[h\_{0},h\_{1},...,h\_{d-1}]$ and a position index $m$, the RoPE operation is as follows:
 
 
 {% raw %}$$
@@ -124,62 +124,62 @@ f(h, m) = [..., h_{2i} \cos(m\theta_i) - h_{2i+1} \sin(m\theta_i), h_{2i} \sin(m
 $${% endraw %}
 
 
-其中 $\theta\_{j}=b^{-2j/d}, j\in\{0,1,...,d/2-1\}$。
+where $\theta\_{j}=b^{-2j/d}, j\in\{0,1,...,d/2-1\}$.
 
-常见的 RoPE 扩展变体包括：
+Common RoPE extension variants include:
 
-##### 位置插值 (Position Interpolation, PI)
-PI 方法将位置索引 $m$ 按比例缩小为 $m/\alpha$，从而将原始位置范围插值到更长的上下文窗口。
+##### Position Interpolation (PI)
+The PI method scales the position index $m$ down to $m/\alpha$, thereby interpolating the original position range into a longer context window.
 
-##### NTK 感知插值 (NTK-aware Interpolation, NTK)
-NTK 认为 PI 对所有维度进行同等插值可能导致高频信息丢失。因此，NTK 通过调整基频 $b$ 来引入一种非线性插值策略。
+##### NTK-aware Interpolation (NTK)
+NTK argues that PI may cause high-frequency information loss by interpolating all dimensions equally. Therefore, NTK introduces a nonlinear interpolation strategy by adjusting the base frequency $b$.
 
 ##### Yet another RoPE extensioN (YaRN)
-YaRN 采用一个斜坡函数，在不同维度上以不同比例组合 PI 和 NTK。此外，它引入了一个温度因子 $t=\sqrt{1+\ln(s)/d}$ 来缓解长输入导致注意力分布偏移的问题。
+YaRN uses a ramp function to combine PI and NTK at different ratios across dimensions. In addition, it introduces a temperature factor $t=\sqrt{1+\ln(s)/d}$ to mitigate the attention distribution shift caused by long inputs.
 
-YaRN 目前在生产系统中代表了性能和效率的最佳平衡。
+YaRN currently represents the best balance between performance and efficiency in production systems.
 
-## 衰减缩放定律
+## Decay Scaling Laws
 
-与预训练缩放定律不同，**衰减缩放定律 (Decay Scaling Laws)** 考虑了衰减阶段的独特起点，为预测影响训练效率的关键变量提供了定制化方法。这些定律主要关注预测以下变量：模型大小、数据比例（通用与专业）以及训练 Token 数量。该定律为理解衰减阶段各因素间的相互作用及其对模型性能的影响提供了结构化框架，但仍需进一步研究以完善。
+Unlike pretraining scaling laws, **Decay Scaling Laws** take into account the unique starting point of the decay stage, providing a tailored approach for predicting key variables that affect training efficiency. These laws mainly focus on predicting the following variables: model size, data ratio (general vs. specialized), and the number of training tokens. The law provides a structured framework for understanding the interactions among factors in the decay stage and their impact on model performance, but further research is still needed to refine it.
 
-## 评估
+## Evaluation
 
-中间训练阶段的模型评估遵循已建立的标准化基准，如下表所示。评估框架涵盖通用、数学、编码、智能体和长上下文等多个领域，并与下文详述的中间训练目标战略性对齐。
+Model evaluation during intermediate training follows established standardized benchmarks, as shown in the table below. The evaluation framework covers multiple domains, including general, math, coding, intelligent体, and long context, and is strategically aligned with the intermediate training objectives detailed below.
 
-中间训练的基准测试。
+Benchmarks for intermediate training.
 
 
-| 领域 | 能力 | 基准测试 |
+| Domain | Capability | Benchmarks |
 | :--- | :--- | :--- |
-| **通用** | 知识 | MMLU, TriviaQA, NaturalQuestions |
-| | 推理 | ARC, HellaSwag, WinoGrande, BIG-Bench Hard |
-| **数学** | 推理 | GSM8K, MATH |
-| **编码** | 代码生成 | HumanEval, MBPP |
-| | 代码补全 | HumanEval |
-| | 代码修复 | HumanEval-Fix, Code-Fix |
-| | 代码推理 | HumanEval-NL, Code-Reasoning |
-| **智能体** | 工具使用 | ToolBench, AgentBench |
-| **长上下文** | 推理 | NarrativeQA, QuALITY, ScrollS |
+| **General** | Knowledge | MMLU, TriviaQA, NaturalQuestions |
+| | Reasoning | ARC, HellaSwag, WinoGrande, BIG-Bench Hard |
+| **Math** | Reasoning | GSM8K, MATH |
+| **Coding** | Code generation | HumanEval, MBPP |
+| | Code completion | HumanEval |
+| | Code repair | HumanEval-Fix, Code-Fix |
+| | Code reasoning | HumanEval-NL, Code-Reasoning |
+| **Intelligent体** | Tool use | ToolBench, AgentBench |
+| **Long context** | Reasoning | NarrativeQA, QuALITY, ScrollS |
 
-## 目标驱动的实现
+## Goal-Driven Implementation
 
-目标驱动的实现是中间训练的方法论基石。这些能力增强目标可系统性地分为四大相互关联的领域：**通用能力**、**核心认知能力**、**任务执行能力**和**扩展能力**。本节将解构这些目标的实现方式，并分析主流模型如何利用定制化的数据策管、训练策略和架构优化来达成这些目标。
+Goal-driven implementation is the methodological cornerstone of intermediate training. These capability-enhancement objectives can be systematically divided into four interrelated domains: **general capabilities**, **core cognitive capabilities**, **task execution capabilities**, and **extended capabilities**. This section breaks down how these objectives are implemented and analyzes how mainstream models leverage customized data curation, training strategies, and architecture optimization to achieve them.
 
-主流模型中提及的中间训练目标。
+Intermediate training objectives mentioned in mainstream models.
 
 
-| 模型 | 目标 |
+| Model | Objectives |
 | :--- | :--- |
-| Phi-3.5 | 通用, 多语言, 长上下文 |
-| Phi-4 | 通用, 数学, 编码 |
-| Llama-3 | 通用, 推理 |
-| OLMo 2 | 通用, 编码 |
-| Yi-Lightning | 通用, 编码 |
+| Phi-3.5 | General, multilingual, long context |
+| Phi-4 | General, math, coding |
+| Llama-3 | General, reasoning |
+| OLMo 2 | General, coding |
+| Yi-Lightning | General, coding |
 | ... | ... |
 
-### 通用能力
+### General Capabilities
 
-在中间训练期间保持和增强模型的通用理解与生成能力是一个关键的优化方向。这要求精心设计的干预措施，以减轻**灾难性遗忘 (catastrophic forgetting)**，同时提升模型的特定能力。如上表所示，所有主流模型都深入研究了在提升其他目标的同时保持通用性能。
+Maintaining and enhancing a model’s general understanding and generation capabilities during intermediate training is a key optimization direction. This requires carefully designed interventions to mitigate **catastrophic forgetting** while improving the model’s specific capabilities. As shown in the table above, all mainstream models have extensively studied how to preserve general performance while improving other objectives.
 
-实证分析表明，保留经过严格策管的预训练数据子集至关重要。通过优化数据组成和平衡比例，可以显著提升下游任务的性能和泛化鲁棒性。
+Empirical analysis shows that retaining a carefully curated subset of pretraining data is crucial. By optimizing the data composition and balancing the proportions, downstream task performance and generalization robustness can be significantly improved.

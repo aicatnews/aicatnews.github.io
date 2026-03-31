@@ -6,71 +6,71 @@ title: "Reinforcement learning"
 
 - **ArXiv URL**: http://arxiv.org/abs/2405.10369v1
 
-- **作者**: B. Porr; F. Wörgötter
+- **Author**: B. Porr; F. Wörgötter
 
-- **发布机构**: ASTRON
+- **Publishing organization**: ASTRON
 
 ---
 
-## 引言
+## Introduction
 
-强化学习 (Reinforcement Learning, RL)，在深度神经网络的推动下，已在多个学科取得重大突破，例如在计算机游戏、棋类对弈、机器人技术以及矩阵乘法和排序等高效算法开发中都展现了卓越能力。
+Reinforcement Learning (RL), driven by deep neural networks, has achieved major breakthroughs across multiple disciplines, demonstrating outstanding capabilities in areas such as computer games, board games, robotics, and the development of efficient algorithms for matrix multiplication and sorting.
 
-在天文学领域，强化学习也开始崭露头角，其应用包括望远镜的自动化控制（如自适应光学和反射面控制）、观测调度以及射电天文数据处理流水线中的超参数调优。考虑到现代天文学可以被视为从望远镜到科学家的信息流，强化学习有望在辅助和优化这一流程的众多环节中发挥更大作用，这也是本文撰写的动机。
+In astronomy, reinforcement learning has also begun to emerge, with applications including automated telescope control (such as adaptive optics and reflector control), observation scheduling, and hyperparameter tuning in radio astronomy data processing pipelines. Given that modern astronomy can be viewed as an information flow from telescopes to scientists, reinforcement learning is expected to play a greater role in assisting and optimizing many stages of this process, which is also the motivation for this article.
 
-机器学习 (Machine Learning, ML) 主要包含三种范式：
-1.  **监督学习 (Supervised learning)**：为机器提供输入和对应的期望输出，让其学习任务。
-2.  **无监督学习 (Unsupervised learning)**：只为机器提供输入数据。
-3.  **强化学习 (Reinforcement learning)**：机器通过与外部环境的反复试错交互，并根据获得的反馈来学习执行任务。与前两者不同，强化学习具有显著的时间维度，任务被视为一系列连续的动作，而非单步决策。
+Machine Learning (ML) mainly includes three paradigms:
+1.  **Supervised learning**: Provide the machine with inputs and the corresponding expected outputs so it can learn the task.
+2.  **Unsupervised learning**: Provide the machine with input data only.
+3.  **Reinforcement learning**: The machine learns to perform tasks through repeated trial-and-error interactions with the external environment and by learning from the feedback it receives. Unlike the first two, reinforcement learning has a pronounced temporal dimension, where the task is treated as a sequence of continuous actions rather than a single-step decision.
 
-本文旨在对现代深度强化学习进行综述，并侧重其在天文学领域的应用，为新用户提供一个简洁而全面的入门指南，以便他们能快速将相关技术应用于自己的工作中。
+This article aims to provide a survey of modern deep reinforcement learning, with a focus on its applications in astronomy, offering new users a concise yet comprehensive introductory guide so they can quickly apply the relevant techniques to their own work.
 
-## 强化学习理论
+## Reinforcement Learning Theory
 
-本节简要概述强化学习的理论基础，主要基于机器学习的视角，同时融合了动态规划、控制论甚至神经科学等多个学科的交叉思想。
+This section briefly outlines the theoretical foundations of reinforcement learning, mainly from the perspective of machine learning, while also incorporating cross-disciplinary ideas from dynamic programming, cybernetics, and even neuroscience.
 
-## 状态、动作与奖励
+## States, Actions, and Rewards
 
-强化学习的核心框架涉及一个**智能体 (agent)** 与其**环境 (environment)** 的交互，如图1所示。智能体为了达成特定目标，根据从环境接收到的**观测 (observations)** 来执行**动作 (action)**。环境接收动作后状态发生改变，并向智能体反馈一个**奖励 (reward)**，该奖励是对动作质量的数值化评价。
+The core framework of reinforcement learning involves the interaction between an **智能体 (agent)** and its **environment (environment)**, as shown in Figure 1. To achieve a specific goal, the 智能体 performs **actions (action)** based on **observations (observations)** received from the environment. After the environment receives an action, its state changes and it feeds back a **reward (reward)** to the 智能体, which is a numerical evaluation of the action’s quality.
 
-<img src="/images/2405.10369v1/x1.jpg" alt="智能体与环境的交互" style="width:85%; max-width:450px; margin:auto; display:block;">
-> 图1: 智能体与环境的交互。智能体接收观测、执行动作并获得相应的奖励。
+<img src="/images/2405.10369v1/x1.jpg" alt="Interaction between agent and environment" style="width:85%; max-width:450px; margin:auto; display:block;">
+> Figure 1: Interaction between the 智能体 and the environment. The 智能体 receives observations, takes actions, and obtains the corresponding rewards.
 
-这个交互过程可以被数学化地描述：
-*   **状态 (State)**: 环境状态的表示集合为 $\mathcal{S}$，单个状态表示为 $s$（通常是向量）。状态是观测的凝练表示。
-*   **动作 (Action)**: 智能体可执行动作的集合为 $\mathcal{A}$，单个动作表示为 $a$（通常是向量）。状态和动作空间可以是离散的也可以是连续的。
-*   **奖励 (Reward)**: 衡量动作好坏的标量数值 $r$，由奖励函数 $\mathcal{R}$ 产生。奖励设计的原则是：动作越有利于实现最终目标，奖励值越高；反之则给予低奖励或惩罚。
+This interaction process can be described mathematically:
+*   **State (State)**: The set representing the environment state is $\mathcal{S}$, and a single state is denoted by $s$ (usually a vector). A state is a condensed representation of observations.
+*   **Action (Action)**: The set of actions the 智能体 can take is $\mathcal{A}$, and a single action is denoted by $a$ (usually a vector). The state and action spaces can be either discrete or continuous.
+*   **Reward (Reward)**: A scalar value $r$ that measures how good an action is, produced by the reward function $\mathcal{R}$. The principle of reward design is: the more an action helps achieve the final goal, the higher the reward; otherwise, a low reward or a penalty is given.
 
-下表列出了一些强化学习应用的例子：
+The table below lists some examples of reinforcement learning applications:
 
 
-| 问题 | 目标 | 状态 | 动作 |
+| Problem | Goal | State | Action |
 | :--- | :--- | :--- | :--- |
-| 国际象棋 | 赢得比赛 | 棋盘上所有棋子的位置 | 选择并移动一个棋子 |
-| 双足机器人行走 | 行走 | 腿部关节的位置、速度等 | 对各腿部关节施加力矩 |
-| 自动驾驶汽车 | 到达目的地 | 自身及其他车辆的位置、速度、加速度；油量、路况、路标、行人等 | 施加力以实现加速、刹车、转向等 |
+| Chess | Win the game | Positions of all pieces on the board | Select and move a piece |
+| Bipedal robot walking | Walk | Positions, velocities, etc. of leg joints | Apply torque to each leg joint |
+| Self-driving car | Reach the destination | Positions, velocities, accelerations of itself and other vehicles; fuel level, road conditions, road signs, pedestrians, etc. | Apply force to accelerate, brake, steer, etc. |
 
-## 马尔可夫决策过程
+## Markov Decision Process
 
-智能体与环境的交互是一个持续循环的过程，在时间步 $t$，智能体接收状态 $s\_t$ 和奖励 $r\_t$，并输出动作 $a\_t$；环境执行 $a\_t$ 后，转移到新状态 $s\_{t+1}$，并给出新的奖励。这个过程通常是**分幕式 (episodic)** 的，即在一系列步骤后会达到一个终止状态（成功或失败）。
+The interaction between the 智能体 and the environment is a continuous loop. At time step $t$, the 智能体 receives state $s\_t$ and reward $r\_t$, and outputs action $a\_t$; after the environment executes $a\_t$, it transitions to a new state $s\_{t+1}$ and provides a new reward. This process is usually **episodic**, meaning that after a series of steps it reaches a terminal state (success or failure).
 
-这个过程可以用**马尔可夫决策过程 (Markov Decision Process, MDP)** 来形式化，它由一个四元组 $(\mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P})$ 定义。其中 $\mathcal{P}$ 是状态转移概率。**马尔可夫特性 (Markov property)** 指的是，在时间步 $t$ 的状态转移概率仅依赖于当前状态 $s\_t$ 和采取的动作 $a\_t$，即 $p(s\_{t+1} \mid s\_t, a\_t)$。
+This process can be formalized as a **Markov Decision Process (MDP)**, defined by a quadruple $(\mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{P})$. Here $\mathcal{P}$ is the state transition probability. The **Markov property** means that the state transition probability at time step $t$ depends only on the current state $s\_t$ and the action $a\_t$ taken, i.e., $p(s\_{t+1} \mid s\_t, a\_t)$.
 
-智能体的学习目标不是最大化即时奖励，而是最大化未来奖励的**折扣累积和 (discounted cumulative reward)**。这引入了**折扣因子 (discount factor)** $\gamma$ ($0 < \gamma < 1$)，它平衡了短期奖励和长期奖励的重要性，并确保在无限时间范围内的奖励总和收敛。
+The learning objective of the 智能体 is not to maximize immediate reward, but to maximize the **discounted cumulative reward** of future rewards. This introduces the **discount factor** $\gamma$ ($0 < \gamma < 1$), which balances the importance of short-term and long-term rewards and ensures convergence of the total reward over an infinite time horizon.
 
-## Q函数、价值函数与策略
+## Q Function, Value Function, and Policy
 
-为了解决RL问题，我们引入了几个核心概念，并通过一个简单的迷宫示例（图2）进行说明。智能体的目标是从任意空格移动到右上角的目标位置。
+To solve RL problems, we introduce several core concepts and illustrate them with a simple maze example (Figure 2). The goal of the 智能体 is to move from any empty cell to the target position in the upper right corner.
 
-<img src="/images/2405.10369v1/x2.jpg" alt="迷宫环境" style="width:80%; max-width:300px; margin:auto; display:block;">
-> 图2: 迷宫环境，包含5个有效状态（0-4）和4种动作（上、下、左、右）。
+<img src="/images/2405.10369v1/x2.jpg" alt="Maze environment" style="width:80%; max-width:300px; margin:auto; display:block;">
+> Figure 2: Maze environment, containing 5 valid states (0-4) and 4 actions (up, down, left, right).
 
-为了实现目标，我们定义了奖励表（表2），并引入Q表来评估每个状态-动作对的“质量”。
+To achieve the goal, we define a reward table (Table 2) and introduce a Q table to evaluate the “quality” of each state-action pair.
 
-**表2: 迷宫环境的奖励表 $R[s, a]$**
+**Table 2: Reward table $R[s, a]$ for the maze environment**
 
 
-| 状态 | $\rightarrow$ | $\leftarrow$ | $\uparrow$ | $\downarrow$ |
+| State | $\rightarrow$ | $\leftarrow$ | $\uparrow$ | $\downarrow$ |
 | :--- | :---: | :---: | :---: | :---: |
 | 0 | -1 | $-\infty$ | $-\infty$ | -1 |
 | 1 | -1 | $-\infty$ | -1 | $-\infty$ |
@@ -78,12 +78,12 @@ title: "Reinforcement learning"
 | 3 | $-\infty$ | -1 | -1 | $-\infty$ |
 | 4 | $-\infty$ | -1 | 100 | $-\infty$ |
 
-通过算法1（一种简化的Q学习）反复迭代更新Q表 $Q[s,a]$，最终可以得到一个收敛的Q表（表3），它指导智能体在任何状态下选择最优动作。
+By repeatedly iterating and updating the Q table $Q[s,a]$ using Algorithm 1 (a simplified form of Q-learning), we can eventually obtain a converged Q table (Table 3), which guides the 智能体 to choose the optimal action in any state.
 
-**表3: 迷宫环境收敛后的Q表 ($\gamma=0.9$)**
+**Table 3: Converged Q table for the maze environment ($\gamma=0.9$)**
 
 
-| 状态 | $\rightarrow$ | $\leftarrow$ | $\uparrow$ | $\downarrow$ |
+| State | $\rightarrow$ | $\leftarrow$ | $\uparrow$ | $\downarrow$ |
 | :--- | :---: | :---: | :---: | :---: |
 | 0 | 79.1 | 0 | 0 | 62.171 |
 | 1 | 70.19 | 0 | 70.19 | 0 |
@@ -91,12 +91,12 @@ title: "Reinforcement learning"
 | 3 | 0 | 62.171 | 79.1 | 0 |
 | 4 | 0 | 0 | 100 | 0 |
 
-对于高维或连续空间问题，表格法不再适用，需要使用函数逼近器（通常是深度神经网络）来表示以下概念：
-1.  **策略 (Policy)**: 从状态到动作的映射。确定性策略 $\pi(s)$ 直接输出动作 $a$，而随机性策略 $\pi(a \mid s)$ 输出给定状态下动作的概率分布。
-2.  **Q函数 (Q-function)**: 状态-动作价值函数 $Q(s,a)$，衡量在状态 $s$ 下采取动作 $a$ 的预期累积奖励。
-3.  **价值函数 (Value function)**: 状态价值函数 $V(s)$，衡量处在状态 $s$ 的好坏程度，即从该状态开始遵循某一策略所能获得的预期累积奖励。
+For high-dimensional or continuous-space problems, tabular methods are no longer suitable, and function approximators (usually deep neural networks) are needed to represent the following concepts:
+1.  **Policy**: A mapping from states to actions. A deterministic policy $\pi(s)$ directly outputs an action $a$, while a stochastic policy $\pi(a \mid s)$ outputs a probability distribution over actions given a state.
+2.  **Q-function**: The state-action value function $Q(s,a)$, which measures the expected cumulative reward of taking action $a$ in state $s$.
+3.  **Value function**: The state value function $V(s)$, which measures how good it is to be in state $s$, i.e., the expected cumulative reward obtained by following a certain policy starting from that state.
 
-这些函数之间的关系由**贝尔曼方程 (Bellman equation)** 定义，它是RL问题最优性的基础：
+The relationships among these functions are defined by the **Bellman equation**, which is the foundation of optimality in RL problems:
 
 
 {% raw %}$$
@@ -104,28 +104,28 @@ Q(s,a) = r(s,a)+\gamma\underset{a'=\pi(s')}{\mathrm{max}}Q(s',a')
 $${% endraw %}
 
 
-解决RL问题，本质上就是学习到最优的策略函数 $\pi(s)$、Q函数 $Q(s,a)$ 或价值函数 $V(s)$。深度神经网络因其强大的表示能力和现成的梯度下降优化框架，成为表示这些函数的理想选择。
+Solving an RL problem essentially means learning the optimal policy function $\pi(s)$, Q-function $Q(s,a)$, or value function $V(s)$. Deep neural networks, with their powerful representational capacity and ready-made gradient descent optimization framework, are an ideal choice for representing these functions.
 
-## 深度强化学习算法
+## Deep Reinforcement Learning Algorithms
 
-本节重点讨论**无模型 (model-free)** 的深度强化学习算法。在训练智能体时，通常面临以下挑战：
-*   **数据不足**：与环境交互生成训练数据的成本高昂。
-*   **探索与利用的权衡 (Exploitation vs exploration)**：需要在利用当前最优策略和探索未知动作之间取得平衡，以避免陷入局部最优。通常采用 $\epsilon$-greedy策略，即以 $\epsilon$ 的概率随机选择动作（探索），以 $1-\epsilon$ 的概率选择最优动作（利用）。
-*   **训练不稳定性**：贝尔曼方程的迭代求解过程可能不稳定，因为待更新的目标值依赖于正在更新的Q函数本身。
+This section focuses on **model-free** deep reinforcement learning algorithms. When training an intelligent agent, the following challenges are typically encountered:
+*   **Insufficient data**: Collecting training data through interaction with the environment is costly.
+*   **Exploitation vs exploration trade-off**: A balance must be struck between exploiting the current best policy and exploring unknown actions to avoid getting stuck in a local optimum. The $\epsilon$-greedy strategy is commonly used, where an action is chosen randomly with probability $\epsilon$ (exploration) and the best action is chosen with probability $1-\epsilon$ (exploitation).
+*   **Training instability**: The iterative solution process of the Bellman equation can be unstable because the target value to be updated depends on the Q-function itself, which is also being updated.
 
-## 经验回放
+## Experience Replay
 
-为了解决数据不足和训练不稳定性问题，**经验回放 (Experience replay)** 技术被广泛采用。该方法将智能体与环境交互的样本，即元组 $(s, a, r, s')$，存储在一个称为**回放缓冲区 (replay buffer)** $\mathcal{D}$ 的大容量存储中。在训练时，从 $\mathcal{D}$ 中随机采样一个小批量 (mini-batch) 数据进行学习。这打破了数据之间的时间相关性，提高了数据利用率和训练稳定性。这种使用历史数据（可能由旧策略产生）的训练方式属于**离策略 (off-policy)** 算法。算法2展示了使用经验回放的通用训练流程。
+To address insufficient data and training instability, **experience replay** is widely used. This method stores samples from the agent-environment interaction, namely tuples $(s, a, r, s')$, in a large-capacity storage called a **replay buffer** $\mathcal{D}$. During training, a mini-batch of data is randomly sampled from $\mathcal{D}$ for learning. This breaks the temporal correlation among data, improves data utilization, and enhances training stability. This training approach, which uses historical data (possibly generated by an old policy), belongs to **off-policy** algorithms. Algorithm 2 shows the general training procedure using experience replay.
 
-## 分类体系：基于动作空间的算法
+## Taxonomy: Algorithms Based on Action Space
 
-本文将深度强化学习算法依据**动作空间 (action space)** 的类型进行分类，主要分为离散动作空间算法和连续动作空间算法。
+This article classifies deep reinforcement learning algorithms according to the type of **action space**, mainly into discrete-action-space algorithms and continuous-action-space algorithms.
 
-### 离散动作空间强化学习
+### Reinforcement Learning in Discrete Action Spaces
 
-当动作空间 $\mathcal{A}$ 是离散且有限时，主要使用基于Q学习的算法。
+When the action space $\mathcal{A}$ is discrete and finite, Q-learning-based algorithms are mainly used.
 
-**Q学习 (Q-learning)** 的更新规则是：
+The update rule of **Q-learning** is:
 
 
 {% raw %}$$
@@ -133,9 +133,9 @@ Q(s,a) \leftarrow Q(s,a) + \mu \left( r(s,a) + \gamma \underset{a'}{\mathrm{max}
 $${% endraw %}
 
 
-其中 $\mu$ 是学习率。
+where $\mu$ is the learning rate.
 
-**深度Q网络 (Deep Q-Network, DQN)** 使用深度神经网络 $Q\_\theta(s,a)$ 来近似Q函数。为了解决训练不稳定的问题，DQN引入了**目标网络 (target network)** $Q\_{\theta'}(s,a)$。训练时，Q网络 $Q\_\theta$ 的参数 $\theta$ 通过最小化以下损失函数进行更新，而目标网络的参数 $\theta'$ 则保持冻结，仅定期从 $Q\_\theta$ 复制参数（$\theta' \leftarrow \theta$）。
+**Deep Q-Network (DQN)** uses a deep neural network $Q\_\theta(s,a)$ to approximate the Q-function. To address training instability, DQN introduces a **target network** $Q\_{\theta'}(s,a)$. During training, the parameters $\theta$ of the Q network $Q\_\theta$ are updated by minimizing the following loss function, while the target network parameters $\theta'$ remain frozen and are only periodically copied from $Q\_\theta$ ($\theta' \leftarrow \theta$).
 
 
 {% raw %}$$
@@ -143,25 +143,25 @@ J(\theta) = \ \mid  r(s,a) + \gamma \underset{a'}{\mathrm{max}} Q_{\theta'}(s',a
 $${% endraw %}
 
 
-**双重Q学习 (Double Q-learning)** 进一步解决了Q学习中普遍存在的Q值过高估计问题。它使用两个独立的Q网络（$Q\_1$ 和 $Q\_2$），在计算目标Q值时，一个网络用于选择动作，另一个网络用于评估该动作的价值，从而解耦选择和评估过程，减少过高估计。
+**Double Q-learning** further addresses the common overestimation problem in Q-learning. It uses two independent Q networks ($Q\_1$ and $Q\_2$); when computing the target Q value, one network is used to select the action and the other network is used to evaluate the value of that action, thereby decoupling selection and evaluation and reducing overestimation.
 
-### 连续动作空间强化学习
+### Reinforcement Learning in Continuous Action Spaces
 
-当动作空间是连续时，无法通过遍历所有动作来找到最大Q值，因此需要采用不同的方法。**行动者-评论家 (Actor-Critic)** 方法是解决此类问题的标准框架。它将智能体分解为两部分（如图3所示）：
+When the action space is continuous, it is impossible to find the maximum Q value by enumerating all actions, so a different approach is needed. The **Actor-Critic** method is the standard framework for solving such problems. It decomposes the agent into two parts (as shown in Figure 3):
 
-*   **行动者 (Actor)**：负责实现策略 $\pi(s)$，根据状态 $s$ 输出动作 $a$。
-*   **评论家 (Critic)**：负责评估行动者所选动作的好坏，通常通过Q函数 $Q(s,a)$ 或价值函数 $V(s)$ 实现。
+*   **Actor**: Responsible for implementing the policy $\pi(s)$ and outputting an action $a$ based on the state $s$.
+*   **Critic**: Responsible for evaluating how good the action chosen by the actor is, usually implemented through a Q-function $Q(s,a)$ or a value function $V(s)$.
 
-<img src="/images/2405.10369v1/x3.jpg" alt="行动者-评论家架构" style="width:85%; max-width:600px; margin:auto; display:block;">
-> 图3: 由行动者和评论家组成的强化学习智能体。
+<img src="/images/2405.10369v1/x3.jpg" alt="Actor-Critic architecture" style="width:85%; max-width:600px; margin:auto; display:block;">
+> Figure 3: A reinforcement learning agent composed of an actor and a critic.
 
 #### 3.3.1 DDPG (Deep Deterministic Policy Gradient)
 
-DDPG是一种用于连续动作空间的离策略行动者-评论家算法。
-*   **行动者**：实现一个确定性策略网络 $\pi\_\phi(s)$。
-*   **评论家**：实现一个Q网络 $Q\_\theta(s,a)$。
-它同样使用目标网络（$\pi\_{\phi'}(s)$ 和 $Q\_{\theta'}(s,a)$）来稳定训练。
-*   **评论家更新**：通过最小化与DQN类似的损失函数来更新：
+DDPG is an off-policy actor-critic algorithm for continuous action spaces.
+*   **Actor**: Implements a deterministic policy network $\pi\_\phi(s)$.
+*   **Critic**: Implements a Q network $Q\_\theta(s,a)$.
+It also uses target networks ($\pi\_{\phi'}(s)$ and $Q\_{\theta'}(s,a)$) to stabilize training.
+*   **Critic update**: Updated by minimizing a loss function similar to DQN:
 
 
 {% raw %}$$
@@ -169,7 +169,7 @@ J(\theta) = \ \mid  r(s,a) + \gamma Q_{\theta'} \left( s', \pi_{\phi'}(s') \righ
 $${% endraw %}
 
 
-*   **行动者更新**：通过最大化评论家给出的Q值来更新，即最小化损失函数：
+*   **Actor update**: Updated by maximizing the Q value given by the critic, i.e., minimizing the loss function:
 
 
 {% raw %}$$
@@ -177,12 +177,12 @@ J(\phi) = -Q_{\theta}\left(s, \pi_{\phi}(s)\right)
 $${% endraw %}
 
 
-目标网络参数则通过**Polyak平均 (Polyak averaging)** 进行软更新，即缓慢地跟踪主网络的参数。
+The target network parameters are softly updated through **Polyak averaging**, meaning they slowly track the parameters of the main network.
 
 #### 3.3.2 TD3 (Twin Delayed DDPG)
 
-TD3是DDPG的改进版，旨在解决其Q值过高估计和训练不稳定的问题，主要包含三项关键技术：
-1.  **双评论家网络 (Twin Critics)**：使用两个独立的Q网络 ($Q\_{\theta\_1}, Q\_{\theta\_2}$)，在计算目标Q值时，取两者中的较小值。这有效抑制了Q值的过高估计。
+TD3 is an improved version of DDPG, designed to address its Q-value overestimation and training instability issues. It mainly includes three key techniques:
+1.  **Twin Critics**: Uses two independent Q networks ($Q\_{\theta\_1}, Q\_{\theta\_2}$) and takes the smaller of the two when computing the target Q value. This effectively suppresses Q-value overestimation.
 
 
 {% raw %}$$
@@ -190,15 +190,15 @@ J(\theta_i) = \ \mid  r(s,a) + \gamma \underset{j=[1,2]}{\mathrm{min}} Q_{\theta
 $${% endraw %}
 
 
-2.  **延迟策略更新 (Delayed Policy Updates)**：行动者（策略网络）的更新频率低于评论家（Q网络），例如每更新两次评论家才更新一次行动者。这使得Q值的估计更稳定后，再指导策略的改进。
-3.  **目标策略平滑 (Target Policy Smoothing)**：在计算目标Q值时，对目标行动者网络输出的动作加入少量噪声并进行裁剪，使Q函数对动作的微小变化不那么敏感，从而平滑价值函数的估计。
+2.  **Delayed Policy Updates**: The actor (policy network) is updated less frequently than the critic (Q network), for example, the actor is updated once for every two critic updates. This allows the Q-value estimates to become more stable before guiding policy improvement.
+3.  **Target Policy Smoothing**: When computing the target Q value, a small amount of noise is added to the action output by the target actor network and then clipped, making the Q function less sensitive to small changes in the action and thereby smoothing the value function estimate.
 
 #### 3.3.3 SAC (Soft Actor-Critic)
 
-SAC是一种基于**最大熵强化学习 (maximum entropy reinforcement learning)** 框架的离策略行动者-评论家算法。与DDPG/TD3不同，SAC使用**随机性策略 (stochastic policy)** $\pi(a \mid s)$。
-*   **核心思想**：SAC的目标函数不仅要最大化累积奖励，还要最大化策略的**熵 (entropy)**。熵衡量了策略的随机性，鼓励智能体进行更广泛的探索。
-*   **策略**：行动者网络 $\pi\_\phi(a \mid s)$ 输出一个概率分布（如高斯分布），从中采样得到动作。
-*   **评论家更新**：与TD3类似，SAC也使用两个Q网络来抑制过高估计。其损失函数在TD3的基础上增加了一个与策略熵相关的项（与 $-\log\pi\_\phi(a \mid s)$ 成正比），使得奖励更高的同时，策略的随机性也更大。
+SAC is an off-policy actor-critic algorithm based on the **maximum entropy reinforcement learning** framework. Unlike DDPG/TD3, SAC uses a **stochastic policy** $\pi(a \mid s)$.
+*   **Core idea**: The objective of SAC is not only to maximize cumulative reward, but also to maximize the policy’s **entropy**. Entropy measures the randomness of the policy and encourages the agent to explore more broadly.
+*   **Policy**: The actor network $\pi\_\phi(a \mid s)$ outputs a probability distribution (such as a Gaussian distribution), from which actions are sampled.
+*   **Critic update**: Similar to TD3, SAC also uses two Q networks to suppress overestimation. Its loss function adds a term related to policy entropy on top of TD3 (proportional to $-\log\pi\_\phi(a \mid s)$), so that while the reward is higher, the policy is also more stochastic.
 
 
 {% raw %}$$
@@ -206,4 +206,4 @@ J(\theta_i) = \ \mid r(s,a) + \gamma \left( \underset{j=[1,2]}{\mathrm{min}} Q_{
 $${% endraw %}
 
 
-其中，$\alpha$ 是一个权衡奖励和熵的温度系数，可以手动调节或自动学习。这种内在的探索机制使得SAC在样本效率和鲁棒性方面通常表现优异。
+Here, $\alpha$ is a temperature coefficient that balances reward and entropy, which can be manually tuned or learned automatically. This intrinsic exploration mechanism often gives SAC excellent performance in terms of sample efficiency and robustness.

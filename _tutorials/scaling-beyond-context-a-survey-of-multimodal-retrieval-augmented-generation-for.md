@@ -6,31 +6,31 @@ title: "Scaling Beyond Context: A Survey of Multimodal Retrieval-Augmented Gener
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.15253v1
 
-- **作者**: Weihua Luo; Yong Xien Chng; Sensen Gao; Qing-Guo Chen; Shanshan Zhao; Kaifu Zhang; Mingming Gong; Jia-Wang Bian; Xu Jiang; Lunhao Duan
+- **Authors**: Weihua Luo; Yong Xien Chng; Sensen Gao; Qing-Guo Chen; Shanshan Zhao; Kaifu Zhang; Mingming Gong; Jia-Wang Bian; Xu Jiang; Lunhao Duan
 
-- **发布机构**: Alibaba International Digital Commerce Group; MBZUAI; Tsinghua University; University of Melbourne; Wuhan University
+- **Publishing Institutions**: Alibaba International Digital Commerce Group; MBZUAI; Tsinghua University; University of Melbourne; Wuhan University
 
 ---
 
-## 引言
+## Introduction
 
-<img src="/images/2510.15253v1/x1.jpg" alt="多模态RAG在长文档理解中的应用及相关出版物增长趋势" style="width:80%; max-width:300px; margin:auto; display:block;">
-(a) 在长文档理解任务中，使用与不使用多模态RAG的多模态大语言模型（MLLM）的对比。(b) 2024年至2025年相关出版物的增长情况。
+<img src="/images/2510.15253v1/x1.jpg" alt="Applications of multimodal RAG in long-document understanding and related publication growth trends" style="width:80%; max-width:300px; margin:auto; display:block;">
+(a) Comparison of multimodal large language models (MLLMs) with and without multimodal RAG in long-document understanding tasks. (b) Growth in related publications from 2024 to 2025.
 
-文档理解是信息时代的一项关键任务，它使机器能够自动解释、组织和推理海量非结构化和半结构化文档。早期研究主要集中于以文本为中心的文档，依赖光学字符识别（OCR）技术进行布局分析和关键信息提取。然而，现实场景中的文档，尤其是科学领域的文档，通常是视觉丰富的，包含表格、图表和图像等复杂元素。随着大语言模型（LLM）的飞速发展，对理解复杂多样文档的需求日益增长。
+Document understanding is a key task in the information age, enabling machines to automatically interpret, organize, and reason over massive amounts of unstructured and semi-structured documents. Early research mainly focused on text-centric documents, relying on optical character recognition (OCR) technology for layout analysis and key information extraction. However, documents in real-world scenarios, especially those in the scientific domain, are often visually rich and contain complex elements such as tables, charts, and images. With the rapid development of large language models (LLM), the demand for understanding complex and diverse documents is growing rapidly.
 
-在视觉丰富文档理解领域，为整合布局、文本和结构信息，涌现了多种方法。原生多模态大语言模型（Multimodal LLM, MLLM）方法通常将文档表示为长图像序列，但这在处理数百页的长文档时会遇到序列长度限制和幻觉风险。为了提高模块性和鲁棒性，基于智能体（Agent-based）的方法引入专门的智能体处理子任务，但这增加了系统复杂性。检索增强生成（Retrieval-Augmented Generation, RAG）通过外部知识来增强模型响应，但传统RAG主要面向文本。
+In the field of visually rich document understanding, a variety of methods have emerged to integrate layout, text, and structural information. Native multimodal large language model (Multimodal LLM, MLLM) approaches typically represent documents as long image sequences, but this runs into sequence-length limits and hallucination risks when processing long documents of hundreds of pages. To improve modularity and robustness, Agent-based methods introduce specialized intelligent agents to handle subtasks, but this increases system complexity. Retrieval-Augmented Generation (RAG) enhances model responses with external knowledge, but traditional RAG is mainly designed for text.
 
-为了解决文本RAG在处理视觉丰富文档时的不足，即无法充分捕捉跨模态线索和结构语义，近期的研究焦点转向了多模态RAG（Multimodal RAG）。这些方法通过更细粒度的建模（如表格、图表）、图结构索引和多智能体框架，实现了对文档的整体检索与推理。尽管关于RAG和文档理解的综述已有很多，但很少有研究将两者明确联系起来。本文旨在填补这一空白，首次对用于文档理解的多模态RAG进行系统性综述，提出了一个基于领域、检索模态、粒度和混合增强方法的分类体系，并整理了相关的数据集、基准和未来挑战，为文档AI的未来发展提供路线图。
+To address the shortcomings of text RAG in handling visually rich documents, namely its inability to fully capture cross-modal cues and structural semantics, recent research has shifted toward multimodal RAG (Multimodal RAG). These methods achieve holistic document retrieval and reasoning through finer-grained modeling (such as tables and charts), graph-structured indexing, and multi-agent frameworks. Although there have been many surveys on RAG and document understanding, few studies explicitly connect the two. This paper aims to fill that gap by providing the first systematic survey of multimodal RAG for document understanding, proposing a taxonomy based on domain, retrieval modality, granularity, and hybrid enhancement methods, and organizing related datasets, benchmarks, and future challenges to provide a roadmap for the future of document AI.
 
-## 预备知识
+## Preliminaries
 
-在RAG系统中，系统首先检索一组相关的文档页面，然后基于这些证据生成响应。检索可以是*封闭域*（closed-domain，限定于单个源文档）或*开放域*（open-domain，搜索大型语料库）。假设候选池为 $D=\{d\_i\}\_{i=1}^{N}$，每个文档 $d\_i$ 可能包含光栅图像以及OCR文本 $T\_i$。使用特定模态的编码器，将查询和文档映射到共享的嵌入空间。
+In a RAG system, the system first retrieves a set of relevant document pages and then generates a response based on that evidence. Retrieval can be *closed-domain* (limited to a single source document) or *open-domain* (searching a large corpus). Suppose the candidate pool is $D=\{d\_i\}\_{i=1}^{N}$, where each document $d\_i$ may contain raster images as well as OCR text $T\_i$. Using modality-specific encoders, the query and documents are mapped into a shared embedding space.
 
-查询 $q$ 通常是文本，因此在共享空间中计算文本-文本和文本-图像的相似度。文档和查询的嵌入表示为：$z\_{i}^{\mathrm{img}}=\mathrm{Enc}\_{\mathrm{img}}(d\_{i})$，$z\_{i}^{\mathrm{text}}=\mathrm{Enc}\_{\mathrm{text}}(T\_{i})$，以及 $e\_{q}^{\mathrm{text}}=\mathrm{Enc}\_{\mathrm{text}}(q)$。两种模态对的相似度通过内积计算：$s\_{\mathrm{text}}(e\_{q},z\_{i})=\langle e\_{q}^{\mathrm{text}},z\_{i}^{\mathrm{text}}\rangle$ 和 $s\_{\mathrm{img}}(e\_{q},z\_{i})=\langle e\_{q}^{\mathrm{text}},z\_{i}^{\mathrm{img}}\rangle$。
+The query $q$ is usually text, so text-text and text-image similarities are computed in the shared space. The embedding representations of the documents and query are $z\_{i}^{\mathrm{img}}=\mathrm{Enc}\_{\mathrm{img}}(d\_{i})$, $z\_{i}^{\mathrm{text}}=\mathrm{Enc}\_{\mathrm{text}}(T\_{i})$, and $e\_{q}^{\mathrm{text}}=\mathrm{Enc}\_{\mathrm{text}}(q)$. The similarity between the two modality pairs is computed by inner product: $s\_{\mathrm{text}}(e\_{q},z\_{i})=\langle e\_{q}^{\mathrm{text}},z\_{i}^{\mathrm{text}}\rangle$ and $s\_{\mathrm{img}}(e\_{q},z\_{i})=\langle e\_{q}^{\mathrm{text}},z\_{i}^{\mathrm{img}}\rangle$.
 
-#### 纯视觉检索
-仅使用图像通道时，根据得分 $s\_{\mathrm{img}}(e\_q, z\_i)$ 对文档进行排序，并选择超过阈值 $\tau\_{\mathrm{img}}$ 的文档（或取前K个结果）：
+#### Pure Visual Retrieval
+When only the image channel is used, documents are ranked according to the score $s\_{\mathrm{img}}(e\_q, z\_i)$, and documents exceeding the threshold $\tau\_{\mathrm{img}}$ are selected (or the top-K results are taken):
 
 
 {% raw %}$$
@@ -39,9 +39,9 @@ $${% endraw %}
 
 
 
-#### 视觉-文本联合检索
-两种常用策略：
-1.  **置信度加权融合**：图像和文本分数通过一个凸权重 $\lambda\_i \in [0,1]$ 进行组合，该权重反映了对项目 $d\_i$ 的图像模态的置信度。
+#### Joint Visual-Text Retrieval
+Two common strategies:
+1.  **Confidence-weighted fusion**: image and text scores are combined using a convex weight $\lambda\_i \in [0,1]$, which reflects the confidence in the image modality for item $d\_i$.
     
 
     {% raw %}$$
@@ -57,7 +57,7 @@ $${% endraw %}
 
 
 
-2.  **独立检索后合并**：首先使用各自的模态独立检索页面，然后取结果的并集。
+2.  **Independent retrieval followed by merging**: first retrieve pages independently using each modality, then take the union of the results.
     
 
     {% raw %}$$
@@ -80,8 +80,8 @@ $${% endraw %}
 
 
 
-#### 生成
-生成器 $\mathcal{G}$ 基于原始查询 $q$ 和检索到的上下文 $X$（可以是 $X\_{\mathrm{img}}$, $X\_{\mathrm{conf}}$, 或 $X\_{\cup}$）生成最终响应 $r$。
+#### Generation
+The generator $\mathcal{G}$ produces the final response $r$ based on the original query $q$ and the retrieved context $X$ (which can be $X\_{\mathrm{img}}$, $X\_{\mathrm{conf}}$, or $X\_{\cup}$).
 
 
 {% raw %}$$
@@ -90,94 +90,94 @@ $${% endraw %}
 
 
 
-## 关键创新与方法论
+## Key Innovations and Methodology
 
-本文从**领域开放性**、**检索模态**、**检索粒度**、**基于图的集成**和**基于智能体的增强**等维度对多模态RAG方法进行系统性分类和讨论。
+This paper systematically categorizes and discusses multimodal RAG methods along the dimensions of **domain openness**, **retrieval modality**, **retrieval granularity**, **graph-based integration**, and **Agent-based enhancement**.
 
-<img src="/images/2510.15253v1/x2.jpg" alt="开放域与封闭域RAG" style="width:80%; max-width:300px; margin:auto; display:block;">
-(a) 在封闭域中，模型利用单文档内的检索来回答特定上下文的问题。(b) 在开放域中，模型依赖于跨多份文档的检索来回答开放性问题。
+<img src="/images/2510.15253v1/x2.jpg" alt="Open-domain and closed-domain RAG" style="width:80%; max-width:300px; margin:auto; display:block;">
+(a) In the closed domain, the model uses retrieval within a single document to answer context-specific questions. (b) In the open domain, the model relies on retrieval across multiple documents to answer open-ended questions.
 
-### 开放域与封闭域
+### Open-Domain and Closed-Domain
 
-RAG系统根据其检索范围分为开放域和封闭域。
+RAG systems are divided into open-domain and closed-domain according to their retrieval scope.
 
-**开放域多模态RAG**从大规模文档语料库中检索信息，以构建广泛的知识库，增强LLM在特定领域的知识。早期方法依赖OCR构建文本索引，计算成本高。近期方法如DSE和ColPali利用视觉语言模型（VLM）直接编码文档页面，提高了效率。为解决多数方法仅限于单文档内推理的问题，M3DocRAG引入近似索引以加速大规模检索，而VDocRAG则通过将视觉内容压缩为与文本对齐的密集Token表示来减少页面级信息损失。
+**Open-domain multimodal RAG** retrieves information from large-scale document corpora to build a broad knowledge base and enhance the LLM’s domain-specific knowledge. Early methods relied on OCR to build text indexes, which was computationally expensive. Recent methods such as DSE and ColPali directly encode document pages using vision-language models (VLM), improving efficiency. To address the issue that most methods are limited to reasoning within a single document, M3DocRAG introduces approximate indexing to accelerate large-scale retrieval, while VDocRAG reduces page-level information loss by compressing visual content into dense Token representations aligned with text.
 
-**封闭域多模态RAG**专注于单个长文档，仅检索最相关的页面片段作为MLLM的输入，以解决MLLM的上下文窗口限制和幻觉问题。例如，SV-RAG利用MLLM自身作为多模态检索器，FRAG独立评分每个页面并进行Top-K选择，CREAM则引入了从粗到细的多模态检索框架。这些方法均证明了封闭域RAG能在不扩展模型上下文长度的情况下，有效理解长文档。
+**Closed-domain multimodal RAG** focuses on a single long document and retrieves only the most relevant page segments as input to the MLLM, addressing the context window limitations and hallucination issues of MLLMs. For example, SV-RAG uses the MLLM itself as a multimodal retriever, FRAG independently scores each page and performs Top-K selection, and CREAM introduces a coarse-to-fine multimodal retrieval framework. These methods all demonstrate that closed-domain RAG can effectively understand long documents without extending the model’s context length.
 
-<img src="/images/2510.15253v1/x3.jpg" alt="检索模态：纯图像 vs 图像+文本" style="width:85%; max-width:450px; margin:auto; display:block;">
-(a) 基于图像的RAG仅从页面图像中检索信息，效率高但文本细节有限；(b) 基于图像+文本的RAG结合了OCR/注释与视觉特征，实现了更丰富的检索，但处理复杂性更高。
+<img src="/images/2510.15253v1/x3.jpg" alt="Retrieval modalities: pure image vs image+text" style="width:85%; max-width:450px; margin:auto; display:block;">
+(a) Image-based RAG retrieves information only from page images, offering high efficiency but limited text details; (b) image+text-based RAG combines OCR/annotations with visual features, enabling richer retrieval but with greater processing complexity.
 
-### 检索模态
+### Retrieval Modality
 
-根据用于检索的信息类型，方法可分为纯图像检索和图像-文本混合检索。
+According to the type of information used for retrieval, methods can be divided into pure image retrieval and image-text hybrid retrieval.
 
-**纯图像检索**将每个文档页面视为一张图像，并使用VLM的视觉编码器将其编码为页面级表示。查询同样被编码，通过计算相似度来对页面进行排序和检索。例如，MM-R5在图像嵌入基础上引入了推理增强的重排器（reranker），而Light-ColPali则通过Token合并技术减少嵌入大小，实现高内存效率的视觉文档检索。
+**Pure image retrieval** treats each document page as an image and uses the VLM’s visual encoder to encode it into a page-level representation. The query is encoded in the same way, and pages are ranked and retrieved by computing similarity. For example, MM-R5 introduces a reasoning-enhanced reranker on top of image embeddings, while Light-ColPali reduces embedding size through token merging, enabling memory-efficient visual document retrieval.
 
-**图像-文本混合检索**结合了视觉和文本两种模态，以缓解仅依赖视觉编码器时细粒度文本信息的损失。文本通道通常通过OCR提取或由大型VLM生成摘要注释。VisDomRAG和HM-RAG采用双路流水线，对每个模态分别进行检索和推理，然后融合结果。而ViDoRAG和PREMIR则先在各模态内检索，然后合并候选集再进行答案生成。SimpleDoc采用两阶段方案：先基于嵌入选择候选，再利用VLM生成的页面摘要进行重排。
+**Image-text hybrid retrieval** combines visual and textual modalities to mitigate the loss of fine-grained text information when relying only on a visual encoder. The text channel is usually extracted via OCR or generated as summary annotations by a large VLM. VisDomRAG and HM-RAG adopt a dual-path pipeline, performing retrieval and reasoning separately for each modality before fusing the results. ViDoRAG and PREMIR first retrieve within each modality, then merge the candidate sets before answer generation. SimpleDoc uses a two-stage scheme: it first selects candidates based on embeddings, then reranks them using page summaries generated by a VLM.
 
-<img src="/images/2510.15253v1/x4.jpg" alt="检索粒度：页面级 vs 元素级" style="width:85%; max-width:450px; margin:auto; display:block;">
-(a) 页面级：将整个页面作为原子单元进行编码和排序。(b) 元素级：将页面分解为表格、图表、图像和文本块；检索在这些元素上操作以定位证据并聚合结果。
+<img src="/images/2510.15253v1/x4.jpg" alt="Retrieval granularity: page-level vs element-level" style="width:85%; max-width:450px; margin:auto; display:block;">
+(a) Page-level: the entire page is encoded and ranked as an atomic unit. (b) Element-level: the page is decomposed into tables, charts, images, and text blocks; retrieval operates on these elements to locate evidence and aggregate results.
 
-### 检索粒度
+### Retrieval granularity
 
-检索操作的最小单元定义了检索的粒度，从页面级到更精细的元素级。
+The smallest unit of retrieval defines the retrieval granularity, ranging from page-level to finer element-level retrieval.
 
-早期的研究通常以**页面**为原子检索单元，忽略了页面内的表格、图表等精细结构。近期工作越来越关注**页内细粒度检索**。一些方法通过显式编码这些组件来提升检索精度。例如，VRAG-RL通过强化学习使LLM能关注到检索页面内与查询直接相关的细粒度区域。MG-RAG采用多粒度策略，允许在页面、表格和图像等不同层级进行检索。DocVQA-RAP引入效用驱动的检索机制，优先选择对答案质量贡献大的文档片段。MMRAG-DocQA利用层级索引和多粒度语义检索来捕捉细粒度的多模态关联。mKG-RAG则利用多模态知识图谱进行两阶段检索，以优化证据选择。PREMIR通过为表格和图表生成预定义的问答对，实现页内细粒度检索。
+Early studies typically used the **page** as the atomic retrieval unit, ignoring fine-grained structures such as tables and charts within the page. Recent work has increasingly focused on **intra-page fine-grained retrieval**. Some methods improve retrieval accuracy by explicitly encoding these components. For example, VRAG-RL uses reinforcement learning to enable the LLM to attend to fine-grained regions within retrieved pages that are directly relevant to the query. MG-RAG adopts a multi-granularity strategy, allowing retrieval at different levels such as pages, tables, and images. DocVQA-RAP introduces a utility-driven retrieval mechanism that prioritizes document fragments that contribute more to answer quality. MMRAG-DocQA leverages hierarchical indexing and multi-granularity semantic retrieval to capture fine-grained multimodal associations. mKG-RAG uses a multimodal knowledge graph for two-stage retrieval to optimize evidence selection. PREMIR achieves intra-page fine-grained retrieval by generating predefined question-answer pairs for tables and charts.
 
-### 混合增强方法
+### Hybrid enhancement methods
 
-为进一步提升多模态RAG的性能，研究者引入了图结构和智能体框架。
+To further improve multimodal RAG performance, researchers have introduced graph structures and intelligent agent frameworks.
 
-<img src="/images/2510.15253v1/x5.jpg" alt="混合增强方法：基于图 vs 基于智能体" style="width:85%; max-width:450px; margin:auto; display:block;">
-(a) 基于图：文档/元素构成一个图索引，通过图遍历来检索相关邻域。(b) 基于智能体：一个LLM智能体分解文本查询，协调多模态检索，验证收集的证据，并综合生成最终答案。
+<img src="/images/2510.15253v1/x5.jpg" alt="Hybrid enhancement methods: graph-based vs agent-based" style="width:85%; max-width:450px; margin:auto; display:block;">
+(a) Graph-based: documents/elements form a graph index, and graph traversal is used to retrieve relevant neighborhoods. (b) Agent-based: an LLM智能体 decomposes the text query, coordinates multimodal retrieval, verifies collected evidence, and synthesizes the final answer.
 
-#### 基于图的多模态RAG
-该方法将多模态内容表示为一个显式图，节点代表模态或内容单元（如页面、文本块、图像、表格），边代表它们之间的语义、空间和上下文关系。在此图上进行检索和推理能更有效地整合异构证据。例如，HM-RAG将基于图的数据库作为多源检索的关键模态之一。mKG-RAG则显式构建多模态知识图谱，作为结构化知识库来提升检索精度。MoLoRAG利用编码了页面间逻辑关系的页面图，通过图遍历来检索证据。
+#### Graph-based multimodal RAG
+This approach represents multimodal content as an explicit graph, where nodes correspond to modalities or content units (such as pages, text blocks, images, and tables), and edges represent semantic, spatial, and contextual relationships among them. Retrieval and reasoning on this graph can integrate heterogeneous evidence more effectively. For example, HM-RAG uses a graph-based database as one of the key modalities for multi-source retrieval. mKG-RAG explicitly constructs a multimodal knowledge graph as a structured knowledge base to improve retrieval accuracy. MoLoRAG leverages a page graph encoding logical relationships between pages to retrieve evidence through graph traversal.
 
-#### 基于智能体的多模态RAG
-该方法部署自主智能体来协调检索-生成过程。这些智能体能动态地制定查询、选择检索策略，并根据任务需求自适应地融合来自多模态的信息。例如，ViDoRAG引入了负责探索、总结和反思的迭代式智能体工作流。HM-RAG设计了一个层级化多智能体架构，包括分解智能体、检索智能体和决策智能体。Patho-AgenticRAG则在医疗领域使用智能体进行任务分解和多轮搜索交互。这些框架展示了专门的智能体设计如何提升多模态RAG系统的细粒度检索和推理能力。
+#### Agent-based multimodal RAG
+This approach deploys autonomous intelligent agents to coordinate the retrieval-generation process. These agents can dynamically formulate queries, select retrieval strategies, and adaptively fuse information from multiple modalities according to task requirements. For example, ViDoRAG introduces an iterative agent workflow responsible for exploration, summarization, and reflection. HM-RAG designs a hierarchical multi-agent architecture, including a decomposition agent, a retrieval agent, and a decision agent. Patho-AgenticRAG uses agents for task decomposition and multi-round search interaction in the medical domain. These frameworks demonstrate how specialized agent designs can enhance the fine-grained retrieval and reasoning capabilities of multimodal RAG systems.
 
-## 数据集与基准
+## Datasets and benchmarks
 
-用于文档理解的多模态RAG研究所使用的数据集和基准通常包含视觉丰富的文档集合。下表对现有数据集和基准进行了总结。
+The datasets and benchmarks used in multimodal RAG research for document understanding usually consist of visually rich document collections. The table below summarizes existing datasets and benchmarks.
 
 
-| 数据集/基准 | 查询数 | 数据集规模 | 内容类型 | 简介 |
+| Dataset/Benchmark | # Queries | Dataset Size | Content Type | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **常用数据集** | | | | |
-| DocVQA | 50k | 12k (I) | q! | 视觉问答，关注文档图像 |
-| InfographicVQA | 30k | 5k (I) | q! | 针对信息图的视觉问答 |
-| ChartQA | 32k | 27k (I) | q! | 针对图表的问答 |
-| Kleister-NDA | 0.5k | 0.5k (D) | q! | 从法律文件中提取信息 |
-| TAT-QA | 16k | 16k (I) | q! | 表格和文本混合的问答 |
-| **新兴基准** | | | | |
-| ViDoRe | 43k | 41k (D) | q!1 | 跨学术和实践领域的综合基准 |
-| VISR-BENCH | 2k | 262 (D) | q!1 | 人工验证的多样化数据集 |
-| M3DocVQA | 6k | 3k (D) | q!1 | 开放域、跨文档视觉问答 |
-| VisDoMBench | 2k | 1k (D) | q! | 开放域、跨文档视觉问答 |
-| OpenDocVQA | 1k | 39k (D) | q! | 开放域、跨文档视觉问答 |
-| ViDoSeek | 84k | 4.8k (D) | q!1 | 针对RAG系统设计的视觉丰富文档集 |
+| **Commonly used datasets** | | | | |
+| DocVQA | 50k | 12k (I) | q! | Visual question answering focused on document images |
+| InfographicVQA | 30k | 5k (I) | q! | Visual question answering for infographics |
+| ChartQA | 32k | 27k (I) | q! | Question answering for charts |
+| Kleister-NDA | 0.5k | 0.5k (D) | q! | Information extraction from legal documents |
+| TAT-QA | 16k | 16k (I) | q! | Question answering over tables and text |
+| **Emerging benchmarks** | | | | |
+| ViDoRe | 43k | 41k (D) | q!1 | A comprehensive benchmark spanning academic and practical domains |
+| VISR-BENCH | 2k | 262 (D) | q!1 | A manually verified diverse dataset |
+| M3DocVQA | 6k | 3k (D) | q!1 | Open-domain, cross-document visual question answering |
+| VisDoMBench | 2k | 1k (D) | q! | Open-domain, cross-document visual question answering |
+| OpenDocVQA | 1k | 39k (D) | q! | Open-domain, cross-document visual question answering |
+| ViDoSeek | 84k | 4.8k (D) | q!1 | A visually rich document collection designed for RAG systems |
 
-*注：q: 文本, !: 表格, Charts: 图表, 1: 幻灯片。 (D)指文档数, (I)指图像数。*
+*Note: q: text, !: table, Charts: charts, 1: slides. (D) denotes the number of documents, and (I) denotes the number of images.*
 
-许多现有方法也指出了当前基准的不足，并构建了新的、更多样化的基准。例如，ColPali构建了ViDoRe，一个跨越能源、政府和医疗等领域的综合基准。为了解决现有基准大多侧重于单文档检索的问题，M3DocVQA、VisDoMRAG和VDocRAG分别引入了开放域基准M3DocVQA、VisDoMBench和OpenDocVQA。ViDoRAG则推出了ViDoSeek，一个专为RAG系统设计的视觉丰富文档数据集，支持在真实检索设置下进行严格评估。
+Many existing methods also point out the limitations of current benchmarks and build new, more diverse ones. For example, ColPali constructed ViDoRe, a comprehensive benchmark spanning domains such as energy, government, and healthcare. To address the fact that most existing benchmarks focus on single-document retrieval, M3DocVQA, VisDoMRAG, and VDocRAG introduced the open-domain benchmarks M3DocVQA, VisDoMBench, and OpenDocVQA, respectively. ViDoRAG also released ViDoSeek, a visually rich document dataset specifically designed for RAG systems, supporting rigorous evaluation in real retrieval settings.
 
-## 应用
+## Applications
 
-多模态RAG在金融、科研和调查分析等领域的文档理解中应用日益广泛。
-*   **金融领域**：MultiFinRAG通过联合建模文本、表格和图表来改进财务报告的问答效果。FinRAGBench-V则提供了一个强调视觉引用的基准，以实现证据的可追溯性。
-*   **科研领域**：HiPerRAG支持在百万级研究论文规模上进行跨模态检索和推理。CollEX支持对多模态科学语料库进行交互式探索。
-*   **社会科学领域**：一个基于欧盟民意调查（Eurobarometer）的框架将RAG与MLLM相结合，统一处理文本和信息图，以提高调查数据的可解释性。
+Multimodal RAG is increasingly used in document understanding across finance, scientific research, and survey analysis.
+*   **Finance**: MultiFinRAG improves question answering over financial reports by jointly modeling text, tables, and charts. FinRAGBench-V provides a benchmark that emphasizes visual citations for evidence traceability.
+*   **Scientific research**: HiPerRAG supports cross-modal retrieval and reasoning at the scale of millions of research papers. CollEX enables interactive exploration of multimodal scientific corpora.
+*   **Social sciences**: A framework based on the Eurobarometer survey combines RAG with MLLM to jointly process text and infographics, improving the interpretability of survey data.
 
-这些应用共同证明了多模态RAG如何增强跨领域复杂文档的理解和利用能力。
+Together, these applications demonstrate how multimodal RAG enhances the understanding and use of complex documents across domains.
 
-## 挑战与未来方向
+## Challenges and future directions
 
-尽管多模态RAG在文档理解方面取得了持续进展，但仍存在若干开放性挑战，为未来研究指明了方向。
+Although multimodal RAG has made steady progress in document understanding, several open challenges remain, pointing to future research directions.
 
-1.  **效率 (Efficiency)**：集成高维视觉和文本特征会产生巨大的计算成本，限制了可扩展性。未来的研究方向包括设计轻量级多模态编码器、自适应检索策略以及内存高效的融合机制，以在不牺牲检索精度的情况下降低延迟。
+1.  **Efficiency**: Integrating high-dimensional visual and textual features incurs substantial computational cost, limiting scalability. Future research directions include designing lightweight multimodal encoders, adaptive retrieval strategies, and memory-efficient fusion mechanisms to reduce latency without sacrificing retrieval accuracy.
 
-2.  **更细粒度的文档表示 (Finer-grained document representations)**：许多现有模型在页面或段落级别操作，忽略了表格、图表、脚注和布局等微观结构语义。能够捕捉微观结构同时保持宏观上下文的层级化编码器和注意力机制，可以提高模型的可解释性，并增强下游的推理和决策能力。
+2.  **Finer-grained document representations**: Many existing models operate at the page or paragraph level, overlooking the semantic information in micro-structures such as tables, charts, footnotes, and layout. Hierarchical encoders and attention mechanisms that can capture micro-structures while preserving macro-level context can improve model interpretability and strengthen downstream reasoning and decision-making capabilities.
 
-3.  **安全性与鲁棒性 (Security and robustness)**：模型需要具备抵御对抗性攻击和错误信息的能力，确保检索到的信息是可信的，并且生成的内容是可靠的。未来的工作需要关注如何验证多模态信息的来源和一致性，并设计更鲁棒的端到端系统。
+3.  **Security and robustness**: Models need to be able to resist adversarial attacks and misinformation, ensuring that the retrieved information is trustworthy and the generated content is reliable. Future work should focus on how to verify the sources and consistency of multimodal information, and on designing more robust end-to-end systems.

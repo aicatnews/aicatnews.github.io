@@ -6,21 +6,21 @@ title: "Online Process Reward Leanring for Agentic Reinforcement Learning"
 
 - **ArXiv URL**: http://arxiv.org/abs/2509.19199v2
 
-- **作者**: Jianbin Jiao; Ke Wang; Fei Huang; Xiaoqian Liu; Yongbin Li; Junge Zhang; Yuchuan Wu
+- **Authors**: Jianbin Jiao; Ke Wang; Fei Huang; Xiaoqian Liu; Yongbin Li; Junge Zhang; Yuchuan Wu
 
-- **发布机构**: Chinese Academy of Sciences; Tongyi Lab; University of Chinese Academy of Sciences
+- **Publishing Institutions**: Chinese Academy of Sciences; Tongyi Lab; University of Chinese Academy of Sciences
 
 ---
 
 ## TL;DR
-本文提出了一种名为在线过程奖励学习 (Online Process Reward Learning, OPRL) 的智能体强化学习信誉分配策略，该策略通过在线交替优化一个过程奖励模型和智能体策略，将轨迹级别的偏好无缝转化为密集的步骤级奖励，从而在不依赖额外数据或步骤标签的情况下，高效稳定地训练长时程大型语言模型（LLM）智能体。
+This paper proposes an agent reinforcement learning credit assignment strategy called Online Process Reward Learning (OPRL). By alternately optimizing a process reward model and the agent policy online, it seamlessly converts trajectory-level preferences into dense step-level rewards, enabling efficient and stable training of long-horizon large language model (LLM) agents without relying on extra data or step labels.
 
-## 关键定义
-本文的核心是围绕在线学习得到的隐式步骤奖励来展开的，关键定义如下：
+## Key Definitions
+The core of this paper is built around implicitly learned step rewards from online learning. The key definitions are as follows:
 
-*   **在线过程奖励学习 (Online Process Reward Learning, OPRL)**：一种通用的智能体强化学习（RL）信誉分配策略。它与标准的在线（on-policy）RL算法无缝集成，通过在线训练一个过程奖励模型（PRM），将轨迹级的偏好信号转化为步骤级的密集奖励，用于指导策略更新。
-*   **过程奖励模型 (Process Reward Model, PRM)**：一个与智能体策略交替优化的语言模型。在OPRL中，这是一个隐式模型，它不直接预测一个分数，而是通过其在动作上的概率分布来体现奖励。此PRM通过一个基于DPO（Direct Preference Optimization）的目标函数，从轨迹对的偏好中学习。
-*   **隐式步骤奖励 (Implicit Step Rewards)**：OPRL的核心产出。对于在$t$时刻的动作$a\_t$，其隐式步骤奖励被定义为：
+*   **Online Process Reward Learning (OPRL)**: A general credit assignment strategy for agent reinforcement learning (RL). It integrates seamlessly with standard online (on-policy) RL algorithms and trains a process reward model (PRM) online to convert trajectory-level preference signals into dense step-level rewards for policy updates.
+*   **Process Reward Model (PRM)**: A language model that is alternately optimized with the agent policy. In OPRL, this is an implicit model that does not directly predict a score, but instead expresses reward through its probability distribution over actions. This PRM learns from trajectory-pair preferences via a Direct Preference Optimization (DPO)-based objective.
+*   **Implicit Step Rewards**: The core output of OPRL. For the action $a\_t$ at time $t$, its implicit step reward is defined as:
     
 
     {% raw %}$$
@@ -28,34 +28,34 @@ title: "Online Process Reward Leanring for Agentic Reinforcement Learning"
     $${% endraw %}
 
 
-    其中，$\pi\_{\phi}$是当前更新的PRM，$\pi\_{\theta\_{\text{old}}}$是上一轮的策略模型快照。这个奖励衡量了在PRM看来，当前动作相比旧策略有多大的改进，从而为策略学习提供密集的指导信号。
+where $\pi\_{\phi}$ is the currently updated PRM, and $\pi\_{\theta\_{\text{old}}}$ is the snapshot of the policy model from the previous round. This reward measures how much the current action improves over the old policy from the PRM’s perspective, thereby providing dense guidance signals for policy learning.
 
-## 相关工作
-当前，在动态、交互式环境中训练大型语言模型（LLM）智能体面临巨大挑战，主要瓶颈包括：
-1.  **稀疏奖励和信誉分配**：环境奖励通常在任务结束时才给出，导致难以判断中间步骤的贡献，即存在时序信誉分配（temporal credit assignment）难题。
-2.  **高方差学习**：智能体的轨迹长且复杂，在 token 层面进行奖励分配会引入巨大噪声，导致策略学习的方差过高、训练不稳定。
-3.  **开放环境的复杂性**：在开放式环境（如对话）中，状态空间巨大且几乎不重叠，奖励信号往往难以验证，这使得许多传统RL方法失效。
+## Related Work
+At present, training large language model (LLM) agents in dynamic, interactive environments faces major challenges, with the main bottlenecks including:
+1.  **Sparse rewards and credit assignment**: Environment rewards are usually only given at the end of a task, making it difficult to determine the contribution of intermediate steps, i.e., the temporal credit assignment problem.
+2.  **High-variance learning**: Agent trajectories are long and complex, and assigning rewards at the token level introduces substantial noise, leading to high variance in policy learning and unstable training.
+3.  **Complexity of open environments**: In open-ended environments such as dialogue, the state space is huge and rarely overlaps, and reward signals are often difficult to verify, causing many traditional RL methods to fail.
 
-已有的过程监督方法存在各自的局限性：
-*   **人工标注或启发式规则**：成本高、存在偏见，且容易被智能体利用规则漏洞（reward hacking）。
-*   **生成式奖励模型（GRMs）**：例如使用LLM作为评审，其给出的步骤级反馈可能充满噪声且在不同领域间不一致。
-*   **Token级PRM**：虽然在单轮任务中有效，但对于长轨迹的智能体任务，其奖励信号过于细粒度，会放大方差，破坏训练稳定性。
-*   **状态分组方法**：依赖于在不同轨迹中出现完全相同的状态，这在状态空间巨大的语言环境中几乎不可能实现。
+Existing process supervision methods each have their own limitations:
+*   **Manual annotation or heuristic rules**: Expensive, biased, and easily exploitable by agents through reward hacking.
+*   **Generative reward models (GRMs)**: For example, using an LLM as a judge; the step-level feedback it provides may be noisy and inconsistent across domains.
+*   **Token-level PRM**: Although effective in single-turn tasks, for long-trajectory agent tasks its reward signal is too fine-grained, amplifying variance and hurting training stability.
+*   **State grouping methods**: These rely on exactly the same state appearing across different trajectories, which is almost impossible in language environments with huge state spaces.
 
-本文旨在解决上述问题，提出一个通用的、无需步骤级标签、高效且稳定的信誉分配策略，以适应具有稀疏、延迟甚至不可验证奖励的长时程智能体任务。
+This paper aims to address the above problems by proposing a general, label-free, efficient, and stable credit assignment strategy that can adapt to long-horizon agent tasks with sparse, delayed, or even unverifiable rewards.
 
-## 本文方法
+## Method
 
-本文提出的在线过程奖励学习（OPRL）框架，通过在线学习一个过程奖励模型（PRM），将稀疏的轨迹级结果偏好转化为密集的步骤级奖励信号，从而指导策略的精细化更新。
+The proposed Online Process Reward Learning (OPRL) framework learns a process reward model (PRM) online, converting sparse trajectory-level outcome preferences into dense step-level reward signals to guide fine-grained policy updates.
 
 <img src="/images/2509.19199v1/x1.jpg" alt="OPRL训练流程图" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-上图展示了 OPRL 的整体训练流程：智能体与环境交互产生轨迹，一个结果奖励模型（ORM）评估整个轨迹并给出结果奖励。这些带有结果标签的轨迹被用来更新PRM，PRM再为轨迹中的每一步生成隐式过程奖励。最终，智能体的策略利用结果奖励和隐式步骤奖励进行更新。
+The figure above shows the overall training flow of OPRL: the agent interacts with the environment to generate trajectories, and an outcome reward model (ORM) evaluates the entire trajectory and provides an outcome reward. These trajectories with outcome labels are used to update the PRM, which then generates implicit process rewards for each step in the trajectory. Finally, the agent policy is updated using both the outcome reward and the implicit step rewards.
 
-### 核心流程
-OPRL的训练过程是一个策略模型 $\pi\_{\theta}$ 和过程奖励模型 $\pi\_{\phi}$ 交替优化的自增强循环：
-1.  **数据采样**：使用当前策略 $\pi\_{\theta}$ 与环境交互，生成一批轨迹。
-2.  **PRM优化**：根据轨迹的结果奖励（由验证器或ORM提供），构建偏好对（如“成功”轨迹 $\tau^{+}$ vs “失败”轨迹 $\tau^{-}$）。然后，使用一个类似DPO的目标函数来更新PRM $\pi\_{\phi}$：
+### Core Procedure
+The training process of OPRL is a self-improving loop in which the policy model $\pi\_{\theta}$ and the process reward model $\pi\_{\phi}$ are alternately optimized:
+1.  **Data sampling**: Use the current policy $\pi\_{\theta}$ to interact with the environment and generate a batch of trajectories.
+2.  **PRM optimization**: Based on the trajectories’ outcome rewards (provided by a verifier or ORM), construct preference pairs (e.g., a “successful” trajectory $\tau^{+}$ vs. a “failed” trajectory $\tau^{-}$). Then, update the PRM $\pi\_{\phi}$ using a DPO-like objective:
     
 
     {% raw %}$$
@@ -63,9 +63,9 @@ OPRL的训练过程是一个策略模型 $\pi\_{\theta}$ 和过程奖励模型 $
     $${% endraw %}
 
 
-    这个过程让PRM学会倾向于生成能带来更好结果的轨迹。
-3.  **策略优化**：使用更新后的PRM计算每个动作的隐式步骤奖励 $r\_{\phi}$。然后，结合两种优势函数来更新策略 $\pi\_{\theta}$：
-    *   **情节级优势 (Episode-level Advantage) $A^{E}$**：根据最终的结果奖励 $r\_{o}(\tau)$ 计算，反映了整个轨迹的全局表现。
+This process teaches the PRM to prefer trajectories that lead to better outcomes.
+3.  **Policy optimization**: Use the updated PRM to compute the implicit step reward $r\_{\phi}$ for each action. Then, combine two types of advantage functions to update the policy $\pi\_{\theta}$:
+    *   **Episode-level Advantage $A^{E}$**: Computed from the final outcome reward $r\_{o}(\tau)$, reflecting the global performance of the entire trajectory.
         
 
         {% raw %}$$
@@ -73,7 +73,7 @@ OPRL的训练过程是一个策略模型 $\pi\_{\theta}$ 和过程奖励模型 $
         $${% endraw %}
 
 
-    *   **步骤级优势 (Step-level Advantage) $A^{S}$**: 根据隐式步骤奖励 $r\_{\phi}(a\_t)$ 计算，反映了单个动作的局部贡献。
+*   **Step-level Advantage $A^{S}$**: Computed from the implicit step reward $r\_{\phi}(a\_t)$, reflecting the local contribution of a single action.
         
 
         {% raw %}$$
@@ -81,7 +81,7 @@ OPRL的训练过程是一个策略模型 $\pi\_{\theta}$ 和过程奖励模型 $
         $${% endraw %}
 
 
-    *   **组合优势**：将两种优势加权结合，为策略更新提供更全面的信号。
+*   **Combined Advantage**: The two advantages are weighted and combined to provide a more comprehensive signal for policy updates.
         
 
         {% raw %}$$
@@ -89,93 +89,93 @@ OPRL的训练过程是一个策略模型 $\pi\_{\theta}$ 和过程奖励模型 $
         $${% endraw %}
 
 
-        最终，使用PPO等标准RL算法的代理目标函数进行策略更新。
+Finally, the policy is updated using the surrogate objective of standard RL algorithms such as PPO.
 
 <img src="/images/2509.19199v1/x2.jpg" alt="优势计算示意图" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-如上图所示，OPRL在更新策略时，最终的优势函数是情节级优势 $A^{E}(\tau)$ 和步骤级优势 $A^{S}(a)$ 的结合。
+As shown above, when OPRL updates the policy, the final advantage function is a combination of the episode-level advantage $A^{E}(\tau)$ and the step-level advantage $A^{S}(a)$.
 
-### 创新点
-1.  **无标签的细粒度信誉分配**：OPRL巧妙地通过DPO式的目标函数，将稀疏的、轨迹级别的结果偏好转化为稠密的、步骤级别的奖励信号，无需昂贵且有偏的人工步骤标签。
-2.  **低方差与训练稳定性**：通过在步骤（turn）级别而非 token 级别计算奖励，OPRL有效控制了奖励信号的粒度，避免了过细粒度信号带来的高方差问题。理论分析表明，其学习到的隐式步骤奖励是一种势能函数塑形奖励（potential-based reward shaping），能够保证最优策略不变，并提供有界的梯度，从而稳定了多轮次RL训练。
-3.  **通用性与可扩展性**：该方法仅依赖于轨迹级别的偏好，这些偏好可以来自基于规则的验证器（如任务成功信号），也可以来自LLM裁判等不可验证的ORM，使其能够统一应用于包括开放式对话在内的各类环境。同时，OPRL可与PPO、GRPO、RLOO等多种主流在线RL算法即插即用地结合。
+### Innovations
+1.  **Label-free fine-grained credit assignment**: OPRL cleverly converts sparse, trajectory-level outcome preferences into dense, step-level reward signals through a DPO-style objective, without requiring expensive and biased manual step labels.
+2.  **Low variance and training stability**: By computing rewards at the step (turn) level rather than the token level, OPRL effectively controls reward granularity and avoids the high-variance problems caused by overly fine-grained signals. Theoretical analysis shows that the learned implicit step reward is a potential-based reward shaping reward, which preserves the optimal policy and provides bounded gradients, thereby stabilizing multi-turn RL training.
+3.  **Generality and scalability**: This method relies only on trajectory-level preferences, which can come from rule-based verifiers (such as task success signals) or from unverifiable ORMs such as LLM judges, making it applicable across a wide range of environments, including open-ended dialogue. At the same time, OPRL can be plugged in with mainstream online RL algorithms such as PPO, GRPO, and RLOO.
 
 
-### 理论分析
-本文从理论上证明了OPRL的有效性与稳定性：
-*   **偏好一致性**：在Bradley-Terry偏好模型假设下，最小化PRM损失函数等价于学习一个与潜在真实效用函数 $R^{\star}$ 一致的评分函数。
-*   **势能函数塑形**：证明了累积的隐式步骤奖励 $\sum r\_{\phi}$ 是对真实轨迹效用 $R^{\star}$ 的一种势能函数塑形，这种塑形不会改变原任务的最优策略集合。
-*   **梯度有界性**：证明了策略梯度更新中的奖励项 $ \mid r\_{\phi} \mid $ 是有界的，这保证了随机梯度优化的稳定性，使得PRM和策略的交替更新过程更加稳健。
+### Theoretical Analysis
+This paper theoretically proves the effectiveness and stability of OPRL:
+*   **Preference consistency**: Under the Bradley-Terry preference model assumption, minimizing the PRM loss is equivalent to learning a scoring function consistent with the latent true utility function $R^{\star}$.
+*   **Potential-based reward shaping**: It is proven that the accumulated implicit step rewards $\sum r\_{\phi}$ constitute a form of potential-based reward shaping for the true trajectory utility $R^{\star}$, and this shaping does not change the optimal policy set of the original task.
+*   **Bounded gradients**: It is proven that the reward term $ \mid r\_{\phi} \mid $ in the policy gradient update is bounded, which ensures the stability of stochastic gradient optimization and makes the alternating update process between the PRM and the policy more robust.
 
-## 实验结论
+## Experimental Conclusions
 
-实验在三个具有挑战性的智能体基准上进行：WebShop（网页购物）、VisualSokoban（视觉推箱子）和SOTOPIA（开放式社交互动）。
+Experiments were conducted on three challenging agent benchmarks: WebShop (web shopping), VisualSokoban (visual Sokoban), and SOTOPIA (open-ended social interaction).
 
-### 主要性能
-*   **全面超越基准**：在WebShop和VisualSokoban任务中，OPRL显著优于包括GPT-5、Gemini-2.5-Pro在内的前沿闭源模型，以及PPO、GRPO、PRIME、GiGPO等强RL基准。例如，在VisualSokoban上，成功率达到91.7%，远超其他方法。
+### Main Performance
+*   **Comprehensively surpassing the baselines**: On the WebShop and VisualSokoban tasks, OPRL significantly outperforms frontier closed-source models including GPT-5 and Gemini-2.5-Pro, as well as strong RL baselines such as PPO, GRPO, PRIME, and GiGPO. For example, on VisualSokoban, the success rate reaches 91.7%, far exceeding other methods.
 
 <br>
 
 
-| 方法 | WebShop (Qwen2.5-7B) | VisualSokoban (Qwen2.5-VL-7B) |
+| Method | WebShop (Qwen2.5-7B) | VisualSokoban (Qwen2.5-VL-7B) |
 | :--- | :---: | :---: | :---: |
-| | 成功率 | 分数 | 成功率 |
+| | Success Rate | Score | Success Rate |
 | GPT-5 | 37.5 | 66.1 | 16.6 |
 | Gemini-2.5-Pro | 30.5 | 38.4 | 16.0 |
 | Base Model (ReAct) | 21.5 | 47.3 | 14.1 |
 | + RLOO | 77.4 ± 1.1 | 87.6 ± 4.7 | 86.3 ± 0.6 |
 | + PRIME | 81.5 ± 1.8 | 91.3 ± 0.6 | - |
 | + GiGPO | 84.1 ± 3.9 | 91.2 ± 1.5 | 85.9 ± 2.6 |
-| **OPRL (本文)** | **86.5** ± 2.8 | **93.6** ± 1.0 | **91.7** ± 1.2 |
+| **OPRL (this paper)** | **86.5** ± 2.8 | **93.6** ± 1.0 | **91.7** ± 1.2 |
 
 <br>
 
-*   **在开放环境中表现出色**：在状态空间开放且奖励不可验证的SOTOPIA环境中，OPRL同样表现优异。与基线相比，在困难场景中，OPRL在自对弈（Self-Chat）模式下将目标完成度提升了14%，在与GPT-4o对弈时提升了高达48%。
+*   **Excelling in open environments**: In the SOTOPIA environment, where the state space is open and rewards are unverifiable, OPRL also performs strongly. Compared with the baselines, in difficult scenarios OPRL improves goal completion by 14% in Self-Chat mode and by as much as 48% when playing against GPT-4o.
 
 <br>
 
 
-| 模型 / 方法 | 自对弈 | 与GPT-4o对弈 |
+| Model / Method | Self-Chat | Against GPT-4o |
 | :--- | :---: | :---: | :---: | :---: |
-| | 目标 (困难) | 目标 (全部) | 目标 (困难) | 目标 (全部) |
+| | Goal (Hard) | Goal (All) | Goal (Hard) | Goal (All) |
 | **Qwen2.5-7B** | | | | |
 | + GRPO | 6.97 | 8.31 | 6.42 | 7.84 |
-| **+ OPRL (本文)** | **7.11** | **8.42** | **6.76** | **8.36** |
+| **+ OPRL (this paper)** | **7.11** | **8.42** | **6.76** | **8.36** |
 | **Llama3.1-8B** | | | | |
 | + GRPO | 7.92 | 9.12 | 6.68 | 8.14 |
-| **+ OPRL (本文)** | **8.06** | **9.20** | **7.16** | **8.45** |
+| **+ OPRL (this paper)** | **8.06** | **9.20** | **7.16** | **8.45** |
 
 <br>
 
-*   **对不同RL算法的普适性**：实验证明，OPRL能够稳定地提升包括RLOO、REINFORCE++和GRPO在内的多种不同RL算法的性能，展现了其强大的通用性和鲁棒性。
+*   **General applicability across different RL algorithms**: Experiments show that OPRL can consistently improve the performance of a variety of RL algorithms, including RLOO, REINFORCE++, and GRPO, demonstrating its strong generality and robustness.
 
 <img src="/images/2509.19199v1/x3.jpg" alt="OPRL在不同RL算法上的性能提升" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-### 样本效率与训练稳定性
+### Sample Efficiency and Training Stability
 
 <img src="/images/2509.19199v1/x4.jpg" alt="训练过程中的性能曲线" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-*   OPRL展现了卓越的样本效率和训练稳定性。如上图所示，与基线相比，OPRL能够更快地收敛到更高的性能水平，并且训练过程中的性能曲线更平滑、波动更小。例如，在WebShop中，OPRL仅用105步就达到了基线RLOO方法的最终性能，训练效率提升约2倍。这验证了其步骤级奖励信号能有效降低梯度方差，实现更稳定的策略更新。
+*   OPRL demonstrates excellent sample efficiency and training stability. As shown in the figure above, compared with the baselines, OPRL converges to a higher performance level more quickly, and the performance curves during training are smoother with smaller fluctuations. For example, on WebShop, OPRL reaches the final performance of the baseline RLOO method in only 105 steps, improving training efficiency by about 2x. This verifies that its step-level reward signal can effectively reduce gradient variance and enable more stable policy updates.
 
-### 探索效率分析
+### Exploration Efficiency Analysis
 
 <img src="/images/2509.19199v1/x5.jpg" alt="奖励与探索效率动态图" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-*   OPRL能够实现更高效的探索。如上图所示，在训练初期，隐式步骤奖励首先快速提升，随后带动了情节奖励的增长。这表明智能体首先学习到有效的局部动作启发，然后将它们组合成高回报的完整轨迹。同时，随着训练进行，智能体完成任务所需的平均步数显著减少，证明了OPRL能引导智能体减少不必要的动作，提升探索效率。
+*   OPRL enables more efficient exploration. As shown in the figure above, during the early stage of training, the implicit step reward rises rapidly first, and then drives the growth of episode reward. This indicates that the agent first learns effective local action heuristics and then combines them into complete high-reward trajectories. Meanwhile, as training progresses, the average number of steps required for the agent to complete the task decreases significantly, proving that OPRL can guide the agent to reduce unnecessary actions and improve exploration efficiency.
 
-### 消融实验
-消融实验验证了OPRL设计的关键性：
-*   **优势层面的融合至关重要**：直接将步骤奖励和结果奖励相加（w/ merged rewards）的效果远不如在优势层面进行融合的OPRL。这表明，需要用最终结果来调节中间步骤的功劳，以防止智能体进行投机性的刷分行为。
-*   **步骤级奖励优于Token级奖励**：使用token级别的过程奖励（w/ token-level PR）在长时程任务中表现次优，说明过于细粒度的奖励会引入噪声，增加策略学习的难度。
-*   **学习的奖励优于环境自带奖励**：与使用VisualSokoban环境提供的真实步骤惩罚（w/ ground-truth PR）相比，OPRL学习到的隐式奖励能带来更大的性能提升，证明了其奖励信号的优越性。
+### Ablation Study
+The ablation study validates the key design choices of OPRL:
+*   **Fusion at the advantage level is crucial**: Directly adding step rewards and outcome rewards together (w/ merged rewards) performs far worse than OPRL, which fuses them at the advantage level. This shows that the final outcome must be used to adjust the credit assigned to intermediate steps, preventing the agent from engaging in reward-hacking behavior.
+*   **Step-level rewards are better than token-level rewards**: Using token-level process rewards (w/ token-level PR) performs suboptimally on long-horizon tasks, indicating that overly fine-grained rewards introduce noise and make policy learning harder.
+*   **Learned rewards are better than environment-provided rewards**: Compared with using the true step penalties provided by the VisualSokoban environment (w/ ground-truth PR), the implicit rewards learned by OPRL bring larger performance gains, proving the superiority of its reward signal.
 
 <br>
 
 
-| 方法消融 | WebShop | VisualSokoban |
-|:---|:---:|:---:|:---:|
-| | 成功率 | 分数 | 成功率 |
-| RLOO (基线) | 76.6 | 84.2 | 85.9 |
+| Method Ablation | WebShop | VisualSokoban |
+|:---|:---:|:---:|
+| | Success Rate | Score | Success Rate |
+| RLOO (baseline) | 76.6 | 84.2 | 85.9 |
 | w/ ground-truth PR | - | - | 87.5 |
 | w/ merged rewards | 81.3 | 90.7 | 88.3 |
 | w/ token-level PR | 82.0 | 90.0 | 89.1 |
@@ -183,4 +183,4 @@ OPRL的训练过程是一个策略模型 $\pi\_{\theta}$ 和过程奖励模型 $
 
 <br>
 
-综上，OPRL是一种高效、稳定且通用的信誉分配策略，在多种交互式环境中显著提升了LLM智能体的性能。
+In summary, OPRL is an efficient, stable, and general credit assignment strategy that significantly improves the performance of LLM agents across a variety of interactive environments.

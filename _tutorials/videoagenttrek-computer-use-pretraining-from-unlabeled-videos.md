@@ -6,60 +6,60 @@ title: "VideoAgentTrek: Computer Use Pretraining from Unlabeled Videos"
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.19488v1
 
-- **作者**: Hongjin Su; Zekun Wang; Tao Yu; Binyuan Hui; Xinyuan Wang; Haoyuan Wu; Junda Chen; Jingren Zhou; Junli Wang; Jixuan Chen; 等14人
+- **Authors**: Hongjin Su; Zekun Wang; Tao Yu; Binyuan Hui; Xinyuan Wang; Haoyuan Wu; Junda Chen; Jingren Zhou; Junli Wang; Jixuan Chen; and 14 others
 
-- **发布机构**: Alibaba Group; The University of Hong Kong
+- **Publishing Organization**: Alibaba Group; The University of Hong Kong
 
 ---
 
 ## TL;DR
-本文提出了一种名为 VideoAgentTrek 的可扩展方法，通过一个逆动力学模块（VADM）从未经标注的公开屏幕录制视频中自动挖掘出结构化的训练数据，从而解决了训练计算机使用智能体（Agent）时对大规模手动标注数据的依赖问题。
+This paper proposes a scalable method called VideoAgentTrek, which automatically mines structured training data from unlabeled public screen-recording videos through an inverse dynamics module (VADM), thereby addressing the reliance on large-scale manually annotated data when training computer-use intelligent体 (Agent).
 
-## 关键定义
-*   **VideoAgentTrek**: 一个完整的、可扩展的自动化流程，旨在将无标签的屏幕录制视频转化为可用于训练计算机使用智能体的高质量数据。该流程包含三个主要阶段：视频收集与预处理、通过 VADM 模块提取结构化动作、以及利用所提取数据进行模型预训练和微调。
-*   **VADM (VideoAgentTrek inverse Dynamics Module)**: VideoAgentTrek 的核心组件，一个逆动力学模块，负责从原始视频片段中恢复出结构化的动作信息。它包含两个关键部分：(1) **动作事件检测器**，用于在视频中精准定位（精确到毫秒）各种 GUI 交互行为（如点击、输入）的起止时间点；(2) **动作参数化识别器**，用于从已定位的视频片段中抽取出具体的动作参数（如点击的坐标 $$(x,y)$$、输入的文本内容）。
-*   **GUI-Filter**: 一种轻量级的视频预处理工具。它基于 YOLOv8x 模型构建，通过检测视频帧中是否存在鼠标光标，来高效地过滤和保留仅包含图形用户界面（GUI）交互的视频片段，从而去除无关内容（如演示文稿、真人讲解）。
+## Key Definitions
+*   **VideoAgentTrek**: A complete, scalable automated pipeline designed to transform unlabeled screen-recording videos into high-quality data for training computer-use intelligent体. The pipeline consists of three main stages: video collection and preprocessing, structured action extraction via the VADM module, and model pretraining and fine-tuning using the extracted data.
+*   **VADM (VideoAgentTrek inverse Dynamics Module)**: The core component of VideoAgentTrek, an inverse dynamics module responsible for recovering structured action information from raw video clips. It contains two key parts: (1) an **action event detector**, used to precisely locate the start and end times of various GUI interactions in the video down to the millisecond (such as clicks and typing); and (2) an **action parameter recognizer**, used to extract specific action parameters from the localized video clips, such as click coordinates $$(x,y)$$ and typed text content.
+*   **GUI-Filter**: A lightweight video preprocessing tool. Built on the YOLOv8x model, it efficiently filters and retains only video clips containing graphical user interface (GUI) interactions by detecting whether a mouse cursor is present in video frames, thereby removing irrelevant content such as slides and live narration.
 
-## 相关工作
-当前，获取计算机使用智能体训练数据的方法主要有三种：
-1.  **人工标注**: 通过人工记录操作轨迹，能够生成高质量、高精度的标注数据，但成本极其高昂，难以规模化，且覆盖的应用场景有限。
-2.  **程序化合成**: 在模拟器或脚本化环境中自动生成大量交互数据，虽然规模大、参数精确，但往往缺乏真实世界UI的多样性和复杂性，与现实场景存在偏差。
-3.  **网络挖掘**: 从网络教程、RPA日志等资源中获取数据，覆盖面广、多样性好，但通常缺少精确的动作时间边界和结构化的动作参数，数据质量参差不齐。
+## Related Work
+At present, there are three main ways to obtain training data for computer-use intelligent体:
+1.  **Manual annotation**: By manually recording operation trajectories, high-quality and highly accurate annotated data can be generated, but the cost is extremely high, making it difficult to scale, and the covered application scenarios are limited.
+2.  **Programmatic synthesis**: Large amounts of interaction data are automatically generated in simulators or scripted environments. Although the scale is large and the parameters are precise, it often lacks the diversity and complexity of real-world UIs and deviates from real scenarios.
+3.  **Web mining**: Data is obtained from online tutorials, RPA logs, and other resources. This offers broad coverage and good diversity, but it usually lacks precise action time boundaries and structured action parameters, and the data quality is uneven.
 
-研究领域的关键瓶颈在于，缺乏一种能够兼顾**规模、多样性和质量**的数据获取方法。本文旨在解决这一核心问题：如何将互联网上大量存在的、非结构化的屏幕录制视频，自动化地转化为可直接用于智能体训练的、带有精确参数的结构化交互轨迹，从而摆脱对昂贵人工标注的依赖。
+The key bottleneck in this research area is the lack of a data acquisition method that can balance **scale, diversity, and quality**. This paper aims to solve this core problem: how to automatically transform the large amount of unstructured screen-recording videos on the internet into structured interaction trajectories with precise parameters that can be directly used for intelligent体 training, thereby eliminating dependence on expensive manual annotation.
 
-## 本文方法
-本文提出的 VideoAgentTrek 是一个三阶段的自动化流程，能将无标签的网络视频转化为结构化的智能体训练数据。
+## Method
+The proposed VideoAgentTrek is a three-stage automated pipeline that converts unlabeled web videos into structured training data for intelligent体.
 
-<img src="/images/2510.19488v1/x1.jpg" alt="VideoAgentTrek 概览" style="width:90%; max-width:700px; margin:auto; display:block;">
-*VideoAgentTrek 概览。(1) **视频收集与预处理**: 爬取屏幕录制教程并通过 GUI-Filter 筛选出 GUI 操作片段。(2) **VADM**: 一个逆动力学模块，首先进行密集的动作事件检测以定位剪辑并分配动作类型，然后进行*动作参数化*（例如，点击坐标，输入的文本）以产生结构化的 $(\text{截图}, \text{动作}, \text{参数})$ 轨迹。(3) **模型预训练与微调**: 使用挖掘出的轨迹对计算机使用智能体进行持续预训练和监督微调。*
+<img src="/images/2510.19488v1/x1.jpg" alt="VideoAgentTrek Overview" style="width:90%; max-width:700px; margin:auto; display:block;">
+*Overview of VideoAgentTrek. (1) **Video collection and preprocessing**: Crawl screen-recording tutorials and use GUI-Filter to select GUI operation clips. (2) **VADM**: An inverse dynamics module that first performs dense action event detection to localize clips and assign action types, then performs *action parameterization* (e.g., click coordinates, typed text) to produce structured $(\text{screenshot}, \text{action}, \text{parameter})$ trajectories. (3) **Model pretraining and fine-tuning**: Use the mined trajectories for continued pretraining and supervised fine-tuning of computer-use intelligent体.*
 
 
-## 视频收集与预处理
+## Video Collection and Preprocessing
 
-### 视频采集
-本文采用一种可扩展的视频收集策略。首先使用 "Excel 教程" 等种子关键词搜索视频，然后对高质量频道（样本通过率 $\geq$ 80%）下的所有视频进行整体收录，利用这些频道的标签和元数据进行迭代式发现。这种基于“频道一致性”的策略在少量人工监督下，高效地收集了约55,000个候选视频（约10,000小时）。
+### Video Collection
+This paper adopts a scalable video collection strategy. It first uses seed keywords such as "Excel tutorial" to search for videos, and then ingests all videos from high-quality channels (sample pass rate $\geq$ 80%) as a whole, using the channels’ tags and metadata for iterative discovery. This “channel consistency”-based strategy efficiently collected about 55,000 candidate videos (about 10,000 hours) with a small amount of human supervision.
 
-<img src="/images/2510.19488v1/x2.jpg" alt="视频采集流程" style="width:90%; max-width:700px; margin:auto; display:block;">
-*从种子关键词和标签出发，搜索和评估视频，扩展到相关视频和高质量频道（通过率$\geq$80%），并迭代收集包含GUI的视频用于VAT。*
+<img src="/images/2510.19488v1/x2.jpg" alt="Video Collection Process" style="width:90%; max-width:700px; margin:auto; display:block;">
+*Starting from seed keywords and tags, videos are searched and evaluated, expanded to related videos and high-quality channels (pass rate $\geq$80%), and GUI-containing videos are iteratively collected for VAT.*
 
-### 视频预处理
-为了从候选视频中精确提取包含 GUI 交互的片段，本文开发了 $$GUI-Filter$$ 模型。这是一个基于 YOLOv8x 的轻量级光标检测模型，能够过滤掉演示文稿等非交互内容。具体筛选标准为：连续6秒以上且至少80%的帧包含光标的片段被保留。最终，该工具从10,000小时的原始视频中成功提取了7,377小时的有效GUI交互录像。
+### Video Preprocessing
+To precisely extract GUI-interaction clips from candidate videos, this paper developed the $$GUI-Filter$$ model. This is a lightweight cursor detection model based on YOLOv8x that can filter out non-interactive content such as slides. The specific filtering criterion is: clips lasting more than 6 consecutive seconds and with at least 80% of frames containing a cursor are retained. In the end, this tool successfully extracted 7,377 hours of valid GUI interaction recordings from 10,000 hours of raw video.
 
-### 数据分析
-收集到的视频数据在分辨率（97%为720p或更高）和主题上都表现出高质量。通过对标题和描述的分析，视频内容主要为教程类（69.6%），覆盖了操作系统、专业软件、办公和日常应用等多个领域，其中操作系统（OS）相关内容占比最高（约36%），保证了数据的广度和实用性。
+### Data Analysis
+The collected video data shows high quality in both resolution (97% are 720p or higher) and topic coverage. Analysis of titles and descriptions shows that the videos are mainly tutorials (69.6%), covering multiple domains such as operating systems, professional software, office work, and everyday applications, with operating system (OS)-related content accounting for the largest share (about 36%), ensuring both breadth and practicality of the data.
 
-<img src="/images/2510.19488v1/x3.jpg" alt="领域分布" style="width:80%; max-width:300px; margin:auto; display:block;">
-*领域分布图*
+<img src="/images/2510.19488v1/x3.jpg" alt="Domain Distribution" style="width:80%; max-width:300px; margin:auto; display:block;">
+*Domain distribution chart*
 
-## VADM：逆动力学模块
-VADM 是本文的技术核心，它模仿机器人领域的逆动力学思想，从观测（视频像素）中反推出执行的动作。该模块无需人工标注，即可将视频转化为结构化的 $$(截图, 动作, 思考)$$ 序列。
+## VADM: Inverse Dynamics Module
+VADM is the technical core of this paper. It mimics the inverse dynamics idea in robotics, inferring the executed actions from observations (video pixels). Without manual annotation, this module can convert videos into structured $$(screenshot, action, thought)$$ sequences.
 
-<img src="/images/2510.19488v1/x4.jpg" alt="VADM 流程图" style="width:85%; max-width:600px; margin:auto; display:block;">
-*VADM 流程：给定一个屏幕录制视频（可选字幕），该模块 (1) 检测 GUI 动作事件并分割剪辑，(2) 参数化每个动作（类型和参数），以及 (3) 生成步骤级别的思考，最终产出可供训练的 {动作剪辑, 动作, 思考} 序列。*
+<img src="/images/2510.19488v1/x4.jpg" alt="VADM Flowchart" style="width:85%; max-width:600px; margin:auto; display:block;">
+*VADM pipeline: given a screen-recording video (optional subtitles), the module (1) detects GUI action events and segments clips, (2) parameterizes each action (type and parameters), and (3) generates step-level thoughts, ultimately producing a trainable {action clip, action, thought} sequence.*
 
-### 动作事件检测
-此阶段的目标是在无标签视频 $$v$$ 中进行密集的事件检测，输出一系列带有精确起止时间的动作集合 $$S={(a_k, t_k^s, t_k^e)}_k=1^K$$。
+### Action Event Detection
+The goal of this stage is to perform dense event detection in the unlabeled video $$v$$ and output a set of actions with precise start and end times $$S={(a_k, t_k^s, t_k^e)}_k=1^K$$.
 
 
 {% raw %}$$
@@ -67,10 +67,10 @@ f_{\theta}(v) \rightarrow \mathcal{S}=\{(a_{k},t_{k}^{\mathrm{s}},t_{k}^{\mathrm
 $${% endraw %}
 
 
-本文利用 OpenCUA 数据集自动生成带有时间戳的 GUI 事件作为监督数据，对 Qwen2.5-VL-7B-Instruct 模型进行全参数微调，使其能够直接从视频中预测出动作类型及其毫秒级的时间边界。
+The paper uses the OpenCUA dataset to automatically generate timestamped GUI events as supervision data, and fully fine-tunes the Qwen2.5-VL-7B-Instruct model so that it can directly predict action types and their millisecond-level time boundaries from video.
 
-### 动作参数化
-在检测到动作片段 $v\_k=v[t\_k^s:t\_k^e]$ 后，此阶段的目标是识别出具体的动作参数 $$π_k$$。
+### Action Parameterization
+After detecting the action clip $v\_k=v[t\_k^s:t\_k^e]$, the goal of this stage is to identify the specific action parameters $$π_k$$.
 
 
 {% raw %}$$
@@ -78,64 +78,64 @@ h_{\phi}(v_{k}) \rightarrow (\hat{a}_{k},\pi_{k}).
 $${% endraw %}
 
 
-例如，对于点击动作，输出 $$(click, (x,y))$$；对于打字动作，输出 $$(type, <content>)$$。同样地，本文利用 OpenCUA 的原始日志生成监督数据，对 Qwen2.5-VL 模型进行微调，使其能从视频片段中直接解码出动作类型和具体参数。
+For example, for a click action, the output is $$(click, (x,y))$$; for a typing action, the output is $$(type, <content>)$$. Similarly, the paper uses the original logs from OpenCUA to generate supervision data and fine-tunes the Qwen2.5-VL model so that it can directly decode the action type and specific parameters from video clips.
 
-### 内心独白生成
-为了让模型学习动作背后的意图，本文还为每个动作生成了一段简短的“内心独白” $$r_k$$。通过向 GPT-4.5 Medium 提供动作类型、参数、动作前后的屏幕截图以及相关的语音识别（ASR）文本等上下文信息，模型会生成一段描述意图和计划的文本。这使得最终的数据格式成为类似 ReAct 风格的 $$(截图, 思考, 动作, 参数)$$ 序列，有助于提升模型的规划和推理能力。
+### Inner Monologue Generation
+To help the model learn the intent behind each action, this paper also generates a short “inner monologue” $$r_k$$ for every action. By providing GPT-4.5 Medium with contextual information such as the action type, parameters, screenshots before and after the action, and related automatic speech recognition (ASR) text, the model generates a text that describes the intent and plan. This turns the final data format into a ReAct-like $$(screenshot, thought, action, parameters)$$ sequence, which helps improve the model’s planning and reasoning abilities.
 
-## 计算机使用模型预训练
-本文采用一种两阶段训练策略来验证 VideoAgentTrek 数据的有效性。
+## Pretraining Computer-Use Models
+This paper adopts a two-stage training strategy to validate the effectiveness of the VideoAgentTrek data.
 
-### 数据准备
-1.  **VideoAgentTrek 数据**: 将39,000个视频通过上述流程处理，生成了约152万个交互步骤（约260亿 tokens）。
-2.  **人工标注数据**: 整合了 OpenCUA 和 AGUVIS 等公开数据集中的人工标注轨迹，约80亿 tokens。
-3.  **GUI 定位数据**: 引入了 OSWorld-G 数据集中的定位数据对，以增强模型对界面元素的感知能力，约10亿 tokens。
+### Data Preparation
+1.  **VideoAgentTrek data**: 39,000 videos were processed through the above pipeline, generating about 15.2 million interaction steps (about 26 billion tokens).
+2.  **Human-annotated data**: Human-labeled trajectories from public datasets such as OpenCUA and AGUVIS were integrated, totaling about 8 billion tokens.
+3.  **GUI localization data**: Localization pairs from the OSWorld-G dataset were introduced to enhance the model’s perception of interface elements, totaling about 1 billion tokens.
 
-### 训练策略
-1.  **第一阶段：持续预训练**: 使用 VideoAgentTrek 生成的大规模、多样但可能含噪的数据，对 Qwen2.5-VL-7B 模型进行一轮预训练。此阶段的目标是让模型学习广泛的 GUI 交互模式和视觉基础。
-2.  **第二阶段：监督微调 (SFT)**: 在一小部分高质量、人工标注的数据集上进行微调。此阶段的目标是磨练模型在具体任务上的策略执行能力和遵循指令的能力。
+### Training Strategy
+1.  **Stage 1: Continued pretraining**: The large-scale, diverse, but potentially noisy data generated by VideoAgentTrek is used to pretrain the Qwen2.5-VL-7B model. The goal of this stage is to let the model learn broad GUI interaction patterns and visual foundations.
+2.  **Stage 2: Supervised fine-tuning (SFT)**: Fine-tuning is performed on a small amount of high-quality, human-annotated data. The goal of this stage is to sharpen the model’s policy execution and instruction-following abilities on specific tasks.
 
-这种“先广泛学习，后精细打磨”的策略，旨在充分利用大规模视频数据的广度来构建稳健的底层能力，再利用高质量标注数据的精度来优化上层策略。
+This “learn broadly first, then refine carefully” strategy aims to fully leverage the breadth of large-scale video data to build robust foundational capabilities, and then use the precision of high-quality labeled data to optimize higher-level policies.
 
-## 实验结论
-本文在两个主流计算机使用智能体基准上验证了方法的有效性：OSWorld-Verified（在线真实环境）和 AgentNetBench（离线评估）。
+## Experimental Results
+This paper validates the effectiveness of the method on two mainstream computer-use intelligent agent benchmarks: OSWorld-Verified (online real-world environment) and AgentNetBench (offline evaluation).
 
-<img src="/images/2510.19488v1/x5.jpg" alt="实验结果图" style="width:85%; max-width:600px; margin:auto; display:block;">
-*在 OSWorld-Verified 和 AgentNetBench 上的实验结果。VideoAgentTrek 相较于基线模型展现出显著提升，测试时扩展步数能带来额外性能增益。*
+<img src="/images/2510.19488v1/x5.jpg" alt="Experimental results" style="width:85%; max-width:600px; margin:auto; display:block;">
+*Experimental results on OSWorld-Verified and AgentNetBench. VideoAgentTrek shows significant improvements over the baseline model, and test-time scaling in the number of steps brings additional performance gains.*
 
-**主要结果：**
-*   **在线与离线性能显著提升**: 在 AgentNetBench 上，加入视频预训练后，模型的单步成功率从基线的 64.1% 提升至 69.3%。在更具挑战性的在线环境 OSWorld-Verified 上，任务成功率从仅SFT的 9.3% 大幅提升至 15.8%（在50步预算下），相对提升了 70%。这证明了视频预训练带来的知识迁移是有效的，尤其是在需要应对真实世界视觉变化的在线环境中。
-*   **数据规模与性能成正比**: 实验表明，随着预训练阶段使用的视频数据量从0%增加到100%，模型的最终性能在两个基准上都获得了持续提升，验证了 VideoAgentTrek 方法的可扩展性。
+**Main Results:**
+*   **Significant improvements in both online and offline performance**: On AgentNetBench, after adding video pretraining, the model’s single-step success rate improved from the baseline’s 64.1% to 69.3%. In the more challenging online environment OSWorld-Verified, the task success rate increased substantially from 9.3% with SFT only to 15.8% (with a 50-step budget), a relative improvement of 70%. This demonstrates that the knowledge transfer brought by video pretraining is effective, especially in online environments that require handling real-world visual changes.
+*   **Performance scales with data size**: Experiments show that as the amount of video data used in the pretraining stage increases from 0% to 100%, the model’s final performance improves steadily on both benchmarks, validating the scalability of the VideoAgentTrek method.
 
-<img src="/images/2510.19488v1/x6.jpg" alt="性能随数据规模扩展图" style="width:85%; max-width:450px; margin:auto; display:block;">
-*性能扩展图*
+<img src="/images/2510.19488v1/x6.jpg" alt="Performance scaling with data size" style="width:85%; max-width:450px; margin:auto; display:block;">
+*Performance scaling*
 
-*   **改善长时程规划能力**: VideoAgentTrek 生成的轨迹平均长度为39.25步，远超现有数据集。这种长轨迹的预训练带来了显著优势：在 OSWorld-Verified 测试中，当允许的交互步数从20步增加到50步时，经过视频预训练的模型任务成功率从14.13%提升到15.78%，表现出有效的测试时扩展能力。相比之下，仅经过 SFT 训练的模型性能则停滞不前，表明其缺乏利用额外步骤进行探索和纠错的能力。
-*   **VADM 模块性能可靠**: VADM 的动作事件检测器在留出测试集上表现出色，整体精确率达到0.88，召回率为0.71，尤其对于点击、滚动等视觉特征明显的动作识别效果好。动作参数化模块虽然难以自动化评估，但通过人工盲审发现，其预测的参数在多数情况下是准确且可执行的，足以构建有效的训练轨迹。
+*   **Improved long-horizon planning ability**: The trajectories generated by VideoAgentTrek have an average length of 39.25 steps, far exceeding existing datasets. Pretraining on such long trajectories brings clear benefits: in OSWorld-Verified, when the allowed number of interaction steps increases from 20 to 50, the task success rate of the video-pretrained model rises from 14.13% to 15.78%, showing effective test-time scaling. In contrast, the model trained only with SFT shows no further improvement, indicating that it lacks the ability to use extra steps for exploration and error correction.
+*   **Reliable VADM module performance**: The action event detector in VADM performs well on the held-out test set, achieving an overall precision of 0.88 and a recall of 0.71, with especially strong recognition of visually distinctive actions such as clicking and scrolling. Although the action parameterization module is difficult to evaluate automatically, manual blind review found that its predicted parameters are accurate and executable in most cases, sufficient for constructing effective training trajectories.
 
 
-| 动作事件检测器评估 (留出测试集) |  |  |
+| Action Event Detector Evaluation (Held-out Test Set) |  |  |
 | :--- | :--- | :--- |
-| **动作类型** | **F1分数** | **精确率** |
-| 点击 (Click) | 0.817 | 0.949 |
-| 拖拽 (Drag) | 0.449 | 0.583 |
-| 按压 (Press) | 0.449 | 0.596 |
-| 滚动 (Scroll) | 0.840 | 0.985 |
-| 输入 (Type) | 0.771 | 0.902 |
+| **Action Type** | **F1 Score** | **Precision** |
+| Click | 0.817 | 0.949 |
+| Drag | 0.449 | 0.583 |
+| Press | 0.449 | 0.596 |
+| Scroll | 0.840 | 0.985 |
+| Type | 0.771 | 0.902 |
 | **Micro Avg.** | **0.784** | **0.879** |
 
 <br>
 
 
-| 动作参数化评估 (人工盲审) |  |  |
+| Action Parameterization Evaluation (Manual Blind Review) |  |  |
 | :--- | :--- | :--- |
-| **动作类型** | **评估数量** | **正确率** |
-| 点击 | 324 | 0.713 |
-| 拖拽 | 22 | 0.366 |
-| 按压 | 47 | 0.362 |
-| 滚动 | 34 | 0.735 |
-| 输入 | 73 | 0.671 |
+| **Action Type** | **Number Evaluated** | **Accuracy** |
+| Click | 324 | 0.713 |
+| Drag | 22 | 0.366 |
+| Press | 47 | 0.362 |
+| Scroll | 34 | 0.735 |
+| Type | 73 | 0.671 |
 
 <br>
 
-**最终结论**: 本文的实验结果有力地证明，互联网上大量存在的被动屏幕录制视频可以被成功转化为高质量的监督信号，为训练更强大、更鲁棒的计算机使用智能体提供了一条可扩展且有效的路径，是昂贵人工标注的一种可行替代方案。
+**Final Conclusion**: The experimental results strongly demonstrate that the large amount of passive screen-recording video available on the internet can be successfully transformed into high-quality supervision signals, providing a scalable and effective path for training more powerful and robust computer-use intelligent agents, and serving as a viable alternative to expensive human annotation.

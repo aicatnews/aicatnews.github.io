@@ -2,71 +2,70 @@
 layout: default
 title: "On GRPO Collapse in Search-R1: The Lazy Likelihood-Displacement Death Spiral"
 ---
-
-## 破解AI智能体训练“死亡螺旋”：LLDS让Qwen2.5性能大涨37.8%
+## Cracking the “Death Spiral” in AI Agent Training: LLDS Boosts Qwen2.5 Performance by 37.8%
 
 <img src="/images/2512.04220v1/A__title.jpg" alt="" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-当AI智能体（Agent）学会使用搜索引擎等外部工具时，它们解决复杂问题的能力将发生质的飞跃。然而，一条“捷径”式的训练方法——**组相对策略优化**（**Group Relative Policy Optimization, GRPO**）却隐藏着一个致命缺陷：模型在训练中常常毫无征兆地“突然死亡”，性能一落千丈。
+When AI 智能体 (Agent) learn to use external tools such as search engines, their ability to solve complex problems undergoes a qualitative leap. However, a shortcut-like training method—**Group Relative Policy Optimization** (**GRPO**)—hides a fatal flaw: during training, models often “suddenly die” without warning, and performance plummets.
 
 > ArXiv URL：http://arxiv.org/abs/2512.04220v1
 
-这究竟是为什么？最近，来自UBC、UC Berkeley等顶尖机构的研究者们，终于揪出了导致这场“悲剧”的幕后黑手，并提出了一种极其简单有效的“解药”，不仅稳定了训练过程，还让Qwen2.5系列模型在多项问答任务上性能飙升，最高提升达**37.8%**！
+Why does this happen? Recently, researchers from top institutions such as UBC and UC Berkeley finally identified the culprit behind this “tragedy” and proposed an extremely simple yet effective “antidote.” It not only stabilized training, but also sent Qwen2.5 series model performance soaring across multiple question-answering tasks, with gains of up to **37.8%**!
 
 <img src="/images/2512.04220v1/performance_comparison_7b_v2.jpg" alt="Qwen2.5-7B模型性能对比" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### AI智能体的“阿喀琉斯之踵”：GRPO与训练崩溃
+### The “Achilles’ Heel” of AI 智能体: GRPO and Training Collapse
 
-让大模型学会使用工具，强化学习（RL）是一条必经之路。
+For large models to learn to use tools, reinforcement learning (RL) is a necessary path.
 
-GRPO因其收敛快、无需价值函数等优点，在**工具集成强化学习**（**Tool-Integrated Reinforcement Learning, TIRL**）领域备受青睐，知名工作Search-R1就采用了该方法。
+GRPO is favored in the field of **Tool-Integrated Reinforcement Learning** (**TIRL**) for its fast convergence and lack of a value function requirement; the well-known work Search-R1 adopted this method.
 
-然而，美好的表象下是残酷的现实。
+However, beneath the appealing surface lies a harsh reality.
 
-研究人员发现，使用GRPO训练的智能体，尤其是在需要多轮工具交互的复杂任务中，经常会遭遇灾难性的训练崩溃。
+Researchers found that AI 智能体 trained with GRPO, especially on complex tasks requiring multi-turn tool interactions, often suffer catastrophic training collapse.
 
-模型奖励值会突然断崖式下跌，仿佛一夜之间忘记了所有技能。
+The model’s reward value can suddenly drop off a cliff, as if it had forgotten all its skills overnight.
 
-尽管人们早已观察到这一现象，但其背后的根本原因一直是个谜。
+Although this phenomenon has long been observed, the underlying root cause has remained a mystery.
 
-### 揭开谜底：懒惰似然位移与“死亡螺旋”
+### Uncovering the Truth: Lazy Likelihood Displacement and the “Death Spiral”
 
-这篇研究首次系统性地指出了问题的根源：**懒惰似然位移**（**Lazy Likelihood Displacement, LLD**）。
+This study is the first to systematically point to the root of the problem: **Lazy Likelihood Displacement** (**LLD**).
 
-这是一个听起来有点拗口，但现象却非常直观的概念。
+It is a concept that sounds a bit awkward, but the phenomenon itself is very intuitive.
 
-简单来说，就是在GRPO的优化过程中，模型对正确答案和错误答案的“信心”（即生成概率的似然值）都出现了停滞甚至系统性下降。
+Simply put, during GRPO optimization, the model’s “confidence” in both correct and incorrect answers—that is, the likelihood of generating them—becomes stagnant or even declines systematically.
 
-整个过程可以分为三个触目惊心的阶段：
+The whole process can be divided into three alarming stages:
 
-1.  **早期停滞**：训练初期，尽管任务奖励在上升，但正确答案的似然值却原地踏步。
+1.  **Early stagnation**: In the early stage of training, although task rewards are rising, the likelihood of the correct answer remains stuck in place.
 
-2.  **稳定衰减**：随着训练进行，似然值开始单调下降，危险信号已经出现。
+2.  **Stable decay**: As training continues, the likelihood begins to decline monotonically, and warning signs have already appeared.
 
-3.  **加速崩溃**：似然值急剧下跌，导致梯度爆炸，最终引发奖励雪崩。
+3.  **Accelerated collapse**: The likelihood drops sharply, causing gradient explosion and ultimately triggering a reward avalanche.
 
 <img src="/images/2512.04220v1/LD_dynamic_v3.jpg" alt="似然位移动态过程" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-研究者将这个自我强化的恶性循环命名为**LLD死亡螺旋**（**LLD Death Spiral**）：
-> 似然下降 ➡️ 模型信心不足 ➡️ 来自低似然错误答案的负梯度被放大 ➡️ 进一步扼杀正确答案的似然 ➡️ 梯度爆炸 ➡️ 彻底崩溃！
+The researchers named this self-reinforcing vicious cycle the **LLD Death Spiral**:
+> Likelihood drops ➡️ the model lacks confidence ➡️ negative gradients from low-likelihood wrong answers are amplified ➡️ the likelihood of the correct answer is further suppressed ➡️ gradient explosion ➡️ total collapse!
 
-如下图所示，在崩溃前夕，模型的熵（不确定性）会急剧飙升，这正是LLD问题恶化的一个明确信号。
+As shown in the figure below, on the eve of collapse, the model’s entropy (uncertainty) surges sharply, which is a clear signal that the LLD problem is worsening.
 
 <img src="/images/2512.04220v1/entropy_fig.jpg" alt="训练过程中的熵变化" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-### 精准“手术”：轻量级正则化方法LLDS
+### Precise “Surgery”: The Lightweight Regularization Method LLDS
 
-找到了病因，如何对症下药？研究者提出了一种名为**LLDS**（Likelihood-Preserving Regularization）的轻量级似然保持正则化方法。
+Having identified the cause, how should it be treated? The researchers proposed a lightweight likelihood-preserving regularization method called **LLDS** (Likelihood-Preserving Regularization).
 
-LLDS的设计堪称“外科手术”般的精准与优雅。
+The design of LLDS is remarkably precise and elegant, like “surgical” intervention.
 
-它只在必要的时候、对必要的部分进行干预，其核心是两层巧妙的选择机制：
+It intervenes only when necessary and only on the necessary parts, with its core built on two clever selection mechanisms:
 
-*   **响应级门控**：只在一个轨迹（response）的整体似然值下降时，正则化项才会被激活。
+*   **Response-level gating**: The regularization term is activated only when the overall likelihood of a trajectory (response) declines.
 
-*   **令牌级选择性**：激活后，只惩罚那些导致似然下降的特定Token。
+*   **Token-level selectivity**: Once activated, it penalizes only the specific tokens that cause the likelihood to drop.
 
-用公式表达其核心思想如下：
+Its core idea can be expressed by the following formula:
 
 
 
@@ -79,34 +78,34 @@ $${% endraw %}
 
 
 
-其中$ \mathbf{1}[\cdot] $是响应级门控，只有当整个响应的似然下降时（$\Delta\_{\text{total}} > 0$）才生效。而$ \max(0, \cdot) $则保证只对似然下降的Token（$\Delta\_{y\_i} > 0$）施加惩罚。
+Here, $ \mathbf{1}[\cdot] $ is the response-level gate, which takes effect only when the likelihood of the entire response decreases ($\Delta\_{\text{total}} > 0$). Meanwhile, $ \max(0, \cdot) $ ensures that only tokens with declining likelihood ($\Delta\_{y\_i} > 0$) are penalized.
 
-这种“点到为止”的设计，既能有效阻止似然值的无故下滑，又最大限度地减少了对GRPO正常优化的干扰。
+This “just enough” design can effectively prevent the likelihood from falling for no reason while minimizing interference with normal GRPO optimization.
 
-### 效果惊人：全面稳定与性能飞跃
+### Stunning Results: Full Stability and a Leap in Performance
 
-LLDS的效果立竿见影。
+The effects of LLDS were immediate.
 
-研究者在Qwen2.5-3B和7B的Base与Instruct版本上进行了实验。结果显示，原生的GRPO训练无一例外地在300步内崩溃。
+The researchers conducted experiments on the Base and Instruct versions of Qwen2.5-3B and 7B. The results showed that native GRPO training collapsed within 300 steps in every case.
 
-而加入了LLDS之后，所有模型的训练都变得异常稳定，奖励持续攀升，成功摆脱了“死亡螺旋”的宿命。
+After adding LLDS, however, training for all models became exceptionally stable, rewards kept rising, and the models successfully escaped the fate of the “death spiral.”
 
 <img src="/images/2512.04220v1/comparison_7b_instruct.jpg" alt="不同模型上GRPO与GRPO+LLDS的训练奖励对比" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-更重要的是，稳定的训练带来了实打实的性能提升。
+More importantly, stable training brought tangible performance gains.
 
-在覆盖通用问答和多跳问答的7个基准测试中，LLDS方法取得了全面胜利。
+Across 7 benchmarks covering general question answering and multi-hop question answering, LLDS achieved an across-the-board victory.
 
-*   在Qwen2.5-3B模型上，性能平均提升**+37.8%**。
+*   On the Qwen2.5-3B model, performance improved by an average of **+37.8%**.
 
-*   在Qwen2.5-7B模型上，性能平均提升**+32.0%**。
+*   On the Qwen2.5-7B model, performance improved by an average of **+32.0%**.
 
-这些数据雄辩地证明，LLDS不仅是GRPO的“救星”，更是释放其潜力的“催化剂”。
+These results eloquently demonstrate that LLDS is not only GRPO’s “savior,” but also the “catalyst” that unlocks its potential.
 
-### 结语
+### Conclusion
 
-这项研究不仅为我们揭示了GRPO在工具集成场景下频繁崩溃的深层原因——**懒惰似然位移**（**LLD**），还提供了一个即插即用、效果显著的解决方案LLDS。
+This study not only reveals the deep reason why GRPO frequently collapses in tool-integrated scenarios—**Lazy Likelihood Displacement** (**LLD**)—but also provides a plug-and-play solution with remarkable results: LLDS.
 
-它也给所有AI研究者和工程师带来了一个重要的启示：**在训练AI智能体时，别只盯着奖励曲线！**
+It also offers an important lesson for all AI researchers and engineers: **when training AI 智能体, don’t just stare at the reward curve!**
 
-似然值的动态变化是更早、更可靠的“健康晴雨表”。通过监控并维持似然值的稳定，我们才能构建出更强大、更可靠的AI智能体，让它们在通往通用人工智能的道路上行稳致远。
+The dynamic changes in likelihood are a earlier and more reliable “health barometer.” By monitoring and maintaining stable likelihood values, we can build more powerful and more reliable AI 智能体, enabling them to move steadily and far on the road toward artificial general intelligence.

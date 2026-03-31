@@ -2,91 +2,90 @@
 layout: default
 title: "When Less is More: 8-bit Quantization Improves Continual Learning in Large Language Models"
 ---
-
-## 少即是多？8-bit量化竟让大模型持续学习能力暴涨15%
+## Is Less More? 8-bit Quantization Actually Boosts Large Models’ Continual Learning Ability by 15%
 
 <img src="/images/2512.18934v1/A__title.jpg" alt="" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-在人工智能领域，我们通常认为“精度即正义”：模型参数的精度越高（如FP16），性能就越好；而量化（Quantization）通常被视为一种为了节省计算资源而不得不做出的妥协，往往伴随着性能的损失。
+In the field of artificial intelligence, we usually believe that “precision is everything”: the higher the precision of model parameters (such as FP16), the better the performance; quantization is often seen as a compromise made to save computing resources, usually at the cost of performance.
 
 > ArXiv URL：http://arxiv.org/abs/2512.18934v1
 
-但如果我告诉你，在**持续学习**（Continual Learning）的场景下，这个常识被彻底颠覆了呢？
+But what if I told you that in the setting of **Continual Learning**, this common sense is completely overturned?
 
-最新的研究发现，**低精度的量化模型（如8-bit）在学习新任务时，反而比高精度模型更能记住旧知识，甚至在某些任务上性能翻倍！** 这不仅是一个技术上的反直觉发现，更为我们在资源受限设备上部署能“终身学习”的AI提供了全新的思路。
+The latest research finds that **low-precision quantized models (such as 8-bit) can actually remember old knowledge better than high-precision models when learning new tasks, and in some tasks their performance even doubles!** This is not only a technically counterintuitive finding, but also offers a brand-new approach to deploying AI that can “learn for life” on resource-constrained devices.
 
-本文将带你深入解读这篇名为《When Less is More: 8-bit Quantization Improves Continual Learning in Large Language Models》的论文，揭秘量化噪音如何成为对抗“灾难性遗忘”的神奇解药。
+This article will take you deep into the paper titled *When Less is More: 8-bit Quantization Improves Continual Learning in Large Language Models*, revealing how quantization noise can become a magical remedy against “catastrophic forgetting.”
 
-### 核心挑战：灾难性遗忘
+### The Core Challenge: Catastrophic Forgetting
 
-大语言模型（LLM）虽然强大，但它们有一个致命弱点：**记性不好**。当你用新数据微调一个已经训练好的模型时，它往往会迅速忘记之前学过的东西，这种现象被称为**灾难性遗忘**（Catastrophic Forgetting）。
+Large language models (LLMs) are powerful, but they have a fatal weakness: **poor memory**. When you fine-tune a trained model with new data, it often quickly forgets what it learned before; this phenomenon is known as **Catastrophic Forgetting**.
 
-为了解决这个问题，研究人员通常使用**经验回放**（Replay Buffer）策略，即在训练新任务时，混入少量旧任务的数据。
+To address this problem, researchers usually use a **Replay Buffer** strategy, mixing a small amount of old-task data into training for new tasks.
 
-然而，现实部署中我们面临着双重约束：
+However, in real-world deployment we face two constraints:
 
-1.  **计算资源限制**：我们需要对模型进行量化（如从FP16降到INT4）以减少显存占用。
+1.  **Computing resource limits**: We need to quantize the model (for example, from FP16 down to INT4) to reduce memory usage.
 
-2.  **存储资源限制**：我们不能无限期地保存大量旧数据，回放缓冲区（Buffer）必须尽可能小。
+2.  **Storage resource limits**: We cannot store large amounts of old data indefinitely, so the replay buffer must be as small as possible.
 
-那么问题来了：**量化精度与回放缓冲区大小之间，究竟存在怎样的博弈关系？**
+So the question is: **what exactly is the trade-off between quantization precision and replay buffer size?**
 
-### 惊人的反转：量化反而更强？
+### A Stunning Reversal: Quantization Is Actually Stronger?
 
-Algoverse的研究团队在LLaMA-3.1-8B模型上进行了一系列严谨的实验。他们让模型按顺序学习三类任务：自然语言理解（NLU）、数学推理（Math）和代码生成（Code）。
+The Algoverse research team conducted a series of rigorous experiments on the LLaMA-3.1-8B model. They had the model learn three types of tasks in sequence: natural language understanding (NLU), math reasoning (Math), and code generation (Code).
 
-实验结果令人大跌眼镜：
+The results were eye-opening:
 
-*   **初始表现**：不出所料，FP16（高精度）模型在刚开始的任务上表现最好。
+*   **Initial performance**: As expected, the FP16 (high-precision) model performed best on the early tasks.
 
-*   **持续学习后的反转**：随着任务不断增加，FP16模型的表现开始崩塌。相反，量化模型（INT8和INT4）展现出了惊人的韧性。在最终任务的前向准确率上，**量化模型比FP16高出了8-15%**。
+*   **The reversal after continual learning**: As tasks kept accumulating, the FP16 model’s performance began to collapse. In contrast, the quantized models (INT8 and INT4) showed remarkable resilience. On the forward accuracy of the final task, **the quantized models outperformed FP16 by 8-15%**.
 
-*   **代码生成的奇迹**：在代码生成任务中，INT4模型的表现竟然达到了FP16的**两倍**（40% vs 20%）。
+*   **The miracle of code generation**: In the code generation task, the INT4 model’s performance even reached **twice** that of FP16 (40% vs 20%).
 
 <img src="/images/2512.18934v1/performance_graphs.jpg" alt="Forward Accuracy" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-*图1：不同量化精度与回放大小下的任务表现。可以看到在低回放比例下，量化模型（特别是INT8）表现出了优越的稳定性。*
+*Figure 1: Task performance under different quantization precisions and replay sizes. It can be seen that under low replay ratios, the quantized models, especially INT8, show superior stability.*
 
-### 为什么“少”即是“多”？
+### Why Is “Less” Actually “More”?
 
-为什么精度低的模型反而学得更好、忘得更少？论文提出了一个非常有趣的假设：**量化引入的噪音充当了隐式正则化（Implicit Regularization）的角色。**
+Why do lower-precision models learn better and forget less? The paper proposes a very interesting hypothesis: **the noise introduced by quantization acts as a form of implicit regularization.**
 
-这就好比我们在学习时，如果记得太死（过拟合），遇到新问题就容易钻牛角尖，把旧知识丢掉。
+It is like when we learn, if we remember things too rigidly (overfitting), we tend to get stuck in our ways when facing new problems and end up discarding old knowledge.
 
-*   **FP16模型**：太“聪明”且敏感，容易对新任务的梯度过拟合，导致旧知识被迅速覆盖。
+*   **FP16 model**: Too “smart” and sensitive, it easily overfits to the gradients of new tasks, causing old knowledge to be quickly overwritten.
 
-*   **量化模型（INT8/INT4）**：由于精度的损失，引入了随机噪音。这些噪音平滑了损失函数的曲面，迫使模型找到更平坦、更通用的极小值点。
+*   **Quantized models (INT8/INT4)**: Due to the loss of precision, random noise is introduced. This noise smooths the loss landscape, forcing the model to find flatter, more general minima.
 
-这种机制使得量化模型在面对极少量的回放数据（甚至只有0.1%）时，也能有效地锚定旧知识，实现了**学习可塑性**（Plasticity）与**记忆保持性**（Retention）的最佳平衡。
+This mechanism allows quantized models, even when faced with very little replay data (or even just 0.1%), to effectively anchor old knowledge, achieving the best balance between **plasticity** and **retention**.
 
-### 实验洞察：INT8是黄金平衡点
+### Experimental Insight: INT8 Is the Golden Balance Point
 
-研究者通过构建“量化-回放权衡图”，得出了一些极具实战价值的结论：
+By constructing a “quantization-replay trade-off map,” the researchers arrived at several highly practical conclusions:
 
-1.  **INT8是最佳选择**：它在计算效率和持续学习动力学之间取得了完美的平衡。相比之下，INT4虽然在某些极端情况下表现出色，但对回放缓冲区的大小非常敏感，如果Buffer太小，性能会断崖式下跌。
+1.  **INT8 is the best choice**: It strikes a perfect balance between computational efficiency and continual learning dynamics. By contrast, while INT4 performs well in some extreme cases, it is very sensitive to the size of the replay buffer; if the buffer is too small, performance drops off a cliff.
 
-2.  **极小回放也有大作用**：对于量化模型，仅仅保留**0.1%**的旧数据，就能让NLU任务的保留率从45%飙升到65%。
+2.  **Even tiny replay helps a lot**: For quantized models, keeping just **0.1%** of old data can raise the retention rate on NLU tasks from 45% to 65%.
 
-3.  **FP16的脆弱性**：高精度模型在缺乏足够回放数据时，遗忘速度最快。这意味着如果你必须使用FP16，你反而需要更大的存储空间来保存旧数据。
+3.  **The fragility of FP16**: High-precision models forget the fastest when there is not enough replay data. This means that if you must use FP16, you actually need more storage space to keep old data.
 
 <img src="/images/2512.18934v1/retention_graphs.jpg" alt="Retention Graphs" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-*图2：不同精度下的知识保留率。注意看INT8在低回放比例下的稳健表现。*
+*Figure 2: Knowledge retention rates under different precisions. Note the robust performance of INT8 at low replay ratios.*
 
-### 部署建议：如何配置你的模型？
+### Deployment Advice: How Should You Configure Your Model?
 
-基于上述发现，论文为实际部署提供了具体的参数建议：
+Based on these findings, the paper provides concrete parameter recommendations for real-world deployment:
 
-*   **自然语言任务（NLU）**：无论是哪种精度，**1-2%**的小型回放缓冲区就足够了。
+*   **Natural language tasks (NLU)**: Regardless of precision, a small replay buffer of **1-2%** is sufficient.
 
-*   **数学与代码任务**：这类任务更难保留。
+*   **Math and code tasks**: These tasks are harder to retain.
 
-    *   如果你用**INT8/INT4**：建议分配**5-10%**的缓冲区。
+*   If you use **INT8/INT4**: it is recommended to allocate a **5-10%** buffer.
 
-    *   如果你用**FP16**：为了达到同样的保留效果，你可能需要**10-20%**甚至更大的缓冲区。
+*   If you use **FP16**: to achieve the same retention effect, you may need a **10-20%** buffer or even larger.
 
-### 总结
+### Conclusion
 
-这项研究打破了我们对模型压缩的刻板印象。量化不仅仅是为了省钱省显存，它在持续学习的动态过程中，竟然还能意外地充当“护身符”，防止模型喜新厌旧。
+This study breaks our stereotype about model compression. Quantization is not just about saving money and GPU memory; in the dynamic process of continual learning, it can unexpectedly act as a “protective charm,” preventing the model from favoring the new and forgetting the old.
 
-对于正在开发端侧AI或需要频繁更新模型知识的开发者来说，这无疑是一个巨大的好消息：**拥抱8-bit量化，你可能不仅获得了速度，还收获了更持久的记忆。**
+For developers building edge AI or needing to frequently update model knowledge, this is undoubtedly great news: **embrace 8-bit quantization, and you may gain not only speed, but also longer-lasting memory.**

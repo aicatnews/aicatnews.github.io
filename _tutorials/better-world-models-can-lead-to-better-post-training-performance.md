@@ -2,91 +2,90 @@
 layout: default
 title: "Better World Models Can Lead to Better Post-Training Performance"
 ---
-
-## AI解魔方新突破：预训练一个“世界模型”，强化学习性能提升40%！
+## New Breakthrough in AI Rubik’s Cube Solving: Pretrain a “World Model,” and Reinforcement Learning Performance Improves by 40%!
 
 <img src="/images/2512.03400v1/A__title.jpg" alt="" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-大型语言模型在预训练、微调和强化学习等一系列“修炼”后，展现出惊人的能力。但我们是否想过，这些训练阶段是如何塑造模型内部的“世界观”的？一个更清晰、更准确的内部世界模型，又能否让AI在后续的学习中如虎添翼？
+Large language models, after a series of “training” stages such as pretraining, fine-tuning, and reinforcement learning, demonstrate astonishing capabilities. But have we ever wondered how these training stages shape the model’s internal “worldview”? Could a clearer, more accurate internal world model further empower AI in subsequent learning?
 
 > ArXiv URL：http://arxiv.org/abs/2512.03400v1
 
-最近，来自哈佛、普林斯顿等顶尖高校的研究者们，通过一个精巧的二阶魔方实验，为我们揭示了答案。研究发现，先让模型显式地学习“世界规则”，能显著提升其后期强化学习的效果，在最难的任务上性能提升高达40%！
+Recently, researchers from top universities such as Harvard and Princeton revealed the answer through an ingenious 2x2 Rubik’s Cube experiment. The study found that explicitly teaching the model the “rules of the world” first can significantly improve the effectiveness of later reinforcement learning, with performance on the hardest tasks increasing by as much as 40%!
 
-### 实验设定：一个精巧的魔方世界
+### Experimental Setup: An Ingenious Rubik’s Cube World
 
-为了精准研究这个问题，研究者们选择了一个需要规划和推理的完美“沙盒”——二阶魔方。
+To study this question precisely, the researchers chose a perfect “sandbox” that requires planning and reasoning—the 2x2 Rubik’s Cube.
 
-任务很简单：给Transformer一个被打乱的魔方状态序列，让它生成一串能还原魔方的“最优”步骤。
+The task is simple: give a Transformer a sequence of scrambled cube states and have it generate a sequence of “optimal” steps to solve the cube.
 
 <img src="/images/2512.03400v1/x1.jpg" alt="魔方任务流程图" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-这里的关键在于，模型在训练时只看得到初始状态和最终的解法步骤，却**看不到**每一步操作后魔方的中间状态。
+The key here is that during training, the model only sees the initial state and the final solution steps, but **does not see** the intermediate cube states after each move.
 
-这意味着，模型必须在内部自己“脑补”出魔方的样子，并理解每一个转动（动作）会如何改变魔方的状态（世界）。这个内部的“脑补”过程，就是所谓的**世界模型**（World Model）。
+This means the model must internally “imagine” what the cube looks like and understand how each rotation (action) changes the cube’s state (world). This internal “imagination” process is what is called a **world model**.
 
-### 如何构建一个更好的“世界模型”？
+### How Do We Build a Better “World Model”?
 
-研究者们设计了三种不同的训练策略，来比较隐式学习和显式学习世界模型的效果：
+The researchers designed three different training strategies to compare the effects of implicit and explicit world-model learning:
 
-1.  **标准微调（Standard Fine-Tuning）**：这是最常见的方法。直接让模型学习从打乱的魔方预测正确解法，完全依赖模型通过预测下一个Token来**隐式**地领悟魔方的规则。
+1.  **Standard Fine-Tuning**: This is the most common approach. The model is directly trained to learn the correct solution from a scrambled cube, relying entirely on predicting the next token to **implicitly** grasp the cube’s rules.
 
-2.  **世界模型预训练（State-Prediction Pretraining）**：分两步走。
+2.  **State-Prediction Pretraining**: A two-step approach.
 
-    *   第一步，先不教模型解魔方，而是给它看随机的转动步骤，并要求它准确预测出每一步之后魔方的**确切状态**（24个色块的颜色）。这等于在**显式**地给模型“上物理课”，让它先掌握魔方世界的运行规律。
+*   First, instead of teaching the model to solve the cube, it is shown random rotation steps and asked to accurately predict the **exact state** of the cube after each step (the colors of the 24 stickers). This is equivalent to **explicitly** giving the model a “physics lesson,” so it first learns the operating rules of the cube world.
 
-    *   第二步，再用标准方法微调模型，让它学习解魔方。
+*   Second, the model is then fine-tuned using the standard method to learn how to solve the cube.
 
-3.  **联合训练（Joint Training）**：一种折中方案。在训练解魔方的同时，增加一个辅助任务，要求模型也能预测出魔方的状态。这相当于一边学解题，一边巩固物理规则。
+3.  **Joint Training**: A compromise. While training the model to solve the cube, an auxiliary task is added that requires it to also predict the cube’s state. This is like learning to solve the problem while reinforcing the physical rules at the same time.
 
-### 探针与干预：深入AI的“大脑”
+### Probing and Intervention: Going Deep into AI’s “Brain”
 
-模型内部的世界模型到底有多清晰？研究者们用了两种巧妙的方法来“窥探”和“测试”模型的内部表征。
+How clear is the model’s internal world model, really? The researchers used two clever methods to “peek into” and “test” the model’s internal representations.
 
-#### 线性探针（Linear Probing）
+#### Linear Probing
 
-这就像给模型装上一个“脑电图仪”。研究者训练了一个简单的线性分类器（探针），尝试从模型内部的隐藏状态$h$中解码出当前魔方的确切状态。
+This is like attaching an “EEG monitor” to the model. The researchers trained a simple linear classifier (a probe) to try to decode the exact cube state from the model’s internal hidden state $h$.
 
-解码的准确率越高，说明模型内部对魔方状态的表征越清晰、越有条理。
+The higher the decoding accuracy, the clearer and more structured the model’s internal representation of the cube state.
 
 <img src="/images/2512.03400v1/intermediate_states.jpg" alt="探针准确率对比" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-结果如上图所示，经过“世界模型预训练”（Pre-Train）或“联合训练”（Joint-Train）的模型，其探针准确率显著高于标准微调模型。这证明显式学习确实构建了更优质的内部世界表征。
+As shown in the figure above, models that underwent “world model pretraining” (Pre-Train) or “joint training” (Joint-Train) achieved significantly higher probe accuracy than the standard fine-tuning model. This proves that explicit learning does indeed build a higher-quality internal world representation.
 
-#### 因果干预（Causal Intervention）
+#### Causal Intervention
 
-光能“读懂”还不够，这个内部表征真的在指导模型的决策吗？
+Being able to “read” it is not enough—does this internal representation really guide the model’s decisions?
 
-研究者进行了一项更大胆的“脑外科手术”：在模型生成下一步操作前，强行干预其内部的隐藏状态，将它脑中的魔方状态$S$“篡改”成另一个状态$T$。
+The researchers performed a bolder “brain surgery”: before the model generated the next move, they forcibly intervened in its internal hidden state and “tampered” with the cube state $S$ in its mind, changing it to another state $T$.
 
-如果模型真的依赖这个内部表征，那么它的下一步决策应该会从“解决魔方S的合理步骤”变为“解决魔方T的合理步骤”。
+If the model truly relies on this internal representation, then its next decision should shift from “a reasonable step to solve cube S” to “a reasonable step to solve cube T.”
 
 <img src="/images/2512.03400v1/intervene_plots_good_move_acc.jpg" alt="因果干预成功率" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-实验结果（如上图左）表明，经过显式世界模型训练的模型，其干预成功率更高。这说明，它们的决策更加依赖于内部构建的那个清晰的世界模型，而不是一些虚无缥缈的统计关联。
+The experimental results (as shown in the upper-left figure) indicate that models trained with an explicit world model had a higher intervention success rate. This shows that their decisions rely more on the clearly constructed internal world model rather than on vague statistical associations.
 
-### 更好的世界模型，更强的后期性能
+### A Better World Model, Stronger Downstream Performance
 
-现在，我们来到了最关键的问题：一个更清晰的世界模型，对模型的最终性能有多大帮助？
+Now we come to the most critical question: how much does a clearer world model help the model’s final performance?
 
-研究团队在上述三种训练策略的基础上，都增加了一个**强化学习后期训练**（Post-training with GRPO）阶段。GRPO会通过多次尝试（rollouts）并给予奖励（解开魔方则奖励为1，否则为0）来进一步优化模型的策略。
+The research team added a **post-training stage with reinforcement learning** (Post-training with GRPO) to all three training strategies above. GRPO further optimizes the model’s policy through multiple rollouts and rewards (reward = 1 for solving the cube, otherwise 0).
 
 <img src="/images/2512.03400v1/x2.jpg" alt="最终性能对比" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-上图是最终的对决结果，揭示了惊人的发现：
+The figure above shows the final showdown and reveals an astonishing finding:
 
-*   **实线**代表仅经过微调的性能，**虚线**代表经过强化学习（GRPO）后的性能。
+*   The **solid lines** represent performance after fine-tuning only, while the **dashed lines** represent performance after reinforcement learning (GRPO).
 
-*   无论是哪个阶段，显式训练世界模型（蓝色和绿色线）的性能都全面优于标准方法（红色线）。
+*   At every stage, models trained with an explicit world model (blue and green lines) outperform the standard method (red line) across the board.
 
-*   **最大的亮点在于**：拥有更好世界模型（蓝色和绿色虚线）的模型，在经过强化学习后，性能增益远超标准模型。尤其是在最难的、需要11步才能解开的魔方上，**预训练世界模型的策略相比标准策略，准确率从约50%跃升至70%，实现了40%的相对性能提升！**
+*   **The biggest highlight is this**: models with a better world model (blue and green dashed lines) gain far more from reinforcement learning. Especially on the hardest cubes that require 11 moves to solve, the policy with a pre-trained world model improves from about 50% accuracy to 70% compared with the standard policy, achieving a 40% relative performance gain!
 
-这表明，一个坚实、清晰的世界模型为后续的强化学习提供了一个绝佳的起点，让模型能够更高效地探索和学习，最终达到更高的高度。
+This shows that a solid, clear world model provides an excellent starting point for subsequent reinforcement learning, enabling the model to explore and learn more efficiently and ultimately reach higher performance.
 
-### 结论
+### Conclusion
 
-这项研究通过一个简单而优雅的魔方实验，清晰地证明了“世界模型”在AI能力形成中的关键作用。
+Through a simple yet elegant Rubik’s Cube experiment, this study clearly demonstrates the key role of the “world model” in the formation of AI capabilities.
 
-它告诉我们，与其让模型在海量数据中“野蛮生长”，不如先花些心思教它理解这个世界的“基本法”。这种“先懂规则，再学策略”的范式，不仅能构建出更鲁棒、更可解释的内部表征，还能极大地释放强化学习等后期训练方法的潜力。
+It tells us that rather than letting a model “grow wildly” on massive amounts of data, it is better to first teach it the “basic laws” of the world. This paradigm of “understand the rules first, then learn the strategy” not only builds more robust and interpretable internal representations, but also greatly unleashes the potential of downstream training methods such as reinforcement learning.
 
-虽然目前实验仅限于魔方任务，但它所揭示的原理——**更好的世界模型可以带来更好的后期训练性能**——无疑为未来构建更强大、更可靠的AI系统指明了一条充满希望的道路。
+Although the experiment is currently limited to the Rubik’s Cube task, the principle it reveals—**a better world model can lead to better downstream training performance**—undoubtedly points to a promising path for building more powerful and reliable AI systems in the future.

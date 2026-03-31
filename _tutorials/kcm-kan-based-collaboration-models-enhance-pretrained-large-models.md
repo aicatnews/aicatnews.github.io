@@ -6,41 +6,41 @@ title: "KCM: KAN-Based Collaboration Models Enhance Pretrained Large Models"
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.20278v1
 
-- **作者**: Siliang Tang; Guangyu Dai; Yueting Zhuang
+- **Authors**: Siliang Tang; Guangyu Dai; Yueting Zhuang
 
-- **发布机构**: Zhejiang University
+- **Publishing Institution**: Zhejiang University
 
 ---
 
 ## TL;DR
-本文提出了一种名为 KCM (KAN-Based Collaboration Models) 的大-小模型协同框架，它利用一个基于 Kolmogorov-Arnold Network (KAN) 的小型判断模型，智能地将输入样本分配给高效的小模型或强大的预训练大模型处理，并通过提示修改和知识蒸馏机制实现两个模型间的协同增强，从而在接近大模型性能的同时，显著降低了推理成本。
+This paper proposes a large-small model collaboration framework called KCM (KAN-Based Collaboration Models). It uses a small judgment model based on Kolmogorov-Arnold Network (KAN) to intelligently assign input samples to either an efficient small model or a powerful pretrained large model for processing, and achieves collaborative enhancement between the two models through prompt modification and knowledge distillation, thereby significantly reducing inference costs while approaching large-model performance.
 
-## 关键定义
-*   **KCM (KAN-Based Collaboration Models)**：本文提出的核心方法。一个大-小模型协同框架，通过一个判断模型来动态分配任务。对于判断为“简单”的样本，由小模型直接处理；对于“困难”的样本，则交由大模型处理，同时利用小模型的输出来辅助大模型（提示修改），并利用大模型的输出来反哺小模型（知识蒸馏），形成一个闭环学习系统。
-*   **KAN (Kolmogorov-Arnold Network)**：一种替代传统多层感知机 (MLP) 的神经网络架构。其核心特点是，可学习的激活函数位于网络的“边”（edges）上，而非像 MLP 那样在“节点”（nodes）上使用固定的激活函数。这使得 KAN 能够用更少的参数学习到更复杂的函数，具有更好的可解释性和精度潜力。在 KCM 中，KAN被用于构建核心的“判断小模型”。
+## Key Definitions
+*   **KCM (KAN-Based Collaboration Models)**: The core method proposed in this paper. A large-small model collaboration framework that dynamically assigns tasks through a judgment model. For samples judged as “simple,” the small model handles them directly; for “difficult” samples, the large model takes over. At the same time, the small model’s outputs are used to assist the large model (prompt modification), and the large model’s outputs are fed back to the small model (knowledge distillation), forming a closed-loop learning system.
+*   **KAN (Kolmogorov-Arnold Network)**: A neural network architecture that replaces the traditional multilayer perceptron (MLP). Its core feature is that learnable activation functions are placed on the network’s “edges” rather than using fixed activation functions on the “nodes” as in MLPs. This allows KAN to learn more complex functions with fewer parameters and offers better interpretability and accuracy potential. In KCM, KAN is used to build the core “judgment small model.”
 
-<img src="/images/2510.20278v1/figure_1.jpg" alt="MLP 与 KAN 的概览" style="width:90%; max-width:700px; margin:auto; display:block;">
-<center>MLP 在节点上执行多项式计算，且激活函数相同；而 KAN 在边上进行计算，激活函数可以不同，其节点仅起求和作用。</center>
+<img src="/images/2510.20278v1/figure_1.jpg" alt="Overview of MLP and KAN" style="width:90%; max-width:700px; margin:auto; display:block;">
+<center>MLP performs polynomial computation at the nodes, with the same activation function; KAN performs computation on the edges, where the activation functions can differ, and its nodes serve only as summation units.</center>
 
-*   **判断小模型 (Judgment Small Model)**：KCM 框架中的一个关键组件，基于 KAN 构建。它的作用是接收输入样本 $$x$$，并输出一个置信度分数 $$C_x$$，用于判断该样本应该由小模型处理还是大模型处理。高置信度意味着样本适合小模型，低置信度则意味着需要大模型的“介入”。
+*   **Judgment Small Model**: A key component in the KCM framework, built on KAN. Its role is to take an input sample $$x$$ and output a confidence score $$C_x$$, which is used to determine whether the sample should be handled by the small model or the large model. High confidence means the sample is suitable for the small model, while low confidence means the large model needs to intervene.
 
-## 相关工作
-当前，为了平衡大模型的强大性能与高昂的计算成本，大-小模型协同成为一个重要的研究方向。现有方法尝试结合两者的优势，但关键的瓶颈在于如何设计一个高效且智能的调度机制，以决定何时以及如何利用每个模型。
+## Related Work
+At present, to balance the strong performance of large models with their high computational cost, large-small model collaboration has become an important research direction. Existing methods attempt to combine the strengths of both, but the key bottleneck lies in how to design an efficient and intelligent scheduling mechanism to decide when and how to use each model.
 
-本文旨在解决这一具体问题：设计一个通用的、高效的协同框架，它不仅能智能地将任务在大小模型间进行分配以降低成本，还能通过模型间的双向互动（即小模型辅助大模型、大模型指导小模型）来共同提升整个系统的性能。
+This paper aims to solve this specific problem: designing a general, efficient collaboration framework that not only intelligently allocates tasks between large and small models to reduce cost, but also improves the performance of the entire system through bidirectional interaction between models—that is, the small model assists the large model, and the large model guides the small model.
 
-## 本文方法
-KCM 的核心思想是构建一个智能的、自适应的协同系统。其训练和推理过程如下图所示，通过一个判断模型来决定数据流向，并结合提示修改与知识蒸馏，实现两个模型的共同进化。
+## Method
+The core idea of KCM is to build an intelligent, adaptive collaboration system. Its training and inference process are shown in the figure below, where a judgment model determines the data flow, and prompt modification and knowledge distillation are combined to enable the two models to co-evolve.
 
 <img src="/images/2510.20278v1/figure_22.jpg" alt="KCM 协同预训练大模型的训练流程" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-### 创新点
-本文方法的创新主要体现在以下几个方面：
+### Innovations
+The main innovations of this method are reflected in the following aspects:
 
-#### KAN-Based 判断小模型
-系统的核心是一个判断小模型 $F\_j$，它负责评估每个输入样本 $x$ 的“难度”。与传统的基于 MLP 的判断器不同，本文创新性地采用了 KAN 架构。KAN 将学习的重点从节点转移到边上，通过学习边上的激活函数，能以更少的参数实现更高的精度和更好的泛化能力。
+#### KAN-Based Judgment Small Model
+The core of the system is a judgment small model $F\_j$, which is responsible for evaluating the “difficulty” of each input sample $x$. Unlike traditional MLP-based judges, this paper innovatively adopts the KAN architecture. KAN shifts the learning focus from nodes to edges; by learning activation functions on the edges, it can achieve higher accuracy and better generalization with fewer parameters.
 
-该模型对输入 $x$ 进行处理，输出一个置信度分数 $C\_x$，该分数通过对模型输出 logits $y\_i$ 进行 softmax 计算得到：
+This model processes the input $x$ and outputs a confidence score $C\_x$, which is obtained by applying softmax to the model output logits $y\_i$:
 
 
 {% raw %}$$
@@ -48,10 +48,10 @@ C_{x} = \frac{e^{y_{i}}}{\Sigma e^{y_{n}}}, y_{i} \in F_{j}(x)
 $${% endraw %}
 
 
-当 $C\_x$ 高于预设阈值 $\epsilon$ 时，样本被认为是“简单的”，交由小模型 $F\_s$ 处理；反之，则被认为是“困难的”，交由大模型 $F\_l$ 处理。
+When $C\_x$ is higher than the preset threshold $\epsilon$, the sample is considered “simple” and is handled by the small model $F\_s$; otherwise, it is considered “difficult” and is handled by the large model $F\_l$.
 
-#### 小模型提示修改
-对于被判断为“困难”并发送给大模型 $F\_l$ 的样本，KCM 并非简单地直接调用大模型。相反，它利用小模型 $F\_s$ 对该样本的初步预测结果来构建或修改给大模型的提示（prompt）。
+#### Small-Model Prompt Modification
+For samples judged as “difficult” and sent to the large model $F\_l$, KCM does not simply call the large model directly. Instead, it uses the small model $F\_s$’s preliminary prediction for the sample to construct or modify the prompt given to the large model.
 
 
 {% raw %}$$
@@ -59,10 +59,10 @@ R_{l} = F_{l}(x_{i}, prompt), y_{i} \in F_{s}(x)
 $${% endraw %}
 
 
-这种方式相当于为大模型提供了一个“初步参考答案”或“上下文”，可以帮助大模型更快、更准确地聚焦于问题的关键点，从而提高其处理疑难样本的效率和效果。
+This is equivalent to providing the large model with a “preliminary reference answer” or “context,” which can help the large model focus more quickly and accurately on the key points of the problem, thereby improving its efficiency and effectiveness on difficult samples.
 
-#### 大模型知识蒸馏
-为了让小模型也能从大模型的“智慧”中学习，KCM 采用知识蒸馏机制。当大模型 $F\_l$ 处理一个困难样本 $x$ 并产生输出 $C\_l$ 时，该输出被用作“教师”信号，通过 KL 散度损失函数来指导小模型 $F\_s$ 的学习。这使得小模型能够学习大模型在处理复杂问题时的“思维模式”。
+#### Large-Model Knowledge Distillation
+To allow the small model to learn from the large model’s “wisdom,” KCM adopts a knowledge distillation mechanism. When the large model $F\_l$ processes a difficult sample $x$ and produces output $C\_l$, this output is used as a “teacher” signal to guide the learning of the small model $F\_s$ through a KL-divergence loss function. This enables the small model to learn the large model’s “thinking pattern” when handling complex problems.
 
 
 {% raw %}$$
@@ -70,7 +70,7 @@ L_{ls} = KL(F_{s}(x), C_{l}), \quad \text{when } C_{l} > \epsilon
 $${% endraw %}
 
 
-此外，判断模型 $F\_j$ 的置信度输出 $C\_x$ 也可以作为一种蒸馏信号，帮助优化小模型 $F\_s$。
+In addition, the confidence output $C\_x$ from the judgment model $F\_j$ can also serve as a distillation signal to help optimize the small model $F\_s$.
 
 
 {% raw %}$$
@@ -78,30 +78,30 @@ L_{js} = KL(F_{s}(x), C_{x}), \quad \text{when } C_{x} > \epsilon
 $${% endraw %}
 
 
-这种双向的知识流动形成了一个良性循环：小模型变得越来越强，能够处理更多样本，从而进一步降低了对昂贵大模型的调用频率。
+This bidirectional flow of knowledge forms a virtuous cycle: the small model becomes increasingly stronger and can handle more samples, which further reduces the frequency of calls to the expensive large model.
 
-#### 算法流程
-**训练阶段**：
-1.  对于每个样本，首先由判断模型 $F\_j$ 计算置信度 $C\_x$。
-2.  如果 $C\_x$ 低于阈值 $\epsilon$，样本被标记为“困难”，并送入大模型 $F\_l$。
-3.  大模型的输出 $C\_l$ 用于计算蒸馏损失 $L\_{ls}$，以更新小模型 $F\_s$。
-4.  整个过程不断迭代，小模型 $F\_s$ 在判断模型和大小模型的共同指导下不断优化。
+#### Algorithm Flow
+**Training phase**:
+1.  For each sample, the judgment model $F\_j$ first computes the confidence $C\_x$.
+2.  If $C\_x$ is below the threshold $\epsilon$, the sample is marked as “difficult” and sent to the large model $F\_l$.
+3.  The large model’s output $C\_l$ is used to compute the distillation loss $L\_{ls}$ to update the small model $F\_s$.
+4.  The process iterates continuously, and the small model $F\_s$ is continuously optimized under the joint guidance of the judgment model and the large and small models.
 
-**推理阶段**：
-1.  对于新样本，判断模型 $F\_j$ 计算置信度 $C\_x$。
-2.  如果 $C\_x > \epsilon$，直接使用小模型 $F\_s$ 的结果。
-3.  如果 $C\_x \le \epsilon$，则调用大模型 $F\_l$（可能结合了小模型的提示修改）得到最终结果。
+**Inference phase**:
+1.  For a new sample, the judgment model $F\_j$ computes the confidence $C\_x$.
+2.  If $C\_x > \epsilon$, the result from the small model $F\_s$ is used directly.
+3.  If $C\_x \le \epsilon$, the large model $F\_l$ is invoked (possibly combined with prompt modification from the small model) to obtain the final result.
 
-## 实验结论
+## Experimental Conclusions
 
-实验在语言、视觉和多模态任务上验证了 KCM 框架的有效性和通用性，并将阈值 $\epsilon$ 设为 0.98。
+Experiments on language, vision, and multimodal tasks verified the effectiveness and generality of the KCM framework, and the threshold $\epsilon$ was set to 0.98.
 
-*   **语言任务**：在 APD 数据集上，无论是结合 BERT 还是 ChatGPT，KCM 都显著提升了基线模型的准确率，并优于其他协同方法。
+*   **Language tasks**: On the APD dataset, whether combined with BERT or ChatGPT, KCM significantly improved the accuracy of the baseline models and outperformed other collaboration methods.
 
-    **BERT+KCM 在 APD 数据集上的准确率**
+**Accuracy of BERT+KCM on the APD dataset**
 
 
-| 模型 | IER | IED | Trigger | Role 1 | Role 2 | 平均 |
+| Model | IER | IED | Trigger | Role 1 | Role 2 | Average |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | BERT | 88.5% | 85.3% | 87.2% | 81.3% | 79.8% | 84.42% |
 | BERT+D | 89.2% | 85.9% | 87.8% | 82.2% | 80.5% | 85.12% |
@@ -109,10 +109,10 @@ $${% endraw %}
 | BERT+MCM | 90.5% | 86.8% | 88.8% | 83.2% | 81.5% | 86.16% |
 | **BERT+KCM** | **91.1%** | **87.2%** | **89.5%** | **83.9%** | **82.3%** | **86.80%** |
 
-    **ChatGPT+KCM 在 APD 数据集上的准确率**
+**Accuracy of ChatGPT+KCM on the APD dataset**
 
 
-| 模型 | IER | IED | Trigger | Role 1 | Role 2 | 平均 |
+| Model | IER | IED | Trigger | Role 1 | Role 2 | Average |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | ChatGPT | 92.5% | 90.3% | 91.2% | 85.3% | 84.8% | 88.82% |
 | ChatGPT+D | 92.9% | 90.8% | 91.8% | 85.9% | 85.2% | 89.32% |
@@ -120,37 +120,37 @@ $${% endraw %}
 | ChatGPT+MCM | 93.8% | 91.8% | 92.9% | 86.9% | 86.5% | 90.38% |
 | **ChatGPT+KCM** | **94.3%** | **92.3%** | **93.5%** | **87.5%** | **87.3%** | **90.98%** |
 
-*   **视觉任务**：在长尾图像分类数据集 CIFAR-100-LT 上，KCM 同样提升了多种视觉骨干网络（如 ResNet）的性能。
+*   **Visual task**: On the long-tailed image classification dataset CIFAR-100-LT, KCM also improved the performance of multiple vision backbones (such as ResNet).
 
-    **在 CIFAR-100-LT 数据集上的准确率**
+**Accuracy on the CIFAR-100-LT dataset**
 
 
-| 模型 | Many | Medium | Few | Overall |
+| Model | Many | Medium | Few | Overall |
 | :--- | :--- | :--- | :--- | :--- |
 | ResNet-32 | 65.2% | 46.1% | 20.3% | 46.8% |
 | ResNet-32+KCM | 70.3% | 51.5% | 23.8% | 52.3% |
 | BBN | 73.5% | 51.2% | 26.5% | 53.5% |
 | BBN+KCM | 78.4% | 56.8% | 29.3% | 58.7% |
 
-*   **多模态任务**：在 MSCOCO 数据集上，KCM 增强了 CLIP 模型在图文检索任务上的表现。
+*   **Multimodal task**: On the MSCOCO dataset, KCM enhanced CLIP’s performance on image-text retrieval tasks.
 
-    **在 MSCOCO 数据集上的实验准确率**
+**Experimental accuracy on the MSCOCO dataset**
 
 
-| 模型 | I2T R@1 | I2T R@5 | I2T R@10 | T2I R@1 | T2I R@5 | T2I R@10 |
+| Model | I2T R@1 | I2T R@5 | I2T R@10 | T2I R@1 | T2I R@5 | T2I R@10 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | CLIP | 73.2% | 91.5% | 96.8% | 54.7% | 79.5% | 87.2% |
 | CLIP+KCM | **75.4%** | **93.1%** | **97.8%** | **57.2%** | **81.6%** | **89.1%** |
 
-*   **消融实验**：为了验证使用 KAN 作为判断模型的优越性，本文直接比较了 KCM（基于 KAN）与 MCM（基于 MLP）的性能。结果显示，在所有测试任务上，KCM 均优于 MCM，平均性能提升约 6%，证明了 KAN 在构建高效判断模型方面的优势。
+*   **Ablation study**: To verify the superiority of using KAN as the judgment model, this paper directly compared the performance of KCM (based on KAN) and MCM (based on MLP). The results show that KCM outperformed MCM on all test tasks, with an average performance improvement of about 6%, demonstrating the advantage of KAN in building efficient judgment models.
 
-    **MCM 与 KCM 的消融实验准确率**
+**Ablation study accuracy of MCM and KCM**
 
 
-| 模型 | APD(%) | CIFAR(%) | MSCOCO(%) |
+| Model | APD(%) | CIFAR(%) | MSCOCO(%) |
 | :--- | :--- | :--- | :--- |
 | MCM | 90.38 | 57.6 | 77.2 |
 | **KCM** | **90.98** | **58.7** | **78.2** |
 
-#### 结论
-实验结果有力地证明，KCM 是一个灵活且高效的大-小模型协同框架。它通过基于 KAN 的智能路由、提示修改和知识蒸馏的组合，在多种模态的任务上都取得了显著的性能提升，同时成功地降低了对大模型的依赖。该方法不仅在效果上超越了基线模型和传统的协同方法，也验证了 KAN 网络在构建此类协同系统中的价值。
+#### Conclusion
+The experimental results strongly demonstrate that KCM is a flexible and efficient large-small model collaboration framework. Through the combination of KAN-based intelligent routing, prompt modification, and knowledge distillation, it achieves significant performance gains across tasks in multiple modalities while successfully reducing reliance on large models. This method not only outperforms baseline models and traditional collaboration methods in terms of effectiveness, but also validates the value of KAN networks in building such collaborative systems.

@@ -2,89 +2,88 @@
 layout: default
 title: "MiroThinker: Pushing the Performance Boundaries of Open-Source Research Agents via Model, Context, and Interactive Scaling"
 ---
-
-## AI Agent的第三维度：MiroThinker单任务600次工具调用，性能直逼GPT-5
+## The Third Dimension of AI Agents: MiroThinker Makes 600 Tool Calls in a Single Task, with Performance Rivalling GPT-5
 
 <img src="/images/2511.11793v2/A__title.jpg" alt="" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-当整个AI领域还在疯狂“卷”模型参数和上下文长度时，一个新的性能提升维度已经悄然出现。如果一个AI Agent在执行单个任务时，能与外部工具交互多达600次，它的研究和推理能力会达到何种恐怖的水平？
+While the entire AI field is still frantically “scaling” model parameters and context length, a new dimension of performance improvement has quietly emerged. If an AI Agent can interact with external tools up to 600 times while completing a single task, how terrifyingly powerful would its research and reasoning abilities become?
 
-> **论文标题**：MiroThinker: Pushing the Performance Boundaries of Open-Source Research Agents via Model, Context, and Interactive Scaling
+> **Paper Title**: MiroThinker: Pushing the Performance Boundaries of Open-Source Research Agents via Model, Context, and Interactive Scaling
 
 > **ArXiv URL**：http://arxiv.org/abs/2511.11793v2
 
-这就是最新开源的研究型Agent——**MiroThinker**，为我们揭示的答案。它不仅仅是一个更大的模型或更长的上下文窗口，而是开创性地提出了**交互缩放**（**Interaction Scaling**）作为性能提升的“第三维度”，在多个基准测试中超越了所有现有开源Agent，性能直逼GPT-5等顶级闭源模型。
+This is the answer revealed by the latest open-source research Agent—**MiroThinker**. It is not just a larger model or a longer context window; it is a pioneering proposal of **Interaction Scaling** as the “third dimension” of performance improvement, surpassing all existing open-source Agents on multiple benchmarks and coming close to top closed-source models such as GPT-5.
 
 <img src="/images/2511.11793v2/x2.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 什么是交互缩放？
+### What Is Interaction Scaling?
 
-过去，我们提升AI能力主要靠两条路：
+In the past, we mainly improved AI capabilities in two ways:
 
-1.  **模型缩放**：把模型做得更大（如从7B到70B）。
+1.  **Model scaling**: making the model larger (for example, from 7B to 70B).
 
-2.  **上下文缩放**：让模型能“看”得更长（如从4K到200万字）。
+2.  **Context scaling**: allowing the model to “see” more (for example, from 4K to 2 million Chinese characters).
 
-但MiroThinker的研究发现，这还不够。尤其对于需要复杂推理和信息搜集的“研究型”任务，Agent需要不断与外部环境（如搜索引擎、代码执行器）互动，形成“思考-行动-观察”的循环。
+But MiroThinker’s research found that this is still not enough. Especially for “research” tasks that require complex reasoning and information gathering, the Agent needs to continuously interact with the external environment (such as search engines and code executors), forming a “think-act-observe” loop.
 
-**交互缩放**，就是系统性地训练模型，使其能处理更深、更频繁的Agent-环境交互。
+**Interaction scaling** means systematically training the model so it can handle deeper and more frequent Agent-environment interactions.
 
-这与简单的让模型在测试时“多想几步”完全不同。后者在没有外部反馈的情况下，推理链越长，错误累积的风险就越大。而交互缩放则利用环境反馈和外部信息来实时纠错、优化路径，让Agent的思考更有深度和韧性。
+This is completely different from simply telling the model to “think a few more steps” at test time. In the latter case, without external feedback, the longer the reasoning chain, the greater the risk of error accumulation. Interaction scaling, by contrast, uses environmental feedback and external information to correct errors and optimize the path in real time, making the Agent’s thinking deeper and more resilient.
 
-### MiroThinker的架构揭秘
+### Inside MiroThinker’s Architecture
 
-MiroThinker基于经典的**ReAct**（**Reasoning and Acting**）范式构建，但为了支撑超高频率的交互，其在架构上做了精巧的设计。
+MiroThinker is built on the classic **ReAct** (**Reasoning and Acting**) paradigm, but to support ultra-high-frequency interactions, it incorporates a carefully designed architecture.
 
 <img src="/images/2511.11793v2/x3.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-其核心组件包括：
+Its core components include:
 
-*   **模块化工具接口**：提供了一个强大的工具箱，包括用于安全执行代码的Linux沙箱、文件管理系统，以及高效的信息检索工具。
+*   **Modular tool interfaces**: It provides a powerful toolbox, including a Linux sandbox for safe code execution, a file management system, and efficient information retrieval tools.
 
-*   **智能信息检索**：它的网页抓取工具并非简单地复制粘贴全文，而是内置了一个轻量级LLM（如Qwen3-14B），能根据任务需求，智能提取最相关的信息。这极大地提升了信息获取的效率。
+*   **Intelligent information retrieval**: Its web scraping tool does not simply copy and paste full text; instead, it has a built-in lightweight LLM (such as Qwen3-14B) that intelligently extracts the most relevant information based on task requirements. This greatly improves information acquisition efficiency.
 
-*   **高效上下文管理**：要在256K的窗口内容纳600次工具调用，上下文管理至关重要。MiroThinker采用了两种聪明的策略：
+*   **Efficient context management**: To fit 600 tool calls into a 256K window, context management is crucial. MiroThinker adopts two clever strategies:
 
-    1.  **近期记忆保留**（**Recency-Based Context Retention**）：研究发现，Agent的下一步行动主要依赖于最近的几次观察。因此，MiroThinker只在上下文中保留最新的几次工具输出全文，而早期的输出则被省略，从而为更长的交互腾出空间。
+1.  **Recency-Based Context Retention**: Research found that the Agent’s next action mainly depends on the most recent few observations. Therefore, MiroThinker keeps only the full text of the latest few tool outputs in the context, while earlier outputs are omitted, freeing up space for longer interactions.
 
-    2.  **结果截断**：对于过长的代码执行或命令输出，系统会自动截断，并附上$$[Result truncated]$$标签，防止上下文溢出。
+2.  **Result truncation**: For overly long code execution or command outputs, the system automatically truncates them and appends the $$[Result truncated]$$ tag to prevent context overflow.
 
-### 海量、高质量的训练数据：MiroVerse v1.0
+### Massive, High-Quality Training Data: MiroVerse v1.0
 
-为了训练出具备深度交互能力的模型，研究团队构建了一个名为 **MiroVerse v1.0** 的大规模合成数据集。
+To train a model with deep interactive capabilities, the research team built a large-scale synthetic dataset called **MiroVerse v1.0**.
 
 <img src="/images/2511.11793v2/x4.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-这个数据集的生成过程极为复杂，首先通过知识图谱技术将维基百科、网页等数据源构建成复杂的多文档问答对（MultiDocQA），然后通过一个强大的Agent轨迹合成框架，将这些问答对转化为高质量的“思考-行动-观察”轨迹数据。
+The dataset generation process is extremely complex. First, knowledge graph techniques are used to construct complex multi-document question-answer pairs (MultiDocQA) from sources such as Wikipedia and web pages. Then, a powerful Agent trajectory synthesis framework converts these question-answer pairs into high-quality “think-act-observe” trajectory data.
 
-通过这种方式，MiroThinker在训练阶段就学习了如何处理需要多步推理、跨文档信息整合的复杂任务。
+In this way, MiroThinker learned during training how to handle complex tasks that require multi-step reasoning and cross-document information integration.
 
-### 三阶段训练法：从模仿到创造
+### Three-Stage Training: From Imitation to Creation
 
-MiroThinker的训练流程分为三个精心设计的阶段，使其从一个模仿者成长为一个创造者。
+MiroThinker’s training pipeline is divided into three carefully designed stages, allowing it to grow from an imitator into a creator.
 
-1.  **监督微调**（**SFT**）：模型首先学习模仿专家轨迹，掌握基本的工具使用和推理模式。
+1.  **Supervised fine-tuning** (**SFT**): The model first learns to imitate expert trajectories and masters basic tool use and reasoning patterns.
 
-2.  **偏好优化**（**DPO**）：接着，模型学习区分“好”的解决方案和“坏”的解决方案，使其决策更符合任务目标。
+2.  **Preference optimization** (**DPO**): Next, the model learns to distinguish “good” solutions from “bad” ones, making its decisions better aligned with task objectives.
 
-3.  **强化学习**（**RL**）：最后，也是最关键的一步，研究采用了**GRPO**（**Group Relative Policy Optimization**）算法，让Agent在真实环境中通过在线探索和试错来学习。正是在这个阶段，模型真正学会了如何进行深度交互，发现创新的解题路径。
+3.  **Reinforcement learning** (**RL**): Finally, and most importantly, the research team used the **GRPO** (**Group Relative Policy Optimization**) algorithm, allowing the Agent to learn through online exploration and trial and error in real environments. It was in this stage that the model truly learned how to perform deep interaction and discover innovative solution paths.
 
 <img src="/images/2511.11793v2/mirothinker_grpo_reward.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-### 惊艳的性能表现
+### Stunning Performance
 
-MiroThinker的性能表现没有让人失望。在GAIA、HLE、BrowseComp等多个权威Agent评测基准上，其72B版本均取得了SOTA（State-of-the-Art）的成绩。
+MiroThinker’s performance did not disappoint. On multiple authoritative Agent evaluation benchmarks such as GAIA, HLE, and BrowseComp, its 72B version achieved SOTA (State-of-the-Art) results.
 
-*   在**GAIA**基准上，准确率达到**81.9%**，比最强的开源对手高出6.2个百分点。
+*   On the **GAIA** benchmark, it reached an accuracy of **81.9%**, 6.2 percentage points higher than the strongest open-source competitor.
 
-*   在**HLE**（人类终极考试）基准上，得分**37.7%**。
+*   On the **HLE** (Humanity’s Last Exam) benchmark, it scored **37.7%**.
 
-*   在**BrowseComp**（网页浏览理解）基准上，准确率达到**47.1%**，超越了MiniMax-M2等模型。
+*   On the **BrowseComp** (web browsing comprehension) benchmark, it reached an accuracy of **47.1%**, surpassing models such as MiniMax-M2.
 
-这些结果一致表明，随着交互深度的增加，MiroThinker的性能也随之可预测地提升。这证实了交互深度确实像模型大小和上下文长度一样，具有明确的“缩放效应”（Scaling Law）。
+These results consistently show that as interaction depth increases, MiroThinker’s performance also improves predictably. This confirms that interaction depth, like model size and context length, has a clear **scaling effect** (Scaling Law).
 
-### 结论
+### Conclusion
 
-MiroThinker的出现，为AI Agent的发展指明了一个新的方向。它雄辩地证明了，要构建下一代强大的研究型Agent，我们不仅要关注模型本身的大小和记忆力，更要关注它与世界“互动”的能力。
+The emergence of MiroThinker points AI Agent development in a new direction. It eloquently proves that to build the next generation of powerful research Agents, we must not only focus on the size and memory of the model itself, but also on its ability to “interact” with the world.
 
-**交互缩放**，作为连接模型智能与现实世界的桥梁，正式成为AI Agent演进的第三个关键维度。随着MiroThinker的开源，我们有理由相信，一个由社区驱动、更加透明和创新的Agent新时代正在到来。
+**Interaction scaling**, as the bridge connecting model intelligence and the real world, has officially become the third key dimension in the evolution of AI Agents. With MiroThinker open-sourced, we have reason to believe that a new Agent era—driven by the community and marked by greater transparency and innovation—is on the way.

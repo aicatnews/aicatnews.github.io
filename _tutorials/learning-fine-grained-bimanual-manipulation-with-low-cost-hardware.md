@@ -6,110 +6,110 @@ title: "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"
 
 - **ArXiv URL**: http://arxiv.org/abs/2304.13705v1
 
-- **作者**: Tony Zhao; Chelsea Finn; Vikash Kumar; S. Levine
+- **Authors**: Tony Zhao; Chelsea Finn; Vikash Kumar; S. Levine
 
-- **发布机构**: Meta; Stanford University; University of California, Berkeley
+- **Publishing Institutions**: Meta; Stanford University; University of California, Berkeley
 
 ---
 
 ## TL;DR
-本文提出了一套名为 ALOHA 的低成本开源双臂遥操作硬件系统，并结合一种名为 ACT 的新型模仿学习算法，通过预测动作序列（Action Chunking）而非单步动作，成功地让低成本机器人学会了多种以往需要昂贵设备才能完成的精细操作任务。
+This paper proposes a low-cost open-source bimanual teleoperation hardware system called ALOHA, and combines it with a novel imitation learning algorithm called ACT. By predicting action sequences (Action Chunking) rather than single-step actions, it successfully enables low-cost robots to learn a variety of fine manipulation tasks that previously required expensive equipment.
 
-## 关键定义
-*   **ALOHA (A Low-cost Open-source Hardware System for Bimanual Teleoperation)**：一套作者构建的低成本（<$20k）双臂遥操作硬件。它使用现成的机器人臂（ViperX 和 WidowX）和3D打印组件，通过关节空间映射（joint-space mapping）的方式，让操作员能够直观地控制机器人，以收集高质量、高频率的精细操作演示数据。
-*   **动作分块 (Action Chunking)**：本文提出的核心算法思想。传统方法一次预测一个动作，而动作分块是指策略模型一次性预测未来 $$k$$ 个时间步的动作序列。这种方法将任务的有效时域缩短了 $$k$$ 倍，从而显著缓解了模仿学习中的“误差累积”问题。
-*   **时序集成 (Temporal Ensembling)**：一种在推理阶段使用的技术，用于平滑机器人动作。系统在每个时间步都查询策略模型（而非每 $$k$$ 步），从而产生重叠的动作块。对于任意一个时间步，系统会汇集（加权平均）来自不同次预测中针对该时间步的动作指令，使得最终执行的动作更加平滑连贯。
-*   **ACT (Action Chunking with Transformers)**：本文提出的模仿学习算法全称。该算法使用 Transformer 架构来实现动作分块，并采用条件变分自编码器（Conditional VAE, CVAE）进行训练，以有效建模人类演示数据中固有的多模态和噪声特性。
+## Key Definitions
+*   **ALOHA (A Low-cost Open-source Hardware System for Bimanual Teleoperation)**: A low-cost (<$20k) bimanual teleoperation hardware system built by the authors. It uses off-the-shelf robot arms (ViperX and WidowX) and 3D-printed components, allowing an operator to intuitively control the robot through joint-space mapping to collect high-quality, high-frequency fine manipulation demonstration data.
+*   **Action Chunking**: The core algorithmic idea proposed in this paper. Traditional methods predict one action at a time, whereas action chunking means the policy model predicts a sequence of actions for the next $$k$$ time steps at once. This shortens the effective time horizon of the task by a factor of $$k$$, significantly alleviating the “compounding errors” problem in imitation learning.
+*   **Temporal Ensembling**: A technique used during inference to smooth robot actions. The system queries the policy model at every time step rather than every $$k$$ steps, producing overlapping action chunks. For any given time step, the system aggregates (via weighted averaging) the action commands for that time step from different predictions, making the final executed action smoother and more coherent.
+*   **ACT (Action Chunking with Transformers)**: The full name of the imitation learning algorithm proposed in this paper. The algorithm uses a Transformer architecture to implement action chunking and is trained with a conditional variational autoencoder (Conditional VAE, CVAE) to effectively model the inherent multimodality and noise in human demonstration data.
 
-## 相关工作
-当前，精细操作任务（如穿线、装电池）通常依赖于价格昂贵、精度极高的高端机器人和传感器。虽然模仿学习（Imitation Learning）为使用低成本硬件提供了可能，但它存在一个致命弱点：**误差累积 (compounding errors)**。策略在执行过程中产生的微小误差会随时间不断累积，导致机器人进入一个从未在训练数据中见过的陌生状态，最终导致任务失败，这个问题在需要高精度的精细操作中尤为严重。
+## Related Work
+At present, fine manipulation tasks (such as threading a needle or inserting batteries) usually rely on expensive, highly precise high-end robots and sensors. Although imitation learning makes it possible to use low-cost hardware, it has a fatal weakness: **compounding errors**. Small errors produced by the policy during execution accumulate over time, causing the robot to enter unfamiliar states never seen in the training data, ultimately leading to task failure. This problem is especially severe in fine manipulation tasks that require high precision.
 
-现有的误差累积缓解方案，或需要繁琐的在线专家干预（如 DAgger），或局限于低维状态空间，不适用于直接从高维像素（图像）学习的场景。
+Existing methods for mitigating compounding errors either require cumbersome online expert intervention (such as DAgger) or are limited to low-dimensional state spaces, making them unsuitable for scenarios that learn directly from high-dimensional pixels (images).
 
-因此，本文旨在解决的核心问题是：**如何让低成本、低精度的机器人硬件，通过直接从图像学习的方式，成功执行高精度的、需要闭环反馈的复杂双臂操作任务？**
+Therefore, the core question this paper aims to solve is: **How can low-cost, low-precision robot hardware successfully perform complex bimanual manipulation tasks that require high precision and closed-loop feedback by learning directly from images?**
 
-## 本文方法
+## Method
 
-本文的贡献包含两个协同工作的部分：一个用于数据收集的低成本遥操作硬件系统 ALOHA，以及一个用于学习的创新算法 ACT。
+The contributions of this paper consist of two synergistic parts: a low-cost teleoperation hardware system, ALOHA, for data collection, and an innovative learning algorithm, ACT.
 
-### ALOHA：低成本遥操作硬件系统
+### ALOHA: Low-cost Teleoperation Hardware System
 
-为了获取高质量的精细操作演示数据，本文设计并搭建了 ALOHA 系统。
-*   **设计原则**：低成本、功能多样、用户友好、易于维修和搭建。
-*   **硬件构成**：该系统由两对机器人臂组成，一对较大的 ViperX 6自由度机械臂作为“执行端”（follower），一对较小的同品牌 WidowX 机械臂作为“领导端”（leader）。操作员通过直接反向驱动（backdriving）领导端机械臂来控制执行端，两者之间采用关节空间映射，避免了逆运动学（IK）在奇异点附近失效的问题。
-*   **创新设计**：为提升遥操作体验，作者设计了3D打印的“手柄与剪刀”机制，方便操作员控制夹爪的开合与机械臂的移动。同时，还设计了橡皮筋重力平衡装置，以减轻操作员的负担。
-*   **感知系统**：系统配备了四台消费级网络摄像头，两台安装在机器人手腕上提供特写视角，另外两台提供全局的前方和顶部视角。
+To obtain high-quality fine manipulation demonstration data, the paper designed and built the ALOHA system.
+*   **Design principles**: Low cost, versatile functionality, user-friendly, and easy to repair and assemble.
+*   **Hardware composition**: The system consists of two pairs of robot arms: a larger pair of ViperX 6-DoF arms serving as the “follower,” and a smaller pair of WidowX arms of the same brand serving as the “leader.” The operator controls the follower by directly backdriving the leader arms, and the two are connected through joint-space mapping, avoiding the issue of inverse kinematics (IK) failing near singularities.
+*   **Innovative design**: To improve the teleoperation experience, the authors designed a 3D-printed “handle-and-scissors” mechanism that makes it easier for the operator to control gripper opening/closing and arm movement. They also designed a rubber-band gravity compensation device to reduce the operator’s burden.
+*   **Perception system**: The system is equipped with four consumer-grade webcams: two mounted on the robot wrists to provide close-up views, and two others providing global front and top views.
 
-<img src="/images/2304.13705v1/page_0_Figure_2.jpg" alt="ALOHA系统概览" style="width:90%; max-width:700px; margin:auto; display:block;">
-*图1：ALOHA系统，用户通过驱动领导臂来遥操作执行臂。该系统能够完成穿拉链扣、玩乒乓球等需要精确、动态和丰富接触的任务。*
+<img src="/images/2304.13705v1/page_0_Figure_2.jpg" alt="ALOHA system overview" style="width:90%; max-width:700px; margin:auto; display:block;">
+*Figure 1: The ALOHA system, where the user teleoperates the follower arm by driving the leader arm. The system can perform tasks requiring precise, dynamic, and rich contact, such as threading a zipper pull and playing table tennis.*
 
-<img src="/images/2304.13705v1/page_2_Figure_0.jpg" alt="ALOHA硬件细节" style="width:90%; max-width:700px; margin:auto; display:block;">
-*图3：ALOHA的多个摄像头视角、工作空间示意图、以及定制的夹爪和“手柄剪刀”操作装置。*
+<img src="/images/2304.13705v1/page_2_Figure_0.jpg" alt="ALOHA hardware details" style="width:90%; max-width:700px; margin:auto; display:block;">
+*Figure 3: Multiple camera views of ALOHA, a schematic of the workspace, and the custom gripper and “handle-scissors” control device.*
 
-### ACT：基于Transformer的动作分块算法
+### ACT: Transformer-based Action Chunking Algorithm
 
-针对误差累积问题，本文提出了 ACT 算法，其核心思想是学习一个能生成动作序列的策略。
+To address the compounding errors problem, this paper proposes the ACT algorithm, whose core idea is to learn a policy that generates action sequences.
 
-#### 创新点
-1.  **动作分块 (Action Chunking)**：算法的核心创新。策略 $\pi\_{\theta}(a\_{t:t+k} \mid s\_t)$ 不再是根据当前状态 $s\_t$ 预测单个动作 $a\_t$，而是预测未来 $$k$$ 个时间步的整个动作序列 $a\_{t:t+k}$。这相当于将任务的决策频率降低了 $$k$$ 倍，显著减少了误差累积的机会。此外，它还能更好地处理人类演示中常见的非马尔可夫行为（如暂时的停顿）。
+#### Innovations
+1.  **Action Chunking**: The core innovation of the algorithm. The policy $\pi\_{\theta}(a\_{t:t+k} \mid s\_t)$ no longer predicts a single action $a\_t$ from the current state $s\_t$, but instead predicts the entire action sequence $a\_{t:t+k}$ for the next $$k$$ time steps. This is equivalent to reducing the task’s decision frequency by a factor of $$k$$, significantly reducing the chance of compounding errors. In addition, it can better handle the non-Markovian behaviors common in human demonstrations, such as temporary pauses.
 
-2.  **时序集成 (Temporal Ensembling)**：为避免每 $$k$$ 步才进行一次决策导致的动作卡顿，ACT在每个时间步都运行策略，生成重叠的动作块。对于当前时间步 $$t$$ 的动作，会存在多个来自过去预测的候选动作。ACT通过加权平均（新预测的权重更高）将这些动作融合成一个指令，从而产生平滑且反应迅速的轨迹。
+2.  **Temporal Ensembling**: To avoid action stuttering caused by making decisions only every $$k$$ steps, ACT runs the policy at every time step to generate overlapping action chunks. For the action at the current time step $$t$$, there may be multiple candidate actions from past predictions. ACT fuses these actions into a single command through weighted averaging (with newer predictions given higher weight), thereby producing smooth and responsive trajectories.
 
-<img src="/images/2304.13705v1/page_3_Figure_2.jpg" alt="动作分块与时序集成示意图" style="width:85%; max-width:450px; margin:auto; display:block;">
-*图5：ACT在推理时采用动作分块和时序集成。它并非“观察-执行”交替进行，而是在每个时间步都进行预测，并对重叠的动作块进行加权平均。*
+<img src="/images/2304.13705v1/page_3_Figure_2.jpg" alt="Action chunking and temporal ensembling diagram" style="width:85%; max-width:450px; margin:auto; display:block;">
+*Figure 5: During inference, ACT uses action chunking and temporal ensembling. Rather than alternating between “observe” and “act,” it makes predictions at every time step and performs weighted averaging over overlapping action chunks.*
 
-3.  **使用CVAE建模人类数据**：人类演示天然存在噪声和多模TAI性（同一个状态下可能有多种有效操作）。为解决此问题，ACT被建模为一个条件变分自编码器 (CVAE)。
-    *   **架构**：模型包含一个CVAE编码器和一个CVAE解码器（即策略本身），均用Transformer实现。
-    *   **训练**：训练时，编码器将观测和真实的动作序列压缩为一个隐变量 $z$（代表动作“风格”），解码器（策略）则学习根据观测和 $z$ 重构出该动作序列。损失函数包含重构损失（L1 loss）和KL散度正则项。
-    *   **推理**：推理时，丢弃编码器，将隐变量 $z$ 固定为先验分布的均值（即0），从而使策略产生确定性的、高质量的动作序列。
+3.  **Using CVAE to model human data**: Human demonstrations are inherently noisy and multimodal (there may be multiple valid actions for the same state). To address this, ACT is modeled as a conditional variational autoencoder (CVAE).
+    *   **Architecture**: The model includes a CVAE encoder and a CVAE decoder (i.e., the policy itself), both implemented with Transformers.
+    *   **Training**: During training, the encoder compresses the observations and ground-truth action sequence into a latent variable $z$ (representing the action “style”), while the decoder (policy) learns to reconstruct the action sequence from the observations and $z$. The loss function includes a reconstruction loss (L1 loss) and a KL-divergence regularization term.
+    *   **Inference**: During inference, the encoder is discarded and the latent variable $z$ is fixed to the mean of the prior distribution (i.e., 0), enabling the policy to produce deterministic, high-quality action sequences.
 
-<img src="/images/2304.13705v1/page_3_Figure_0.jpg" alt="ACT架构图" style="width:90%; max-width:700px; margin:auto; display:block;">
-*图4：ACT架构图。左侧是只在训练时使用的CVAE编码器，它将动作序列和关节状态压缩为隐变量z。右侧是CVAE解码器（即策略），它融合多视角图像、关节状态和隐变量z，通过Transformer编解码器来预测一个动作序列。*
+<img src="/images/2304.13705v1/page_3_Figure_0.jpg" alt="ACT architecture diagram" style="width:90%; max-width:700px; margin:auto; display:block;">
+*Figure 4: ACT architecture diagram. On the left is the CVAE encoder, used only during training, which compresses the action sequence and joint states into the latent variable z. On the right is the CVAE decoder (i.e., the policy), which fuses multi-view images, joint states, and the latent variable z, and uses a Transformer encoder-decoder to predict an action sequence.*
 
-#### 算法流程总结
-*   **训练 (Algorithm 1)**：从演示数据集 $\mathcal{D}$ 中采样观测 $o\_t$ 和对应的未来 $$k$$ 步动作序列 $a\_{t:t+k}$。通过CVAE框架训练策略网络 $\pi\_{\theta}$ 和编码器 $q\_{\phi}$。
-*   **推理 (Algorithm 2)**：在每个时间步 $$t$$，获取当前观测 $o\_t$，令隐变量 $z=0$，调用策略 $\pi\_{\theta}(\hat{a}\_{t:t+k} \mid o\_t, z)$ 预测未来 $$k$$ 步的动作。将这些预测动作存入缓冲区，并通过时序集成计算出最终要执行的当前动作。
+#### Summary of the algorithm flow
+*   **Training (Algorithm 1)**: Sample observation $o\_t$ and the corresponding future $$k$$-step action sequence $a\_{t:t+k}$ from the demonstration dataset $\mathcal{D}$. Train the policy network $\pi\_{\theta}$ and encoder $q\_{\phi}$ through the CVAE framework.
+*   **Inference (Algorithm 2)**: At each time step $$t$$, obtain the current observation $o\_t$, set the latent variable $z=0$, and call the policy $\pi\_{\theta}(\hat{a}\_{t:t+k} \mid o\_t, z)$ to predict the next $$k$$ actions. Store these predicted actions in a buffer, and compute the final current action to execute through temporal ensembling.
 
-## 实验结论
-本文在2个模拟任务和6个真实世界的精细操作任务（如拉开自封袋、安装电池、打开调料杯、穿魔术贴带等）上对ACT进行了评估。
+## Experimental conclusions
+This paper evaluated ACT on 2 simulated tasks and 6 real-world fine manipulation tasks, such as opening a zip bag, installing a battery, opening a seasoning cup, and threading a Velcro strap.
 
 
-| 任务 (数据来源) | BC-ConvMLP | BeT | RT-1 | VINN | ACT (本文) |
+| Task (data source) | BC-ConvMLP | BeT | RT-1 | VINN | ACT (this paper) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **方块传递 (模拟, 脚本)** | 34 | 60 | 44 | 13 | **97** |
-| **方块传递 (模拟, 人类)** | 3 | 16 | 4 | 17 | **82** |
-| **双臂插入 (模拟, 脚本)** | 17 | 51 | 33 | 9 | **90** |
-| **双臂插入 (模拟, 人类)** | 1 | 13 | 2 | 11 | **60** |
-| **拉开自封袋 (真实)** | 5 | 27 | 28 | 3 | **88** |
-| **安装电池 (真实)** | 0 | 1 | 20 | 0 | **96** |
+| **Block transfer (simulation, script)** | 34 | 60 | 44 | 13 | **97** |
+| **Block transfer (simulation, human)** | 3 | 16 | 4 | 17 | **82** |
+| **Bimanual insertion (simulation, script)** | 17 | 51 | 33 | 9 | **90** |
+| **Bimanual insertion (simulation, human)** | 1 | 13 | 2 | 11 | **60** |
+| **Open zip bag (real world)** | 5 | 27 | 28 | 3 | **88** |
+| **Install battery (real world)** | 0 | 1 | 20 | 0 | **96** |
 
-*表I: 4个任务上的成功率(%)对比。ACT在所有任务和数据类型上均大幅超越之前的方法。*
+*Table I: Comparison of success rates (%) on 4 tasks. ACT significantly outperforms previous methods across all tasks and data types.*
 
 
-| 任务 (真实世界) | Tip Over | Open Lid | — | Total |
+| Task (real world) | Tip Over | Open Lid | — | Total |
 | :--- | :---: | :---: | :---: | :---: |
 | **BeT** | 12 | 0 | — | **0** |
-| **ACT (本文)** | 100 | 84 | — | **84** |
-| **任务 (真实世界)** | Lift | Grasp | Insert | Total |
+| **ACT (this paper)** | 100 | 84 | — | **84** |
+| **Task (real world)** | Lift | Grasp | Insert | Total |
 | **BeT** | 0 | 0 | 0 | **0** |
-| **ACT (本文)** | 96 | 92 | 20 | **20** |
-| **任务 (真实世界)** | Grasp | Cut | Handover | Hang | Total |
+| **ACT (this paper)** | 96 | 92 | 20 | **20** |
+| **Task (real world)** | Grasp | Cut | Handover | Hang | Total |
 | **BeT** | 24 | 0 | 0 | 0 | **0** |
-| **ACT (本文)** | 96 | 72 | 100 | 64 | **64** |
-| **任务 (真实世界)** | Lift | Insert | Support | Secure | Total |
+| **ACT (this paper)** | 96 | 72 | 100 | 64 | **64** |
+| **Task (real world)** | Lift | Insert | Support | Secure | Total |
 | **BeT** | 8 | 0 | 0 | 0 | **0** |
-| **ACT (本文)** | 100 | 92 | 92 | 92 | **92** |
+| **ACT (this paper)** | 100 | 92 | 92 | 92 | **92** |
 
-*表II: 另外4个真实世界任务的子任务及最终成功率(%)对比。ACT表现优异，而表现最好的基线方法BeT在这些复杂任务上成功率为0。*
+*Table II: Comparison of subtasks and final success rates (%) for 4 additional real-world tasks. ACT performs excellently, while the best baseline, BeT, achieves a success rate of 0 on these complex tasks.*
 
-*   **验证的优势**：
-    1.  **有效性**：实验结果表明，ACT在所有8个任务上均以巨大优势（例如，在安装电池任务中成功率为96%，而其他方法接近0）超越了所有基线方法（包括BC-ConvMLP, BeT, RT-1, VINN）。这证明了本文提出的系统和算法能够有效学习并完成低成本硬件上的精细操作。
-    2.  **动作分块的重要性**：消融实验证实，动作分块是性能提升的关键。随着分块大小 $$k$$ 的增加，所有方法的性能都显著提升。这表明动作分块是一种普适且有效的技术，能有效缓解误差累积。
-    3.  **CVAE的必要性**：实验显示，在使用随机性更强的人类演示数据进行训练时，CVAE目标至关重要；若移除CVAE，模型性能会从35.3%骤降至2%。
-    4.  **高频控制的必要性**：用户研究表明，50Hz的高频遥操作控制相比于5Hz的低频控制，能让任务完成时间平均缩短62%，证明了高频反馈对于精细操作的重要性。
+*   **Verified advantages**:
+    1.  **Effectiveness**: The experimental results show that ACT surpasses all baseline methods (including BC-ConvMLP, BeT, RT-1, and VINN) by a large margin on all 8 tasks (for example, a 96% success rate on the battery installation task, while other methods are close to 0). This demonstrates that the proposed system and algorithm can effectively learn and complete fine manipulation on low-cost hardware.
+    2.  **The importance of action chunking**: Ablation experiments confirm that action chunking is key to performance gains. As the chunk size $$k$$ increases, the performance of all methods improves significantly. This shows that action chunking is a universal and effective technique for mitigating error accumulation.
+    3.  **The necessity of CVAE**: Experiments show that when training with more stochastic human demonstration data, the CVAE objective is crucial; if CVAE is removed, model performance drops sharply from 35.3% to 2%.
+    4.  **The necessity of high-frequency control**: User studies show that 50Hz high-frequency teleoperation control reduces task completion time by an average of 62% compared with 5Hz low-frequency control, demonstrating the importance of high-frequency feedback for fine manipulation.
 
-*   **表现不佳的场景**：
-    在“穿魔术贴带 (Thread Velcro)”任务中，ACT的最终成功率较低（20%）。失败的主要原因是感知挑战：黑色的魔术贴带与黑色背景对比度低，且目标在图像中占比较小，导致系统难以精确定位，从而在空中抓取或对准插入时失败。
+*   **Scenarios with poor performance**:
+    In the “Thread Velcro” task, ACT’s final success rate was low (20%). The main reason for failure was perception challenges: the black Velcro strap had low contrast against the black background, and the target occupied only a small portion of the image, making it difficult for the system to localize accurately, which led to failures during aerial grasping or alignment for insertion.
 
-*   **最终结论**：
-    本文成功证明，通过将精心设计的低成本遥操作硬件（ALOHA）与创新的模仿学习算法（ACT）相结合，可以使廉价的机器人系统掌握以往只有高端设备才能完成的、对精度和闭环反馈要求极高的精细操作技能。其核心算法创新“动作分块”为解决模仿学习中的误差累积问题提供了强有力的方案。
+*   **Final conclusion**:
+    This paper successfully demonstrates that by combining carefully designed low-cost teleoperation hardware (ALOHA) with an innovative imitation learning algorithm (ACT), inexpensive robotic systems can acquire fine manipulation skills that previously only high-end equipment could accomplish, with very high requirements for precision and closed-loop feedback. Its core algorithmic innovation, “action chunking,” provides a powerful solution to the error accumulation problem in imitation learning.

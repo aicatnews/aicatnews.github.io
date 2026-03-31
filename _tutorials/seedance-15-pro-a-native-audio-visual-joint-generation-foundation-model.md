@@ -2,69 +2,68 @@
 layout: default
 title: "Seedance 1.5 pro: A Native Audio-Visual Joint Generation Foundation Model"
 ---
-
-## 字节Seedance 1.5 pro发布：原生音视频联合生成，推理加速超10倍
+## ByteDance Seedance 1.5 pro Released: Native Audio-Visual Joint Generation, Inference Speedup of Over 10x
 
 <img src="/images/2512.13507v2/A__title.jpg" alt="" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-视频生成领域的“军备竞赛”在过去一年里从未停歇，从Sora到Kling，再到Veo，画面的逼真度已令人惊叹。然而，一个长期被忽视的痛点始终存在：**声音与画面的割裂**。大多数现有方案仍是将视频生成与音频生成作为两个独立的步骤，导致“口型对不上”、“声画不同步”等问题频发。
+The “arms race” in video generation has never slowed over the past year. From Sora to Kling to Veo, the realism of the visuals has become astonishing. Yet one long-overlooked pain point has remained: **the disconnect between sound and image**. Most existing solutions still treat video generation and audio generation as two separate steps, leading to frequent issues such as “lip movements not matching speech” and “audio out of sync with the visuals.”
 
 > ArXiv URL：http://arxiv.org/abs/2512.13507v2
 
-近日，字节跳动（火山引擎）发布的 **Seedance 1.5 pro** 正式向这一难题发起了挑战。作为一个**原生音视频联合生成**（**Native Audio-Visual Joint Generation**）的基础模型，它不再是简单的“视频+配音”拼接，而是通过双分支扩散Transformer架构，实现了画面与声音的同步生成。更令人瞩目的是，通过极致的工程优化，其推理速度提升了超过10倍，让专业级的内容创作不再遥不可及。
+Recently, **Seedance 1.5 pro** released by ByteDance (Volcano Engine) officially took on this challenge. As a foundation model for **Native Audio-Visual Joint Generation**, it is no longer a simple “video + dubbing” splice, but instead uses a dual-branch diffusion Transformer architecture to generate visuals and sound in sync. Even more strikingly, through extreme engineering optimization, its inference speed has improved by more than 10x, making professional-grade content creation far less out of reach.
 
-### 原生联合生成：架构的胜利
+### Native Joint Generation: A Victory of Architecture
 
-Seedance 1.5 pro 的核心突破在于其架构设计。传统的视频生成往往先生成无声视频，再通过“图生音”模型配音，这种级联方式天然存在语义和时间上的错位。
+The core breakthrough of Seedance 1.5 pro lies in its architectural design. Traditional video generation often first produces a silent video and then adds dubbing through an “image-to-sound” model; this cascaded approach naturally creates semantic and temporal misalignment.
 
-该研究提出了一种基于 **MMDiT** 的统一多模态联合生成架构。这种设计允许模型在生成过程中进行深度的跨模态交互。简单来说，模型在“构思”画面的每一帧时，同时也由同一套神经网络在“构思”对应的声音波形。
+This work proposes a unified multimodal joint generation architecture based on **MMDiT**. This design allows the model to perform deep cross-modal interaction during generation. In simple terms, while the model is “conceiving” each frame of the visuals, the same neural network is also “conceiving” the corresponding audio waveform.
 
-这种机制带来了两个显著优势：
+This mechanism brings two significant advantages:
 
-1.  **精准的时间同步**：无论是说话时的口型，还是物体碰撞时的声响，都能实现帧级别的对齐。
+1.  **Precise temporal synchronization**: Whether it is lip movements during speech or the sound of objects colliding, frame-level alignment can be achieved.
 
-2.  **语义一致性**：视觉流和听觉流共享语义理解，确保了生成的音频在情感和氛围上与视频高度契合。
+2.  **Semantic consistency**: The visual stream and auditory stream share semantic understanding, ensuring that the generated audio matches the video closely in emotion and atmosphere.
 
-### 数据与训练：从SFT到RLHF的精细打磨
+### Data and Training: Meticulous Refinement from SFT to RLHF
 
-为了训练这样一个庞然大物，Seedance 1.5 pro 构建了一套全面的音视频数据框架。这不仅包括多阶段的数据清洗流水线，还引入了先进的描述系统（Captioning System），能够同时为视频和音频模态提供丰富、专业级的描述。
+To train such a massive model, Seedance 1.5 pro built a comprehensive audio-visual data framework. This includes not only a multi-stage data cleaning pipeline, but also an advanced Captioning System that can provide rich, professional-grade descriptions for both video and audio modalities.
 
-在后训练（Post-training）阶段，该研究采用了极其严苛的优化策略：
+In the post-training stage, the research adopted an extremely rigorous optimization strategy:
 
-*   **监督微调**（**Supervised Fine-Tuning, SFT**）：使用高质量的音视频数据集进行微调，奠定模型的基础能力。
+*   **Supervised Fine-Tuning** (**Supervised Fine-Tuning, SFT**): Fine-tuning with high-quality audio-visual datasets to establish the model’s foundational capabilities.
 
-*   **人类反馈强化学习**（**Reinforcement Learning from Human Feedback, RLHF**）：这是大语言模型成功的关键技术，如今被成功迁移到了音视频生成领域。研究团队设计了多维度的奖励模型（Reward Models），专门针对动作质量、视觉美感和音频保真度进行打分和优化。
+*   **Reinforcement Learning from Human Feedback** (**Reinforcement Learning from Human Feedback, RLHF**): A key technique behind the success of large language models, now successfully transferred to the audio-visual generation domain. The research team designed multi-dimensional reward models specifically to score and optimize motion quality, visual aesthetics, and audio fidelity.
 
 images/page_1_Figure_7.jpg
 
-上图展示了 Seedance 1.5 pro 的训练与推理流水线概览。值得注意的是，针对 RLHF 流程的底层优化使得训练速度提升了近3倍。
+The figure above shows an overview of the training and inference pipeline of Seedance 1.5 pro. Notably, low-level optimizations for the RLHF workflow improved training speed by nearly 3x.
 
-### 推理加速：10倍以上的效率飞跃
+### Inference Acceleration: A Leap of More Than 10x in Efficiency
 
-对于生成式模型而言，推理成本往往是落地的最大障碍。Seedance 1.5 pro 引入了一个高效的加速框架。
+For generative models, inference cost is often the biggest barrier to real-world deployment. Seedance 1.5 pro introduces an efficient acceleration framework.
 
-通过优化多阶段蒸馏（Multi-stage Distillation）框架，模型大幅减少了生成过程中所需的**函数评估次数**（**Number of Function Evaluations, NFE**）。结合量化（Quantization）和并行化（Parallelism）等基础设施层面的优化，该模型实现了端到端超过 **10倍** 的推理加速，同时未牺牲生成质量。这意味着，生成一段高质量的音视频内容，用户等待的时间将大幅缩短。
+By optimizing the Multi-stage Distillation framework, the model greatly reduced the **Number of Function Evaluations** (**Number of Function Evaluations, NFE**) required during generation. Combined with infrastructure-level optimizations such as Quantization and Parallelism, the model achieved end-to-end inference acceleration of more than **10x** without sacrificing generation quality. This means that the time users need to wait to generate a high-quality audio-visual piece will be dramatically shortened.
 
-### 核心能力：不仅是“能动”，更是“懂戏”
+### Core Capabilities: Not Just “Can Move,” but “Understands the Scene”
 
-在实际应用层面，Seedance 1.5 pro 展现出了极强的专业潜力，特别是在以下几个方面：
+In practical applications, Seedance 1.5 pro demonstrates strong professional potential, especially in the following areas:
 
-1.  **极致的方言口型同步**：这是该模型的一大亮点。它不仅支持多语言，更能精准捕捉不同方言（如中国各地方言）的独特韵律和情感张力，并实现精准的口型匹配。这对于本土化的短剧、电影制作来说是巨大的福音。
+1.  **Extremely precise dialect lip-sync**: This is one of the model’s standout strengths. It not only supports multiple languages, but can also accurately capture the unique rhythm and emotional intensity of different dialects (such as regional Chinese dialects) and achieve precise lip matching. This is a huge boon for localized short dramas and film production.
 
-2.  **电影级镜头控制**：模型具备自主的镜头调度能力，能够执行长镜头、希区柯克变焦（Dolly Zoom）等复杂的运镜手法，配合专业级的色彩分级，极大地提升了视频的动态张力。
+2.  **Cinematic camera control**: The model has autonomous shot orchestration capabilities and can execute complex camera movements such as long takes and Dolly Zoom, combined with professional-grade color grading, greatly enhancing the dynamic tension of the video.
 
-3.  **叙事连贯性**：通过增强的语义理解，模型能够更好地分析叙事上下文，确保生成的音视频片段在情节和情感上连贯统一。
+3.  **Narrative coherence**: With enhanced semantic understanding, the model can better analyze narrative context, ensuring that generated audio-visual clips remain coherent and unified in plot and emotion.
 
-### 评测表现：对标Sora 2与Kling
+### Evaluation Results: Benchmarking Against Sora 2 and Kling
 
-为了验证模型效果，研究团队构建了 **SeedVideoBench 1.5** 评测基准，引入了更符合影视制作标准的评估指标。
+To validate the model’s performance, the research team built the **SeedVideoBench 1.5** benchmark, introducing evaluation metrics that better align with film and television production standards.
 
 images/page_4_Figure_10.jpg
 
-在与 Kling 2.5/2.6、Veo 3.1 以及 Sora 2 等顶尖模型的对比中，Seedance 1.5 pro 在音视频同步性、动作表现力和叙事一致性上均表现出色。特别是在音频表现力上，虽然 Sora 2 在情感爆发力上极强，但 Seedance 1.5 pro 展现出了更为平衡和可控的特质，避免了过度夸张，更适合需要稳定基调的专业制作场景。
+In comparisons with top models such as Kling 2.5/2.6, Veo 3.1, and Sora 2, Seedance 1.5 pro performed excellently in audio-visual synchronization, motion expressiveness, and narrative consistency. In particular, for audio expressiveness, while Sora 2 is extremely powerful in emotional intensity, Seedance 1.5 pro showed a more balanced and controllable character, avoiding excessive exaggeration and making it better suited for professional production scenarios that require a stable tone.
 
-### 总结
+### Conclusion
 
-Seedance 1.5 pro 的发布，标志着视频生成技术正从“无声默片”时代加速迈向“有声电影”时代。通过原生联合生成架构和极致的工程优化，它不仅解决了音画同步的顽疾，更将推理效率提升到了一个新的量级。
+The release of Seedance 1.5 pro marks video generation technology’s accelerated transition from the era of “silent films” to the era of “talkies.” Through its native joint generation architecture and extreme engineering optimization, it not only solves the long-standing problem of audio-visual synchronization, but also raises inference efficiency to a new level.
 
-目前，Seedance 1.5 pro 已在火山引擎上线，并计划于2025年12月前集成到豆包（Doubao）和即梦（Jimeng）等平台中。对于创作者而言，这或许意味着一个全流程AI辅助创作的新时代已经到来。
+At present, Seedance 1.5 pro has already launched on Volcano Engine and is planned to be integrated into platforms such as Doubao and Jimeng by December 2025. For creators, this may mean that a new era of end-to-end AI-assisted creation has arrived.

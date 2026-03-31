@@ -2,93 +2,92 @@
 layout: default
 title: "The 2025 Foundation Model Transparency Index"
 ---
-
-## 2025 AI透明度大倒退：均分跌至40，IBM夺冠，xAI与Midjourney垫底
+## 2025 AI Transparency Backslide: Average Score Falls to 40, IBM Takes the Crown, xAI and Midjourney Bring Up the Rear
 
 <img src="/images/2512.10169v1/A__title.jpg" alt="" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-随着AI模型的能力以惊人的速度进化，我们对这些“黑盒”背后的运作机制却似乎知之甚少。斯坦福大学等机构最新发布的 **2025年基础模型透明度指数**（**Foundation Model Transparency Index, FMTI**）揭示了一个令人担忧的趋势：尽管AI技术在飞速发展，但行业整体的透明度却在大幅倒退。
+As AI models evolve at a staggering pace, we seem to know very little about how these “black boxes” actually work. The latest **2025 Foundation Model Transparency Index** (**FMTI**) released by Stanford University and other institutions reveals a worrying trend: despite the rapid advancement of AI technology, the industry’s overall transparency is deteriorating sharply.
 
 > ArXiv URL：http://arxiv.org/abs/2512.10169v1
 
-这份年度重磅报告不仅对OpenAI、Google等老牌巨头进行了“体检”，还首次将阿里巴巴、DeepSeek等中国公司纳入评测范围。结果令人咋舌：平均分从去年的58分暴跌至40分，甚至低于2023年的水平。
+This heavyweight annual report not only gave a “checkup” to long-established giants like OpenAI and Google, but also included Chinese companies such as Alibaba and DeepSeek in the evaluation for the first time. The results were astonishing: the average score plunged from 58 last year to 40, even lower than in 2023.
 
-### 透明度“寒冬”：谁在裸泳，谁在领跑？
+### The “Winter” of Transparency: Who Is Exposed, and Who Is Leading?
 
-今年的FMTI报告评估了13家全球顶级的基础模型开发商。研究团队设计了包含100项指标的评估体系，涵盖了从上游数据、模型构建到下游影响的全过程。
+This year’s FMTI report evaluated 13 of the world’s top foundation model developers. The research team designed an assessment framework with 100 indicators, covering the entire process from upstream data and model construction to downstream impact.
 
 <img src="/images/2512.10169v1/x7.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-**红榜与黑榜的巨大反差：**
+**The stark contrast between the winners and the laggards:**
 
-*   **冠军（IBM）**：IBM以 **95/100** 的高分一骑绝尘，成为透明度的绝对标杆。它在很多其他公司讳莫如深的领域（如数据来源、计算资源）都做到了充分披露。
+*   **Champion (IBM)**: IBM stood far ahead of the pack with a high score of **95/100**, becoming the absolute benchmark for transparency. It provided full disclosure in many areas where other companies remain tight-lipped, such as data sources and compute resources.
 
-*   **垫底（xAI & Midjourney）**：Elon Musk旗下的xAI和绘图模型巨头Midjourney仅获得 **14分**，处于极度不透明的状态。
+*   **At the bottom (xAI & Midjourney)**: xAI, owned by Elon Musk, and image-generation giant Midjourney scored only **14 points**, placing them in an extremely opaque position.
 
-*   **“中庸”的巨头们**：包括OpenAI、Google、Anthropic、Amazon和Meta在内的“前沿模型论坛”（Frontier Model Forum）成员，分数全部挤在中间梯队（平均约36分）。报告犀利地指出，这些公司似乎达成了一种默契——既避免因分数过低而声誉受损，又缺乏动力去争当透明度的领头羊。
+*   **The “middling” giants**: Members of the “Frontier Model Forum,” including OpenAI, Google, Anthropic, Amazon, and Meta, all clustered in the middle tier, with an average score of about 36. The report sharply notes that these companies seem to have reached a tacit understanding—avoiding reputational damage from scoring too low, while lacking the incentive to compete for the title of transparency leader.
 
-**中国公司的首秀：**
+**The debut of Chinese companies:**
 
-今年首次参评的中国公司表现各异。阿里巴巴、DeepSeek等公司被纳入评估，虽然整体得分处于中下游（DeepSeek、Meta和Alibaba的平均分为30分），但这标志着全球AI透明度评估版图的完整化。
+Chinese companies evaluated for the first time this year showed mixed performance. Alibaba, DeepSeek, and others were included in the assessment. Although their overall scores were in the lower-middle range (DeepSeek, Meta, and Alibaba averaged 30 points), this marks a step toward a more complete global map of AI transparency evaluation.
 
-### 评分暴跌背后的真相：标准升级与刻意隐瞒
+### The Truth Behind the Score Collapse: Stricter Standards and Deliberate Concealment
 
-为什么今年的平均分会从58分跌至40分？这不仅仅是因为加入了得分较低的新公司，更是因为许多老牌玩家在关键指标上出现了“倒退”。
+Why did the average score fall from 58 to 40 this year? It is not just because lower-scoring new companies were added; many established players also “regressed” on key metrics.
 
-**1. 核心资源的“黑盒化”**
+**1. The “black-boxing” of core resources**
 
-公司们对“上游资源”最为保密。训练数据（Training Data）和训练算力（Training Compute）是两个最大的黑洞。
+Companies are most secretive about “upstream resources.” Training Data and Training Compute are the two biggest black holes.
 
-*   **数据来源**：几乎没有公司愿意详细披露其训练数据的具体来源和构成，这直接关系到版权和偏见问题。
+*   **Data sources**: Almost no company is willing to disclose the specific sources and composition of its training data in detail, which is directly tied to copyright and bias issues.
 
-*   **算力成本**：尽管外界对训练大模型的昂贵成本充满好奇，但具体使用了多少 $FLOPs$、消耗了多少能源，往往被视为商业机密。例如，AI21 Labs在2024年还披露了算力和碳排放数据，但在2025年却选择了隐瞒。
+*   **Compute costs**: Although the public is curious about the enormous cost of training large models, the exact number of $FLOPs$ used and the energy consumed are often treated as trade secrets. For example, AI21 Labs disclosed compute and carbon-emission data in 2024, but chose to withhold it in 2025.
 
-**2. 评估标准的“硬核”升级**
+**2. A tougher upgrade to the evaluation standards**
 
-FMTI 2025对指标进行了大幅修订，旨在“去伪存真”。
+FMTI 2025 substantially revised its indicators in an effort to “separate the real from the fake.”
 
-*   **拒绝模糊描述**：以前只要描述了模型能力（如“文本生成”）就能得分，现在必须列出“在后训练阶段专门优化的能力清单”。
+*   **Rejecting vague descriptions**: In the past, simply describing a model capability (such as “text generation”) was enough to earn points. Now, companies must list the “capabilities specifically optimized during post-training” to score.
 
-*   **强调可复现性**：仅仅声称模型在某个基准测试上得分很高是不够的，必须开源代码和提示词（Prompts），证明第三方可以复现这一结果才能得分。
+*   **Emphasizing reproducibility**: It is no longer enough to claim that a model scores highly on a benchmark. To earn points, companies must open-source the code and prompts, proving that third parties can reproduce the result.
 
 <img src="/images/2512.10169v1/x2.jpg" alt="Refer to caption" style="width:80%; max-width:300px; margin:auto; display:block;">
 
-### 技术拆解：如何量化透明度？
+### Technical Breakdown: How Is Transparency Quantified?
 
-为了科学地衡量透明度，研究团队将100个指标分为三个核心领域：
+To measure transparency scientifically, the research team divided the 100 indicators into three core areas:
 
-1.  **上游（Upstream）**：关注构建模型所需的资源。
+1.  **Upstream**: Focuses on the resources needed to build the model.
 
-    *   **数据**：数据源、版权、许可、PII（个人身份信息）处理。
+*   **Data**: Data sources, copyright, licensing, PII (personally identifiable information) handling.
 
-    *   **劳动力**：涉及数据标注工人的薪资和工作环境。
+*   **Labor**: Salaries and working conditions of data annotators.
 
-    *   **计算**：硬件详情、能源消耗。
+*   **Compute**: Hardware details, energy consumption.
 
-2.  **模型（Model）**：关注模型本身的属性和发布。
+2.  **Model**: Focuses on the model’s own properties and release.
 
-    *   **架构**：参数量、层数等（很多公司现在对此闭口不谈）。
+*   **Architecture**: Parameter count, number of layers, etc. (many companies now refuse to discuss this).
 
-    *   **能力与风险**：模型能做什么，不能做什么，以及潜在的安全隐患。
+*   **Capabilities and risks**: What the model can and cannot do, and potential safety risks.
 
-3.  **下游（Downstream）**：关注模型的使用和影响。
+3.  **Downstream**: Focuses on the model’s use and impact.
 
-    *   **分发**：谁在使用模型？
+*   **Distribution**: Who is using the model?
 
-    *   **影响**：对用户、受影响群体以及环境的实际影响。
+*   **Impact**: The real-world effects on users, affected groups, and the environment.
 
 <img src="/images/2512.10169v1/x1.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-### 有趣的发现：AI Agent能取代人类评估员吗？
+### An Interesting Finding: Can AI Agents Replace Human Evaluators?
 
-在今年的评估过程中，研究团队进行了一项有趣的实验：利用AI Agent来辅助收集各公司的透明度信息。
+During this year’s evaluation, the research team ran an interesting experiment: using AI Agents to help collect transparency information from each company.
 
-结果显示，AI Agent确实能提高信息检索的效率，但还远不能完全取代人类。Agent容易产生“幻觉”或被表面信息误导（False Positives），同时也容易漏掉深藏在技术文档中的关键细节（False Negatives）。最终，所有信息仍需经过FMTI团队的人工核实。
+The results showed that AI Agents can indeed improve the efficiency of information retrieval, but they are still far from fully replacing humans. Agents are prone to hallucination or being misled by surface-level information (false positives), and they can also miss key details buried in technical documents (false negatives). In the end, all information still had to be manually verified by the FMTI team.
 
-### 结论：透明度是一种选择，而非技术难题
+### Conclusion: Transparency Is a Choice, Not a Technical Problem
 
-2025 FMTI报告最核心的启示在于，**透明度的差异主要源于企业意愿，而非技术或结构性障碍**。
+The most important takeaway from the 2025 FMTI report is that **differences in transparency are driven mainly by corporate willingness, not by technical or structural barriers**.
 
-IBM、Writer和AI21 Labs的高分证明，即使是商业化公司，也可以在保持竞争力的同时实现高度透明。相反，某些公司在下游应用政策（如下载使用条款）上得分极高，却在模型训练数据上得分挂零，这种鲜明的对比揭示了其策略性的不透明。
+The high scores of IBM, Writer, and AI21 Labs prove that even commercial companies can achieve a high degree of transparency while remaining competitive. By contrast, some companies score extremely high on downstream application policies (such as download terms of use) but score zero on model training data; this sharp contrast reveals their strategic opacity.
 
-随着全球政策制定者（如欧盟AI法案）开始强制要求某些类型的透明度，这份报告不仅是对现状的记录，更是对未来政策干预方向的指引。如果市场竞争无法带来透明，那么更激进的政策干预或许将成为必然。
+As global policymakers, such as those behind the EU AI Act, begin to mandate certain types of transparency, this report is not only a record of the current state of affairs, but also a guide to future policy intervention. If market competition cannot deliver transparency, then more aggressive policy intervention may become inevitable.

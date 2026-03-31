@@ -2,75 +2,74 @@
 layout: default
 title: "PaCoRe: Learning to Scale Test-Time Compute with Parallel Coordinated Reasoning"
 ---
-
-## 8B模型超越GPT-5！PaCoRe：解锁200万Token推理算力的新范式
+## 8B Model Surpasses GPT-5! PaCoRe: A New Paradigm for Unlocking 2 Million Token Inference Compute
 
 <img src="/images/2601.05593v1/A__title.jpg" alt="" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-当前的大语言模型（LLM）存在一个显著的短板：**推理能力被死死地限制在了上下文窗口（Context Window）里**。一旦思维链（Chain-of-Thought）的长度填满了窗口，推理就必须停止。
+Current large language models (LLMs) have a major weakness: **their reasoning ability is tightly constrained by the context window**. Once the Chain-of-Thought fills up the window, inference has to stop.
 
 > ArXiv URL：http://arxiv.org/abs/2601.05593v1
 
-但如果我们可以打破这个限制呢？
+But what if we could break this limit?
 
-来自北京大学、阶跃星辰（StepFun）和清华大学的研究团队刚刚发布了一项重磅工作——**PaCoRe**。这项技术通过一种全新的“并行协同推理”架构，让一个仅有 **8B参数** 的模型，在HMMT 2025数学竞赛基准上达到了 **94.5%** 的准确率，一举超越了GPT-5（93.2%）。
+A research team from Peking University, StepFun, and Tsinghua University has just released a major work — **PaCoRe**. With a brand-new “parallel coordinated reasoning” architecture, this technique enables a model with only **8B parameters** to reach **94.5%** accuracy on the HMMT 2025 math benchmark, surpassing GPT-5 (93.2%) in one fell swoop.
 
-它通过在推理阶段并行生成并协同处理高达 **200万Token** 的有效计算量，却完全不会撑爆模型的上下文窗口。这究竟是如何做到的？
+It does this by generating in parallel and collaboratively processing up to **2 million tokens** of effective compute during inference, without ever blowing up the model’s context window. How is this possible?
 
-### 告别“单线程”：从串行到并行协同
+### Saying Goodbye to “Single-Threading”: From Serial to Parallel Coordination
 
-传统的提升推理能力的方法（如CoT）是线性的：模型一步接一步地思考，所有的中间步骤都堆积在同一个上下文窗口中。这就像一个人在解一道难题，草稿纸（上下文）写满了就没法继续了。
+Traditional methods for improving reasoning ability, such as CoT, are linear: the model thinks step by step, and all intermediate steps pile up in the same context window. It’s like a person solving a hard problem—once the scratch paper (context) is full, you can’t keep going.
 
-**PaCoRe**（**Pa**rallel **Co**ordinated **Re**asoning）则完全不同。它不再依赖单一的深度搜索，而是转向了广度的协同探索。
+**PaCoRe** (**Pa**rallel **Co**ordinated **Re**asoning) is completely different. It no longer relies on a single deep search, but instead shifts to broad, coordinated exploration.
 
 <img src="/images/2601.05593v1/x3.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-如上图所示，PaCoRe的推理过程像是一个高效的团队协作：
+As shown in the figure above, PaCoRe’s reasoning process is like an efficient team collaboration:
 
-1.  **并行探索（Parallel Exploration）**：在每一轮推理中，模型同时启动多个并行的推理轨迹（Trajectories）。这相当于派出了几十个分身同时去试错。
+1.  **Parallel Exploration**: In each round of reasoning, the model launches multiple parallel reasoning trajectories at the same time. This is like sending out dozens of copies to try different paths simultaneously.
 
-2.  **消息压缩（Message Compaction）**：这是PaCoRe最精妙的一步。它不会把所有分身的废话都塞进下一轮，而是提取每个轨迹的“最终结论”，压缩成简短的“消息”（Message）。
+2.  **Message Compaction**: This is PaCoRe’s most elegant step. Instead of stuffing all the chatter from every copy into the next round, it extracts each trajectory’s “final conclusion” and compresses it into a short “message.”
 
-3.  **协同合成（Synthesis）**：模型读取上一轮所有分身传回的压缩消息，综合这些线索，指导下一轮的探索。
+3.  **Synthesis**: The model reads the compressed messages returned by all copies from the previous round, integrates these clues, and guides the next round of exploration.
 
-通过这种“生成-压缩-协同”的循环，PaCoRe可以在固定大小的上下文窗口内，通过多轮迭代，累积出相当于 **数百万Token** 的有效推理计算量（Test-Time Compute, TTC）。
+Through this “generate-compact-coordinate” loop, PaCoRe can accumulate the equivalent of **millions of tokens** of effective reasoning compute (Test-Time Compute, TTC) over multiple iterations within a fixed-size context window.
 
-### 核心难点：从“独断专行”到“集思广益”
+### The Core Challenge: From “Autocracy” to “Crowdsourcing Ideas”
 
-仅仅把并行的结果喂给模型是不够的。研究人员发现，普通的推理模型往往患有“**推理唯我论**”（**Reasoning Solipsism**）：即使你给它提供了其他分支的高质量线索，它也倾向于忽略这些信息，坚持自己从头算一遍，导致计算资源的浪费。
+Simply feeding the parallel results back into the model is not enough. The researchers found that ordinary reasoning models often suffer from “**Reasoning Solipsism**”: even when given high-quality clues from other branches, they tend to ignore this information and insist on recalculating everything from scratch, wasting compute.
 
-为了解决这个问题，PaCoRe引入了大规模的、基于结果的 **强化学习**（**Reinforcement Learning**）。
+To solve this problem, PaCoRe introduces large-scale, outcome-based **Reinforcement Learning**.
 
-这不仅仅是简单的“少数服从多数”投票（Majority Voting），而是训练模型掌握一种更高级的能力——**推理合成**（**Reasoning Synthesis**）。经过训练的PaCoRe模型学会了：
+This is not just simple **Majority Voting**; it trains the model to master a more advanced ability — **Reasoning Synthesis**. After training, the PaCoRe model learns to:
 
-*   **审查**：仔细评估来自不同并行分支的相互冲突的证据。
+*   **Examine**: Carefully evaluate conflicting evidence from different parallel branches.
 
-*   **调和**：在矛盾的信息中找到合理的解释。
+*   **Reconcile**: Find reasonable explanations within contradictory information.
 
-*   **超越**：综合各方线索，生成一个比任何单个分支都更优质的最终答案。
+*   **Surpass**: Integrate clues from all sides to generate a final answer that is better than any single branch.
 
-实验表明，经过这种训练的模型甚至能从全是错误信息的上下文中，“推导”出正确的解题思路，展现出了惊人的鲁棒性。
+Experiments show that a model trained this way can even “derive” the correct solution path from a context full of wrong information, demonstrating astonishing robustness.
 
-### 实验结果：8B模型的大逆袭
+### Experimental Results: The 8B Model’s Big Comeback
 
-PaCoRe的效果在数学和代码任务上尤为显著。
+PaCoRe’s impact is especially striking on math and coding tasks.
 
 <img src="/images/2601.05593v1/x1.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-从上图左侧可以看到，在HMMT 2025基准测试中：
+As can be seen on the left side of the figure above, on the HMMT 2025 benchmark:
 
-*   随着推理计算量（TTC）的增加（通过增加并行轨迹数和协同轮数），PaCoRe-8B的性能稳步提升。
+*   As the amount of reasoning compute (TTC) increases (by increasing the number of parallel trajectories and coordination rounds), PaCoRe-8B’s performance improves steadily.
 
-*   最终，**PaCoRe-8B** 达到了 **94.5%** 的准确率，超过了 **GPT-5** 的 **93.2%**。
+*   In the end, **PaCoRe-8B** reaches **94.5%** accuracy, surpassing **GPT-5** at **93.2%**.
 
-*   这证明了通过并行协同推理，小模型完全可以通过消耗更多的推理时算力来换取超越大模型的智能。
+*   This proves that through parallel coordinated reasoning, a small model can absolutely trade more inference-time compute for intelligence that exceeds that of a larger model.
 
-而在右侧的LiveCodeBench测试中，未经PaCoRe训练的模型（RLVR-8B）即使增加了计算量，性能也几乎没有提升（蓝线平直），说明它无法利用额外的信息。而PaCoRe-8B（红线）则随着计算量的增加，性能一路飙升，证明了“合成能力”的重要性。
+On the right side, in the LiveCodeBench test, the model without PaCoRe training (RLVR-8B) shows almost no performance improvement even as compute increases (the blue line stays flat), indicating that it cannot make use of the extra information. In contrast, PaCoRe-8B (red line) surges as compute increases, proving the importance of “synthesis ability.”
 
-### 总结与展望
+### Conclusion and Outlook
 
-PaCoRe不仅是一个具体的模型，更是一种通用的推理框架。它揭示了一个关键趋势：**AI的未来不仅仅在于把模型做大（Pre-training Scaling），更在于如何在推理阶段更聪明地使用算力（Test-Time Scaling）。**
+PaCoRe is not just a specific model, but a general reasoning framework. It reveals a key trend: **the future of AI is not only about making models bigger (Pre-training Scaling), but also about using compute more intelligently during inference (Test-Time Scaling).**
 
-通过解耦“推理量”与“上下文窗口”，PaCoRe让模型能够进行几乎无限的深度思考。目前，该团队已经开源了模型权重、训练数据和完整的推理流程，这无疑将加速社区在这一方向上的探索。
+By decoupling “reasoning volume” from the “context window,” PaCoRe enables the model to engage in nearly unlimited deep thinking. At present, the team has already open-sourced the model weights, training data, and the complete reasoning pipeline, which will undoubtedly accelerate community exploration in this direction.
 
-当一个8B模型学会了像人类团队一样“分工协作”和“开会总结”，它所爆发出的能量，足以让最顶尖的闭源模型感到压力。
+When an 8B model learns to “divide labor and collaborate” and “hold meetings to summarize” like a human team, the energy it unleashes is enough to put pressure on even the most advanced closed-source models.

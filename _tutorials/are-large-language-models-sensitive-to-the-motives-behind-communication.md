@@ -6,49 +6,49 @@ title: "Are Large Language Models Sensitive to the Motives Behind Communication?
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.19687v1
 
-- **作者**: Kerem Oktar; Addison J. Wu; Ryan Liu; Thomas L. Griffiths
+- **Authors**: Kerem Oktar; Addison J. Wu; Ryan Liu; Thomas L. Griffiths
 
-- **发布机构**: Anthropic; Princeton University
+- **Publisher**: Anthropic; Princeton University
 
 ---
 
 ## TL;DR
-本文通过借鉴认知科学的理性模型，系统性地研究了大型语言模型（LLMs）是否能像人类一样识别和评估沟通背后的动机（即“动机警惕性”），发现它们在受控实验中表现出类似人类的能力，但在复杂的现实世界场景中表现不佳，不过简单的引导提示可以改善其表现。
+This article systematically investigates, by drawing on rational models from cognitive science, whether large language models (LLMs) can identify and evaluate the motives behind communication like humans do—that is, “motivational vigilance.” It finds that they show human-like abilities in controlled experiments, but perform poorly in complex real-world settings; however, simple prompting can improve their performance.
 
-## 关键定义
-本文引入或重点使用了以下几个核心概念：
+## Key Definitions
+This article introduces or emphasizes the following core concepts:
 
-*   **动机警惕性 (Motivational Vigilance)**：源于社会认知理论，指个体在接收信息时，能够主动追踪信息来源的意图 (intentions) 和激励 (incentives)，从而判断信息是否带有偏见（例如，是善意的还是自私的），并据此决定应在多大程度上信任和采纳该信息。这是人类进行选择性社会学习的关键能力。
+*   **Motivational Vigilance**: Originating in social cognition theory, this refers to an individual’s ability, when receiving information, to actively track the source’s intentions and incentives, thereby judging whether the information is biased (for example, benevolent or self-serving) and deciding how much to trust and adopt it. This is a key human ability for selective social learning.
 
-*   **理性模型 (Rational Model)**：本文采用认知科学家 Oktar 等人提出的理性模型作为评估 LLM 动机警惕性的“黄金标准”。该模型将警惕性形式化为一种递归的社会推理过程：听者通过推理说话者的意图和激励来评估信息，而说话者则通过预判听者的推理来选择最能实现其沟通目标的言辞。
+*   **Rational Model**: This article uses the rational model proposed by cognitive scientists Oktar et al. as the “gold standard” for evaluating LLM motivational vigilance. The model formalizes vigilance as a recursive social reasoning process: the listener evaluates information by inferring the speaker’s intentions and incentives, while the speaker chooses the wording most likely to achieve their communication goals by anticipating the listener’s reasoning.
 
-*   **有意传达的信息 (Deliberately Communicated Information)**：指说话者为了影响听者而特意传达的信息，例如产品推销或建议。
+*   **Deliberately Communicated Information**: Information intentionally conveyed by the speaker to influence the listener, such as product pitches or advice.
 
-*   **偶然观察到的信息 (Incidentally Observed Information)**：指并非为了直接说服听者而无意中透露的信息，例如偷听到的他人真实想法或日记内容。这两种信息的区分是测试基础警惕能力的第一步。
+*   **Incidentally Observed Information**: Information unintentionally revealed rather than directly intended to persuade the listener, such as overheard true thoughts or diary entries. Distinguishing between these two types of information is the first step in testing basic vigilance.
 
-## 相关工作
-当前，LLMs 处理的大部分在线信息都源于人类有目的的沟通，这些信息不可避免地受到个人动机和激励因素的影响。然而，现有研究表明 LLMs 在这方面存在明显缺陷，例如易受“越狱”攻击、表现出“奉承”（sycophancy）行为（即附和用户的错误观点而非陈述事实）、容易被在线环境中的误导性信息（如弹窗广告）干扰。这些问题暴露出 LLMs 训练范式中的一个核心瓶颈：过度优先考虑遵循用户指令和满足用户偏好，而缺乏对信息来源动机的批判性审查能力。
+## Related Work
+At present, most online information handled by LLMs comes from human communication with purpose, and is inevitably shaped by personal motives and incentives. However, existing research shows that LLMs have clear shortcomings in this regard, such as being vulnerable to jailbreak attacks, exhibiting sycophancy (that is, agreeing with users’ incorrect views rather than stating facts), and being easily distracted by misleading information in online environments, such as pop-up ads. These issues expose a core bottleneck in LLM training paradigms: over-prioritizing following user instructions and satisfying user preferences, while lacking the ability to critically examine the motives behind information sources.
 
-尽管已有研究探讨了 LLMs 的心智理论 (Theory of Mind)、从众行为等社会能力，但目前学术界仍缺乏一个系统性的框架来衡量 LLM 在处理带有动机的沟通时的“警惕性”。
+Although prior work has examined LLM social abilities such as Theory of Mind and conformity, the academic community still lacks a systematic framework for measuring LLM “vigilance” when processing motivated communication.
 
-本文旨在填补这一空白，通过引入认知科学中成熟的理论和实验范式，首次对 LLM 的动机警惕性进行全面、严谨的量化评估。
+This article aims to fill that gap by introducing established theories and experimental paradigms from cognitive science, and for the first time providing a comprehensive and rigorous quantitative evaluation of LLM motivational vigilance.
 
-## 本文方法
-本文设计了三个递进的实验范式，以评估 LLM 在不同情境下的动机警惕性能力。
+## Method
+This article designs three progressively more challenging experimental paradigms to evaluate LLM motivational vigilance across different contexts.
 
 <img src="/images/2510.19687v1/x1.jpg" alt="本文设计的三个实验范式，旨在评估LLM警惕性的不同方面" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-### 实验 1: 区分不同信息来源
-该实验旨在测试 LLM 是否具备最基本的警惕能力，即区分“有意传达的信息”和“偶然观察到的信息”。
+### Experiment 1: Distinguishing Different Information Sources
+This experiment aims to test whether LLMs possess the most basic vigilance ability: distinguishing between “deliberately communicated information” and “incidentally observed information.”
 
-*   **实验设置**：本文改编了经典的双人判断任务。任务中，两名玩家（均由 LLM 扮演）需计算图片中蓝黄圆圈的数量差。玩家2 会收到来自玩家1 的信息，该信息可能是玩家1 故意给出的“建议”（有意传达），也可能是玩家2“窥探”到的玩家1 的真实答案（偶然观察）。实验还设置了合作与竞争两种不同的激励结构。
-*   **创新点**：为解决 LLM 不受人类实验中时间限制影响的问题，本文通过向图片中添加噪声来增加任务难度，从而有效诱导 LLM 的不确定性，使其能够表现出信念更新的过程。
+*   **Experimental setup**: The article adapts the classic two-player judgment task. In the task, two players (both played by LLMs) must compute the difference in the number of blue and yellow circles in an image. Player 2 receives information from Player 1, which may either be a “suggestion” intentionally given by Player 1 (deliberately communicated) or Player 1’s true answer that Player 2 “spied” on (incidentally observed). The experiment also includes two incentive structures: cooperation and competition.
+*   **Innovation**: To address the issue that LLMs are not constrained by the time limits present in human experiments, the article increases task difficulty by adding noise to the images, thereby effectively inducing uncertainty in the LLM and allowing it to exhibit a belief-updating process.
 
-### 实验 2: 对动机进行精细校准
-该实验旨在测试 LLM 是否能像人类一样，根据说话者的意图（如亲疏远近）和激励（如佣金高低）来精细地调整其信任程度。
+### Experiment 2: Fine-Grained Calibration of Motives
+This experiment aims to test whether LLMs can, like humans, finely adjust their trust based on the speaker’s intentions (such as closeness) and incentives (such as commission level).
 
-*   **方法核心**：本文引入 Oktar 等人提出的**理性模型**作为评估基准。该模型通过数学公式刻画了听者如何根据说话者的善意度 $$λ$$、自身收益 $$R_L$$ 和说话者收益 $$R_S$$ 进行推理。
-    *   说话者的联合效用由其善意度 $$λ$$ 决定：
+*   **Core method**: The article introduces the **rational model** proposed by Oktar et al. as the evaluation benchmark. The model uses mathematical formulas to characterize how a listener reasons based on the speaker’s benevolence $$λ$$, the listener’s own payoff $$R_L$$, and the speaker’s payoff $$R_S$$.
+    *   The speaker’s joint utility is determined by their benevolence $$λ$$:
     
 
     {% raw %}$$
@@ -56,7 +56,7 @@ title: "Are Large Language Models Sensitive to the Motives Behind Communication?
     $${% endraw %}
 
 
-    *   说话者选择某个言论 $$u$$ 的概率取决于该言论可能带来的联合效用：
+*   The probability that the speaker chooses a particular utterance $$u$$ depends on the joint utility that utterance may bring:
     
 
     {% raw %}$$
@@ -64,7 +64,7 @@ title: "Are Large Language Models Sensitive to the Motives Behind Communication?
     $${% endraw %}
 
 
-    *   警惕的听者通过贝叶斯推理，反向推断被推荐选项的真实价值 $$R_L$$：
+*   A vigilant listener uses Bayesian inference to infer the true value $$R_L$$ of the recommended option in reverse:
     
 
     {% raw %}$$
@@ -72,31 +72,31 @@ title: "Are Large Language Models Sensitive to the Motives Behind Communication?
     $${% endraw %}
 
 
-*   **实验设置**：在金融、房地产和医疗等场景中，让 LLM 评估来自不同可信度（角色）和激励水平的说话者所给出的产品推荐。通过提示，引出 LLM 对说话者的“信任分数”（对应 $$λ$$）、“激励分数”（对应 $$R_S$$）和“影响分数”（对应 $$P(R_L|u)$$），并将其“影响分数”与基于其自身信任和激励分数的理性模型预测值进行比较。
+*   **Experimental setup**: In scenarios such as finance, real estate, and healthcare, LLMs are asked to evaluate product recommendations from speakers with different levels of credibility (roles) and incentives. Through prompting, the LLM’s “trust score” (corresponding to $$λ$$), “incentive score” (corresponding to $$R_S$$), and “influence score” (corresponding to $$P(R_L|u)$$) are elicited, and the “influence score” is compared with the rational-model prediction based on its own trust and incentive scores.
 
-### 实验 3: 在真实场景中的泛化能力
-该实验旨在测试 LLM 在受控环境中习得的警惕性是否能迁移到充满噪声和复杂上下文的真实世界场景中。
+### Experiment 3: Generalization to Real-World Scenarios
+This experiment aims to test whether the vigilance learned by LLMs in controlled settings can transfer to real-world scenarios full of noise and complex context.
 
-*   **数据集构建**：本文创建了一个全新的、更贴近生态效度的测试集。通过 SponsorBlock 和 YouTube API，搜集了 300 个真实的 YouTube 视频赞助广告片段，并提取了其标题、频道信息和广告脚本。为避免模型先验知识的干扰，所有品牌和产品名称均被匿名化处理。
-*   **实验设置**：类似于实验2，让 LLM 评估每个赞助视频中推广的产品质量、YouTuber 的可信度以及 YouTuber 从中获得的激励。然后，再次将其判断与理性模型的预测进行比较，以衡量其在自然情境下的警惕性。
+*   **Dataset construction**: The article creates a new test set with greater ecological validity. Using SponsorBlock and the YouTube API, it collects 300 real YouTube sponsored ad segments and extracts their titles, channel information, and ad scripts. To avoid interference from the model’s prior knowledge, all brand and product names are anonymized.
+*   **Experimental setup**: Similar to Experiment 2, LLMs are asked to evaluate the quality of the product promoted in each sponsored video, the credibility of the YouTuber, and the incentive the YouTuber receives from it. Their judgments are then compared again with the rational-model predictions to measure vigilance in natural settings.
 
-## 实验结论
+## Experimental Conclusions
 
-### 实验 1: LLM 具备基础的辨别能力
-*   LLMs 能够成功区分有意图的建议和无意图的观察信息。它们在收到“建议”时，对其答案的调整幅度显著小于收到“窥探”到的答案时，这与人类行为一致，表明 LLM 具备基本的动机警惕性。
-*   一个有趣的发现是，思维链 (CoT, Chain-of-Thought) 提示虽然能增强推理，但也会让 LLM 对外部信息更加信任，导致其行为模式反而偏离了人类的警惕性特征。
+### Experiment 1: LLMs Have Basic Discriminative Ability
+*   LLMs can successfully distinguish between intentionally given advice and unintentionally observed information. When receiving “advice,” they adjust their answers significantly less than when receiving “spied-on” answers, which is consistent with human behavior and indicates that LLMs possess basic motivational vigilance.
+*   An interesting finding is that Chain-of-Thought (CoT) prompting, while enhancing reasoning, also makes LLMs trust external information more, causing their behavior to deviate from human vigilance patterns.
 
 <img src="/images/2510.19687v1/average_info_shift_graph.jpg" alt="LLM在不同信息类型下的平均信念调整" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 实验 2: 前沿 LLM 在受控场景中表现出高度理性的警惕性
-*   **前沿模型表现优异**：顶级的非推理型 LLMs（如 GPT-4o, Claude 3.5 Sonnet）表现出与理性模型高度一致的警惕行为，其判断与模型预测值的相关性（Pearson's r）普遍在 0.8 到 0.9 之间，其中 GPT-4o 表现最佳（平均 $r = 0.911$）。
-*   **LLM 比理性模型更“像人”**：这些前沿模型的判断与人类数据的相关性甚至高于理性模型，这表明它们可能捕捉到了一些人类在评估建议时使用的、理性模型之外的启发式或偏见。
-*   **模型能力与规模正相关**：相比之下，**推理专用模型**（如 o1, DeepSeek-R1）和**小型模型**（如 Llama 3.1-8B）的警惕性表现要差得多，其判断与理性模型的相关性较低。这表明动机警惕性是一种随着模型规模和能力提升而涌现的能力。
+### Experiment 2: Frontier LLMs Exhibit Highly Rational Vigilance in Controlled Settings
+*   **Frontier models perform excellently**: Top non-reasoning LLMs (such as GPT-4o and Claude 3.5 Sonnet) exhibit vigilance behavior highly consistent with the rational model, with correlations between their judgments and the model’s predictions (Pearson’s r) generally ranging from 0.8 to 0.9; GPT-4o performs best (average $r = 0.911$).
+*   **LLMs are more “human-like” than the rational model**: The judgments of these frontier models correlate with human data even more strongly than the rational model does, suggesting that they may capture heuristics or biases used by humans when evaluating advice, beyond the rational model.
+*   **Model capability scales with size**: In contrast, **reasoning-specialized models** (such as o1 and DeepSeek-R1) and **small models** (such as Llama 3.1-8B) perform much worse in vigilance, with lower correlations between their judgments and the rational model. This suggests that motivational vigilance is an emergent ability that improves with model scale and capability.
 
 <br>
 
 
-| 模型 (Model) | 与理性模型的相关性 (Corr. with rational model) | 与人类数据的相关性 (Corr. with human data) |
+| Model (Model) | Corr. with rational model | Corr. with human data |
 | :--- | :---: | :---: |
 | GPT-4o | **0.911** | **0.871** |
 | Claude 3.5 Sonnet | 0.865 | 0.817 |
@@ -112,9 +112,9 @@ title: "Are Large Language Models Sensitive to the Motives Behind Communication?
 
 <br>
 
-### 实验 3: 警惕性在真实场景中失效，但可被引导
-*   **泛化能力差**：在面对真实的 YouTube 广告时，所有 LLM 的动机警惕性都急剧下降，其判断与理性模型的预测相关性骤降至 $r < 0.2$。这表明，在复杂、充满噪声的真实环境中，模型难以有效利用其潜在的警惕能力，容易被无关信息分散注意力。
-*   **引导提示有效**：然而，一个简单的干预措施——使用**基于警惕性的提示词引导 (vigilance-based prompt steering)**，即在提示中明确强调说话者的意图和激励——能够显著提升 LLM 的表现，使其判断与理性模型的一致性大幅增加。
+### Experiment 3: Vigilance Fails in Real-World Settings, but Can Be Guided
+*   **Poor generalization**: When faced with real-world YouTube ads, the motivational vigilance of all LLMs drops sharply, with the correlation between their judgments and the rational model’s predictions falling to $r < 0.2$. This suggests that in complex, noisy real-world environments, models struggle to effectively use their latent vigilance and are easily distracted by irrelevant information.
+*   **Prompt steering works**: However, a simple intervention—**vigilance-based prompt steering**—that explicitly emphasizes the speaker’s intent and incentives in the prompt can significantly improve LLM performance, greatly increasing the consistency of their judgments with the rational model.
 
-### 总结
-本文的研究表明，当前的 LLMs 拥有一种潜在的、基础的动机警惕性，使其能够在简单的、受控的环境中对信息来源的动机进行推理。然而，这种能力非常脆弱，在没有明确指导的情况下，很难泛化到充满挑战的现实世界应用中。为了让 LLM 智能体在真实世界中安全、有效地为用户服务，未来的研究需要进一步提升模型将这种潜在能力稳健地应用于复杂场景的泛化能力。
+### Summary
+This study shows that current LLMs possess a latent, foundational motivational vigilance that enables them to reason about the motives behind information sources in simple, controlled settings. However, this ability is very fragile and does not easily generalize to challenging real-world applications without explicit guidance. To enable LLM智能体 to serve users safely and effectively in the real world, future research needs to further improve the model’s ability to robustly apply this latent capability in complex scenarios.

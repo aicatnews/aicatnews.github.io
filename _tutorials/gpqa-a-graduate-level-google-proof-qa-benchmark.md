@@ -6,109 +6,109 @@ title: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark"
 
 - **ArXiv URL**: http://arxiv.org/abs/2311.12022v1
 
-- **作者**: Asa Cooper Stickland; Richard Yuanzhe Pang; Julien Dirani; Jackson Petty; David Rein; Samuel R. Bowman; Julian Michael; Betty Li Hou
+- **Authors**: Asa Cooper Stickland; Richard Yuanzhe Pang; Julien Dirani; Jackson Petty; David Rein; Samuel R. Bowman; Julian Michael; Betty Li Hou
 
-- **发布机构**: Anthropic; Cohere; New York University
+- **Publishing Organizations**: Anthropic; Cohere; New York University
 
 ---
 
 ## TL;DR
-本文提出了 GPQA，一个包含448道由生物、物理和化学领域专家编写的研究生水平多项选择题数据集，其设计目标是“防谷歌化”（Google-Proof），即对于拥有不受限制网络访问权限的熟练非专家来说也极其困难，旨在为未来超人AI系统的可扩展监督（scalable oversight）研究提供一个极具挑战性的评估基准。
+This paper introduces GPQA, a 448-question graduate-level multiple-choice dataset written by experts in biology, physics, and chemistry. It is designed to be “Google-Proof,” meaning it is extremely difficult even for skilled non-experts with unrestricted internet access, and is intended to provide a highly challenging benchmark for future research on scalable oversight for superhuman AI systems.
 
-## 关键定义
-*   **GPQA**: 一个高质量、高难度的问答基准数据集。它包含由生物学、物理学和化学领域的博士级专家编写的多项选择题。
-*   **防谷歌化问题 (Google-Proof Questions)**: 指那些即使是高技能的非专家，在拥有充足时间并不受限制地访问互联网的情况下，也难以正确回答的问题。在GPQA中，这些非专家（其他领域的博士）平均花费超过30分钟，但正确率仅为34%。
-*   **可扩展监督 (Scalable Oversight)**: 一个AI安全领域的核心问题，指如何让能力有限的人类能够有效、可靠地监督远超自身能力的AI系统，以确保AI的输出是真实和有益的，尤其是在探索全新科学知识等人类无法独立验证答案的场景。
-*   **专家 (Expert)** 与 **非专家 (Non-Expert)**: 在本文中，“专家”指拥有或正在攻读特定问题所属领域（如有机化学）博士学位的个人。“非专家”同样是高技能人才（拥有或正在攻读博士学位），但其专业领域与问题领域不同（如物理学专家回答生物学问题）。
+## Key Definitions
+*   **GPQA**: A high-quality, high-difficulty question-answering benchmark dataset. It contains multiple-choice questions written by PhD-level experts in biology, physics, and chemistry.
+*   **Google-Proof Questions**: Questions that are difficult to answer correctly even for highly skilled non-experts with ample time and unrestricted access to the internet. In GPQA, these non-experts (PhDs in other fields) spent over 30 minutes on average, but achieved only 34% accuracy.
+*   **Scalable Oversight**: A core problem in AI safety that asks how humans with limited capability can effectively and reliably supervise AI systems that far exceed their own abilities, ensuring that AI outputs are truthful and beneficial, especially in scenarios such as exploring entirely new scientific knowledge where humans cannot independently verify the answers.
+*   **Expert** and **Non-Expert**: In this paper, “expert” refers to an individual who holds or is pursuing a PhD in the field relevant to the question (e.g., organic chemistry). A “non-expert” is also highly skilled (holding or pursuing a PhD), but their field of expertise differs from the question’s domain (e.g., a physics expert answering a biology question).
 
-## 相关工作
-当前主流的问答（QA）基准数据集，要么通过众包非专家（如SQuAD），要么通过整理现有资源（如MMLU、TriviaQA）来创建。这些数据集的答案通常可以被熟练用户通过网络搜索轻易找到和验证。随着大型语言模型（LLM）能力的飞速提升，它们在这些基准上逐渐达到饱和，使得这些数据集在评估前沿模型和研究更高级的人机协作（如可扩展监督）方面效用减弱。
+## Related Work
+Mainstream question-answering (QA) benchmark datasets are typically created either by crowdsourcing non-experts (e.g., SQuAD) or by curating existing resources (e.g., MMLU, TriviaQA). The answers to these datasets can usually be easily found and verified by skilled users through web search. As large language model (LLM) capabilities have advanced rapidly, they have gradually saturated these benchmarks, reducing the usefulness of these datasets for evaluating frontier models and studying more advanced human-AI collaboration, such as scalable oversight.
 
-可扩展监督研究需要一种特殊的任务：这些任务的正确答案是确凿已知的（由权威专家确定），但对于负责监督的非专家来说却极难独立解决。现有的数据集或不具备这种“难度鸿沟”，或只是人为地模拟专业知识差距（例如，通过对长篇文章的熟悉程度来区分专家和非专家）。
+Research on scalable oversight requires a special kind of task: one whose correct answer is definitively known (determined by authoritative experts), yet is extremely difficult for the non-experts responsible for supervision to solve independently. Existing datasets either lack this “difficulty gap” or merely simulate a knowledge gap in an artificial way (for example, by distinguishing experts from non-experts based on familiarity with long articles).
 
-本文旨在解决这一问题，通过创建一个包含真实世界专业知识问题的基准（GPQA），这些问题对非专家和当前最强的AI模型都构成巨大挑战，以此为研究如何监督超人AI系统提供一个现实且有意义的试验平台。
+This paper aims to address this issue by creating a benchmark of real-world expert-knowledge questions (GPQA) that pose major challenges to both non-experts and the strongest current AI models, thereby providing a realistic and meaningful testbed for studying how to supervise superhuman AI systems.
 
-## 本文方法
-本文的核心贡献在于其独特且严谨的数据集构建与验证流程。该流程旨在系统性地生成兼具客观性（有明确答案）和高难度（防谷歌化）的问题。
+## Method
+The core contribution of this paper lies in its distinctive and rigorous dataset construction and validation pipeline. The process is designed to systematically generate questions that are both objective (with clear answers) and highly difficult (Google-Proof).
 
-<img src="/images/2311.12022v1/page_2_Figure_0.jpg" alt="数据创建流程图" style="width:85%; max-width:450px; margin:auto; display:block;">
-*图1: 本文的数据创建流程。首先由一位专家撰写问题，另一位同领域专家作答并提供修改建议。然后，撰写者修改问题。修改后的问题被发送给第二位同领域专家和三位非专家验证者。*
+<img src="/images/2311.12022v1/page_2_Figure_0.jpg" alt="Data creation flowchart" style="width:85%; max-width:450px; margin:auto; display:block;">
+*Figure 1: The data creation process in this paper. First, one expert writes a question, and another expert in the same field answers it and provides revision suggestions. The writer then revises the question. The revised question is sent to a second expert in the same field and three non-expert validators.*
 
-### 数据收集流程
-整个流程分为四个主要阶段：
+### Data Collection Pipeline
+The entire process is divided into four main stages:
 
-1.  **问题撰写 (Question Writing)**: 邀请拥有或正在攻读博士学位的领域专家撰写他们专业领域内的难题。要求是：同领域专家能够正确解答，但非专家即使借助互联网也难以回答。问题被设计为即使没有选项也能以自由回答的形式作答。同时，撰写者需要为正确和错误选项提供详尽的解释。
+1.  **Question Writing**: Experts with or pursuing a PhD in the relevant field are invited to write difficult questions within their area of expertise. The requirement is that experts in the same field should be able to answer them correctly, but non-experts should find them difficult to answer even with internet access. The questions are designed so that they can be answered in free-response form even without options. In addition, the writer must provide detailed explanations for both the correct and incorrect options.
 
-2.  **首次专家验证 (First Expert Validation)**: 撰写完成的问题交由另一位同领域的专家（第一位验证者）进行解答和评估。验证者提供详细反馈，以确保问题的准确性、客观性和难度。
+2.  **First Expert Validation**: The completed questions are given to another expert in the same field (the first validator) to answer and evaluate. The validator provides detailed feedback to ensure the questions’ accuracy, objectivity, and difficulty.
 
-3.  **问题修订 (Question Revision)**: 问题撰写者根据第一位验证者的反馈对问题进行修改。
+3.  **Question Revision**: The question writer revises the questions based on the first validator’s feedback.
 
-4.  **二次验证 (Second Validation Phase)**:
-    *   **二次专家验证**: 修订后的问题交由第三位同领域专家（第二位验证者）作答，进一步检验其客观性。
-    *   **非专家验证**: 同时，问题被分发给三位非专家（即其他领域的博士）。他们被允许不受限制地使用除LLM助手外的所有网络资源，并被要求花费至少15分钟来解答。这一步骤是验证问题是否“防谷歌化”的关键。
+4.  **Second Validation Phase**:
+    *   **Second Expert Validation**: The revised questions are given to a third expert in the same field (the second validator) to answer, further testing their objectivity.
+    *   **Non-Expert Validation**: At the same time, the questions are distributed to three non-experts (i.e., PhDs in other fields). They are allowed unrestricted use of all web resources except LLM assistants and are required to spend at least 15 minutes solving them. This step is key to verifying whether the questions are truly “Google-Proof.”
 
-### 创新点
-*   **以“防谷歌化”为目标的验证设计**: 与传统数据集不同，GPQA的流程中包含了关键的“非专家验证”环节。该环节专门测试在开放网络环境下，高技能用户是否依然无法解决问题。这确保了数据集的难度不仅仅是信息检索的难度，而是真正的知识和推理壁垒。
+### Innovations
+*   **Validation Design Centered on “Google-Proofing”**: Unlike traditional datasets, GPQA’s pipeline includes a crucial “non-expert validation” stage. This stage specifically tests whether highly skilled users can still fail to solve the questions in an open web environment. This ensures that the dataset’s difficulty is not merely a matter of information retrieval, but a genuine barrier of knowledge and reasoning.
 
-*   **多重专家验证确保客观性**: 通过“撰写-验证-修订-再验证”的闭环，让三位独立的领域专家（1位撰写者，2位验证者）参与其中，极大地保证了即使是极端困难的问题，其标准答案也是客观、无争议的。
+*   **Multiple Expert Validations Ensure Objectivity**: By using a closed loop of “write-validate-revise-revalidate,” involving three independent domain experts (1 writer, 2 validators), the process greatly increases the likelihood that even extremely difficult questions have objective, uncontroversial ground-truth answers.
 
-*   **精巧的激励机制**: 采用基于质量的奖金制度来激励所有参与者。问题撰写者的奖金与“专家验证通过率”（保证客观性）和“非专家验证失败率”（保证难度）直接挂钩，从而有效引导其产出高质量问题。
+*   **Sophisticated Incentive Mechanism**: A quality-based bonus system is used to motivate all participants. The question writer’s bonus is directly tied to the “expert validation pass rate” (ensuring objectivity) and the “non-expert validation failure rate” (ensuring difficulty), effectively guiding them to produce high-quality questions.
 
-### 数据集划分
-最终收集的数据被划分为三个子集，以适应不同研究需求：
+### Dataset Splits
+The final collected data are divided into three subsets to suit different research needs:
 
 
-| 数据集划分 | 数量 | 专家正确率 (%) | 非专家正确率 (%) | 专家认为具备足够专业知识的比例 (%) |
+| Dataset Split | Count | Expert Accuracy (%) | Non-Expert Accuracy (%) | Proportion of Experts Who Considered It Sufficiently Specialized (%) |
 | --- | --- | --- | --- | --- |
 | GPQA Extended | 546 | 64.8 | 34.1 | 90.7 |
-| GPQA (主集) | 448 | 71.9* | 30.4* | 93.5 |
-| GPQA Diamond (钻石集) | 198 | 81.3* | 22.1* | 97.0 |
+| GPQA (Main Set) | 448 | 71.9* | 30.4* | 93.5 |
+| GPQA Diamond | 198 | 81.3* | 22.1* | 97.0 |
 
 
-*表2: 扩展集、主集和钻石集的统计数据。主集和钻石集上的验证者正确率（*）因选择效应而存在偏差。*
+*Table 2: Statistics for the extended set, main set, and diamond set. The validator accuracies (*) on the main set and diamond set are biased due to selection effects.*
 
-*   **GPQA Extended**: 包含所有收集到的546个有效问题。
-*   **GPQA (主集)**: 核心数据集，包含448个问题。它排除了专家普遍答错或非专家普遍答对的问题，筛选标准为至少一半专家达成共识且不超过2/3的非专家答对。
-*   **GPQA Diamond (钻石集)**: 质量最高的子集，包含198个问题。筛选标准更严格，要求两位专家都同意且至少2/3的非专家答错。
+*   **GPQA Extended**: Contains all 546 valid questions collected.
+*   **GPQA (Main Set)**: The core dataset, containing 448 questions. It excludes questions that experts generally answered incorrectly or non-experts generally answered correctly, using the criterion that at least half of the experts must agree and no more than two-thirds of the non-experts may answer correctly.
+*   **GPQA Diamond**: The highest-quality subset, containing 198 questions. The selection criteria are stricter, requiring both experts to agree and at least two-thirds of non-experts to answer incorrectly.
 
-### 覆盖领域
-问题覆盖生物、物理、化学三大领域，并细分为多个子领域，如分子生物学、量子力学、有机化学等。
+### Coverage Areas
+The questions cover the three major domains of biology, physics, and chemistry, and are further divided into subfields such as molecular biology, quantum mechanics, and organic chemistry.
 
 
-| 领域 | 数量 | 专家正确率 (%) | 非专家正确率 (%) | 差距 (点) |
+| Domain | Count | Expert Accuracy (%) | Non-Expert Accuracy (%) | Gap (points) |
 | --- | --- | --- | --- | --- |
-| 生物 | 105 | 66.7 | 43.2 | 23.5 |
-| 物理 | 227 | 57.3 | 32.5 | 24.8 |
-| 化学 | 214 | 72.0 | 31.4 | 40.6 |
+| Biology | 105 | 66.7 | 43.2 | 23.5 |
+| Physics | 227 | 57.3 | 32.5 | 24.8 |
+| Chemistry | 214 | 72.0 | 31.4 | 40.6 |
 
 
-*表3: 扩展集中各领域的专家与非专家正确率对比，"差距"列显示了两者之间的专业知识鸿沟。*
+*Table 3: Comparison of expert and non-expert accuracy across domains in the extended set; the “Gap” column shows the expertise gap between the two.*
 
-## 实验结论
-本文通过一系列分析和基线模型测试，验证了GPQA数据集的特性及其作为可扩展监督研究基准的有效性。
+## Experimental Conclusions
+Through a series of analyses and baseline model tests, this paper validated the characteristics of the GPQA dataset and its effectiveness as a benchmark for scalable supervision research.
 
-### 数据集特性验证
-*   **高难度 ("防谷歌化")**: 在扩展集上，非专家验证者的平均正确率仅为**34.1%**（随机猜测为25%），尽管他们平均每道题花费37分钟并可自由使用网络。这有力地证明了数据集的“防谷歌化”特性。
-*   **高客观性**: 专家验证者的基础正确率为**65%**。通过对专家错误回答的案例进行人工分析，发现在许多情况下，专家事后承认自己犯了错而非题目本身有问题。在剔除这些明显失误后，估计问题的客观性（即存在无争议正确答案的比例）可达**74%**。
+### Dataset Characteristic Validation
+*   **High difficulty ("Google-proof")**: On the extended set, the average accuracy of non-expert validators was only **34.1%** (with random guessing at 25%), even though they spent an average of 37 minutes per question and were free to use the internet. This strongly demonstrates the dataset’s “Google-proof” nature.
+*   **High objectivity**: The baseline accuracy of expert validators was **65%**. Through manual analysis of cases where experts answered incorrectly, it was found that in many instances, experts later admitted they had made a mistake rather than there being a problem with the question itself. After removing these obvious errors, the estimated objectivity of the questions (i.e., the proportion with an undisputed correct answer) could reach **74%**.
 
-### 模型基线测试
-本文在多个LLM上进行了测试，包括闭卷（无网络访问）和开卷（有网络访问）两种设置。
+### Model Baseline Tests
+This paper tested multiple LLMs in both closed-book (no internet access) and open-book (with internet access) settings.
 
 
-| 评估方法与模型 | 扩展集 | 主集 | 钻石集 |
+| Evaluation Method and Model | Extended Set | Main Set | Diamond Set |
 | --- | --- | --- | --- |
-| | \multicolumn{3}{c|}{各子集正确率 (%)} |
+| | \multicolumn{3}{c|}{Accuracy on Each Subset (%)} |
 | Few-Shot CoT GPT-4 | 38.7 | 39.7 | 38.8 |
-| GPT-4 (带搜索) | 39.4 | 41.0 | 38.8 |
-| **人类专家验证者** | **65.4** | **72.5*** | **81.2*** |
-| **人类非专家验证者** | **33.9** | **30.5*** | **21.9*** |
+| GPT-4 (with search) | 39.4 | 41.0 | 38.8 |
+| **Human Expert Validators** | **65.4** | **72.5*** | **81.2*** |
+| **Human Non-Expert Validators** | **33.9** | **30.5*** | **21.9*** |
 
 
-*表5: 主要基线模型与人类在三个数据集上的表现对比。*
+*Table 5: Comparison of the performance of major baseline models and humans across the three datasets.*
 
-*   **对SOTA模型构成挑战**: 即使是当前最强的模型GPT-4，在使用少样本思维链（Few-Shot CoT）提示时，正确率也仅为**39%**左右。
-*   **网络搜索帮助有限**: 赋予GPT-4访问搜索引擎的能力（开卷测试）后，其性能提升微乎其微，正确率仅从38.7%微升至**39.4%**（在扩展集上）。这表明问题难度深，并非简单信息检索所能解决。
-*   **关键的性能差距**: 最强模型GPT-4的性能（约39%）显著低于人类专家（约65%），但略高于人类非专家（约34%）。这种“模型介于非专家和专家之间”的性能状态，为可扩展监督实验（即非专家监督一个不完全可靠但能力可能超越自己的模型）创造了理想的、非平凡的测试环境。
+*   **A challenge to SOTA models**: Even the current strongest model, GPT-4, achieved only about **39%** accuracy when using few-shot chain-of-thought (Few-Shot CoT) prompting.
+*   **Limited benefit from web search**: After giving GPT-4 access to a search engine (open-book testing), its performance improved only marginally, with accuracy rising from 38.7% to **39.4%** (on the extended set). This shows that the questions are deeply challenging and cannot be solved by simple information retrieval.
+*   **A key performance gap**: The strongest model, GPT-4, performed significantly below human experts (about 65%) but slightly above human non-experts (about 34%). This performance state, where the model sits between non-experts and experts, creates an ideal and non-trivial testbed for scalable supervision experiments—namely, non-experts supervising a model that is not fully reliable but may be more capable than themselves.
 
-### 最终结论
-本文成功构建了一个高质量、研究生水平的问答数据集GPQA。它通过严谨的多阶段专家与非专家验证流程，确保了问题兼具高客观性和“防谷歌化”的高难度。实验证明，该数据集不仅对高技能的非专家构成巨大挑战，也让当前最先进的AI模型难以解决，同时与领域专家的表现存在显著差距。因此，GPQA为研究和评估用于未来超人AI系统的可扩展监督方法提供了一个宝贵且现实的基准。
+### Final Conclusion
+This paper successfully constructed GPQA, a high-quality, graduate-level question-answering dataset. Through a rigorous multi-stage validation process involving both experts and non-experts, it ensures that the questions are both highly objective and highly difficult in a “Google-proof” sense. The experiments show that the dataset not only poses a major challenge to highly skilled non-experts, but also remains difficult for today’s most advanced AI models, while still exhibiting a substantial gap from domain experts. Therefore, GPQA provides a valuable and realistic benchmark for studying and evaluating scalable supervision methods for future superhuman AI systems.

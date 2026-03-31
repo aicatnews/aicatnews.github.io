@@ -6,33 +6,33 @@ title: "Higher-order Linear Attention"
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.27258v1
 
-- **作者**: Zhen Qin; Quanquan Gu; Yifan Zhang
+- **Authors**: Zhen Qin; Quanquan Gu; Yifan Zhang
 
-- **发布机构**: Princeton University; University of California
+- **Published by**: Princeton University; University of California
 
 ---
 
 ## TL;DR
-本文提出了一种名为高阶线性注意力 (Higher-order Linear Attention, HLA) 的新型注意力机制，它通过紧凑的前缀充分统计量 (prefix sufficient statistics) 实现了高阶交互，同时保持了线性时间复杂度和流式计算能力，从而在不牺牲表达能力的情况下解决了标准注意力机制的二次方复杂度瓶颈。
+This paper proposes a new attention mechanism called Higher-order Linear Attention (HLA), which achieves higher-order interactions through compact prefix sufficient statistics while preserving linear-time complexity and streaming computation capability, thereby addressing the quadratic complexity bottleneck of standard attention mechanisms without sacrificing expressiveness.
 
-## 关键定义
-*   **高阶线性注意力 (Higher-order Linear Attention, HLA)**: 一种泛化线性注意力的机制。它通过引入高阶交互（如二阶张量积）来增强模型的表达能力，同时通过将计算分解为多个低阶矩（例如，键向量外积的和），使其能够在每个时间步以线性时间复杂度和常数大小的状态进行流式计算。
-*   **前缀摘要 (Prefix Summaries)**: 一组在序列处理过程中可以流式更新的统计量，每个时间步的更新成本不依赖于序列长度。对于二阶HLA，核心摘要包括键的二阶矩 $\mathbf{S}\_t^K$, 查询-值累加器 $\mathbf{C}\_t^{QV}$ 和查询质量 $\mathbf{m}\_t^Q$ 等。
-*   **关联扫描 (Associative Scans)**: 一种并行计算技术，用于高效训练HLA模型。通过为HLA的状态更新定义一个满足结合律的二元操作（如幺半群或半直积），可以在数据块上并行执行扫描计算，其结果与串行循环完全相同，从而解决了循环神经网络训练效率低下的问题。
-*   **非对称高阶线性注意力 (Asymmetric Higher-order Linear Attention, AHLA)**: HLA的一个变体，它计算非对称的级联乘积 $\mathbf{AAV}$（其中 $\mathbf{A}=\mathbf{Q}\mathbf{K}^{\top}$），与标准的对称形式 $\mathbf{AA}^{\top}\mathbf{V}$ 互补。AHLA同样支持严格的因果流式计算，并具有不同的计算成本和状态构成。
+## Key Definitions
+*   **Higher-order Linear Attention (HLA)**: A generalized linear attention mechanism. It enhances model expressiveness by introducing higher-order interactions, such as second-order tensor products, while enabling streaming computation at each time step with linear time complexity and constant-size state by decomposing the computation into multiple lower-order moments (for example, the sum of outer products of key vectors).
+*   **Prefix Summaries**: A set of statistics that can be updated in a streaming manner during sequence processing, with per-step update cost independent of sequence length. For second-order HLA, the core summaries include the second-order moment of keys $\mathbf{S}\_t^K$, the query-value accumulator $\mathbf{C}\_t^{QV}$, and the query mass $\mathbf{m}\_t^Q$.
+*   **Associative Scans**: A parallel computation technique used to efficiently train HLA models. By defining an associative binary operation for HLA state updates, such as a monoid or semidirect product, scan computations can be performed in parallel over data blocks, producing exactly the same result as a serial loop and thereby addressing the inefficiency of recurrent neural network training.
+*   **Asymmetric Higher-order Linear Attention (AHLA)**: A variant of HLA that computes the asymmetric cascaded product $\mathbf{AAV}$, where $\mathbf{A}=\mathbf{Q}\mathbf{K}^{\top}$, complementing the standard symmetric form $\mathbf{AA}^{\top}\mathbf{V}$. AHLA also supports strict causal streaming computation and has different computational costs and state composition.
 
-## 相关工作
-现代大语言模型（LLMs）的基础是Transformer架构及其核心组件——缩放点积注意力 (scaled dot-product attention)。然而，其计算和内存复杂度随序列长度 $n$ 呈 $O(n^2)$ 增长，这严重制约了模型在长上下文场景下的应用。
+## Related Work
+The foundation of modern large language models (LLMs) is the Transformer architecture and its core component—scaled dot-product attention. However, its computational and memory complexity grows as $O(n^2)$ with sequence length $n$, which severely limits the use of these models in long-context settings.
 
-为了解决这一瓶颈，研究领域涌现了多种高效的替代方案，包括线性注意力 (Linear Attention)、现代循环神经网络 (RNNs)、状态空间模型 (State Space Models, SSMs) 等。这些方法通常能实现线性时间复杂度和在推理时 $O(1)$ 的状态更新。然而，它们大多局限于一阶或基于核函数的近似，这可能限制了模型的表达能力。
+To address this bottleneck, the field has seen a variety of efficient alternatives, including Linear Attention, modern recurrent neural networks (RNNs), and State Space Models (SSMs). These methods typically achieve linear-time complexity and $O(1)$ state updates at inference time. However, most of them are limited to first-order or kernel-based approximations, which may constrain model expressiveness.
 
-本文旨在解决的核心问题是：如何设计一种既具备注意力机制那样的数据依赖和高阶交互能力，又能像现代循环架构一样实现高效流式计算和并行训练的机制。
+The core problem this paper aims to solve is: how can we design a mechanism that has the data dependence and higher-order interaction capabilities of attention, while also achieving efficient streaming computation and parallel training like modern recurrent architectures?
 
-## 本文方法
-本文的核心是提出高阶线性注意力（HLA），它通过紧凑的前缀摘要实现了高阶交互的流式计算。
+## Method
+The core contribution of this paper is Higher-order Linear Attention (HLA), which enables streaming computation of higher-order interactions through compact prefix summaries.
 
-### 二阶HLA
-作为基础，本文从二阶张量注意力出发：
+### Second-order HLA
+As a starting point, the paper begins with second-order tensor attention:
 
 
 {% raw %}$$
@@ -40,14 +40,14 @@ title: "Higher-order Linear Attention"
 $${% endraw %}
 
 
-其关键在于依赖于键的二阶矩 $\mathbf{K}^{\top}\mathbf{K}$。这启发了通过维护前缀摘要（prefix summaries）来进行流式计算。在时间步 $t$，维护以下摘要：
-*   **键的二阶矩**: $\mathbf{S}\_{t}^{K} \coloneqq \sum\_{i\leq t}\mathbf{k}\_{i}\mathbf{k}\_{i}^{\top} \in \mathbb{R}^{d\times d}$
-*   **查询-值累加器**: $\mathbf{C}\_{t}^{QV} \coloneqq \sum\_{i\leq t}\mathbf{q}\_{i}\mathbf{v}\_{i}^{\top} \in \mathbb{R}^{d\times d\_v}$
-*   **查询质量**: $\mathbf{m}\_{t}^{Q} \coloneqq \sum\_{i\leq t}\mathbf{q}\_{i} \in \mathbb{R}^{d}$
+The key is that it depends on the second-order moment of keys, $\mathbf{K}^{\top}\mathbf{K}$. This motivates streaming computation by maintaining prefix summaries. At time step $t$, the following summaries are maintained:
+*   **Second-order moment of keys**: $\mathbf{S}\_{t}^{K} \coloneqq \sum\_{i\leq t}\mathbf{k}\_{i}\mathbf{k}\_{i}^{\top} \in \mathbb{R}^{d\times d}$
+*   **Query-value accumulator**: $\mathbf{C}\_{t}^{QV} \coloneqq \sum\_{i\leq t}\mathbf{q}\_{i}\mathbf{v}\_{i}^{\top} \in \mathbb{R}^{d\times d\_v}$
+*   **Query mass**: $\mathbf{m}\_{t}^{Q} \coloneqq \sum\_{i\leq t}\mathbf{q}\_{i} \in \mathbb{R}^{d}$
 
-这些摘要的更新成本为 $O(d^2 + d d\_v)$，与序列长度无关。
+The update cost of these summaries is $O(d^2 + d d\_v)$, independent of sequence length.
 
-基于这些摘要，二阶HLA的输出（默认为非归一化形式）在时间步 $t$ 定义为：
+Based on these summaries, the output of second-order HLA (by default in unnormalized form) at time step $t$ is defined as:
 
 
 {% raw %}$$
@@ -55,7 +55,7 @@ $${% endraw %}
 $${% endraw %}
 
 
-也可以进行归一化：
+Normalization is also possible:
 
 
 {% raw %}$$
@@ -63,12 +63,12 @@ $${% endraw %}
 $${% endraw %}
 
 
-这里的 $\mathbf{S}\_t^K$ 充当了一个数据依赖的、可学习的度量矩阵，丰富了模型的表达能力。当设 $\mathbf{S}\_t^K = \mathbf{I}$ 时，该形式能够退化为一种线性注意力。
+Here, $\mathbf{S}\_t^K$ acts as a data-dependent, learnable metric matrix, enriching the model’s expressiveness. When $\mathbf{S}\_t^K = \mathbf{I}$, this form reduces to a linear attention mechanism.
 
-### 创新点1：通过扩展摘要实现因果遮蔽
-标准的注意力机制需要在计算中应用因果遮蔽，以确保在自回归任务中，当前时间步的输出只依赖于过去的信息。在HLA中直接应用遮蔽会破坏计算的分解结构。
+### Innovation 1: Causal masking via extended summaries
+Standard attention mechanisms require causal masking in computation to ensure that, in autoregressive tasks, the output at the current time step depends only on past information. Applying masking directly in HLA would break the factorized computation structure.
 
-为了解决这个问题，本文引入了两个额外的扩展前缀摘要：
+To solve this, the paper introduces two additional extended prefix summaries:
 
 
 {% raw %}$$
@@ -83,7 +83,7 @@ $${% endraw %}
 $${% endraw %}
 
 
-通过这些修正项，严格因果的二阶HLA输出可以被精确地计算出来，而无需物化任何 $n \times n$ 的矩阵。例如，非归一化的因果输出为：
+With these correction terms, the strictly causal second-order HLA output can be computed exactly without materializing any $n \times n$ matrix. For example, the unnormalized causal output is:
 
 
 {% raw %}$$
@@ -91,15 +91,15 @@ $${% endraw %}
 $${% endraw %}
 
 
-所有摘要（包括 $\mathbf{G}\_t$ 和 $\mathbf{h}\_t$）都支持常数时间的在线更新，保持了流式计算的效率。
-*   **更新规则**:
+All summaries, including $\mathbf{G}\_t$ and $\mathbf{h}\_t$, support constant-time online updates, preserving the efficiency of streaming computation.
+*   **Update rules**:
     *   $\mathbf{G}\_{t} = \mathbf{G}\_{t-1}+\mathbf{k}\_{t}(\mathbf{k}\_{t}^{\top}\mathbf{C}\_{t-1}^{QV})$
     *   $\mathbf{h}\_{t} = \mathbf{h}\_{t-1}+\mathbf{k}\_{t}(\mathbf{k}\_{t}^{\top}\mathbf{m}\_{t-1}^{Q})$
 
-### 创新点2：通过关联扫描实现并行训练
-纯粹的循环模型在GPU上训练效率低下。为了实现高效的并行训练，本文为HLA的状态更新定义了一个关联操作符 $$⊕$$，并使用关联扫描（如Blelloch scan）来计算前缀和。
+### Innovation 2: Parallel training via associative scans
+Purely recurrent models are inefficient to train on GPUs. To enable efficient parallel training, the paper defines an associative operator $$⊕$$ for HLA state updates and uses associative scans, such as Blelloch scan, to compute prefix sums.
 
-*   **无遮蔽情况**: 状态 $\mathcal{S}=(\mathbf{S},\mathbf{C},\mathbf{m})$ 的合并是简单的加法，构成一个幺半群 (monoid)。
+*   **Unmasked case**: The merge of state $\mathcal{S}=(\mathbf{S},\mathbf{C},\mathbf{m})$ is simple addition, forming a monoid.
     
 
     {% raw %}$$
@@ -107,7 +107,7 @@ $${% endraw %}
     $${% endraw %}
 
 
-*   **有遮蔽情况**: 状态 $\mathcal{S}=(\mathbf{S},\mathbf{C},\mathbf{m},\mathbf{G},\mathbf{h})$ 的合并更为复杂，构成一个半直积 (semidirect product) 结构，因为需要考虑跨片段的交互项。
+*   **Masked case**: The merge of state $\mathcal{S}=(\mathbf{S},\mathbf{C},\mathbf{m},\mathbf{G},\mathbf{h})$ is more complex and forms a semidirect product structure, because cross-segment interaction terms must be taken into account.
     
 
     {% raw %}$$
@@ -118,25 +118,25 @@ $${% endraw %}
     $${% endraw %}
 
 
-该方法可以对序列分块，在块内和块间并行执行扫描，得到的激活值与串行循环完全相同，从而实现了高效且精确的并行训练。该框架同样可以扩展到带有指数衰减 $\gamma$ 的情况。
+This method can partition the sequence into blocks and perform scans in parallel within and across blocks, producing activations exactly identical to those of a serial loop, thereby enabling efficient and exact parallel training. This framework can also be extended to the case with exponential decay $\gamma$.
 
 ![Masked (Second Order) HLA with Within-Chunk Scan](https://raw.githubusercontent.com/wylAImoreira/img-bed/main/202405231718919.png)
 
-### 非对称高阶线性注意力 (AHLA)
-本文还提出了一种互补的变体，称为AHLA。它计算的是左级联积 $\mathbf{Q}(\mathbf{K}^\top\mathbf{Q})(\mathbf{K}^\top\mathbf{V})$，而不是HLA中的对称形式。AHLA同样支持流式计算和因果遮蔽，但使用了不同的前缀摘要，例如：
+### Asymmetric Higher-Order Linear Attention (AHLA)
+This paper also proposes a complementary variant called AHLA. It computes the left-cascaded product $\mathbf{Q}(\mathbf{K}^\top\mathbf{Q})(\mathbf{K}^\top\mathbf{V})$ instead of the symmetric form used in HLA. AHLA also supports streaming computation and causal masking, but uses different prefix summaries, for example:
 *   $\mathbf{P}\_{t}^{KV} \coloneqq \sum\_{j\leq t}\mathbf{k}\_{j}\mathbf{v}\_{j}^{\top}$
 *   $\mathbf{E}\_{t} \coloneqq \sum\_{i\leq t}\mathbf{k}\_{i}\big(\mathbf{q}\_{i}^{\top}\mathbf{P}\_{i}^{KV}\big)$
 
-其流式输出为 $\mathbf{o}\_{t}^{\textsc{AHLA}} = \mathbf{q}\_{t}^{\top}\mathbf{E}\_{t}$。AHLA的计算成本为 $O(d d\_v)$，在某些情况下比HLA更高效。
+Its streaming output is $\mathbf{o}\_{t}^{\textsc{AHLA}} = \mathbf{q}\_{t}^{\top}\mathbf{E}\_{t}$. AHLA has a computational cost of $O(d d\_v)$, and in some cases is more efficient than HLA.
 
-## 实验结论
-本文主要聚焦于算法结构和理论推导，并未提供具体的实验结果或与其他模型的性能比较。
+## Experimental Conclusions
+This paper mainly focuses on the algorithmic structure and theoretical derivations, and does not provide specific experimental results or performance comparisons with other models.
 
-**总结**
-本文给出了一个完整的、可扩展的注意力机制框架——高阶线性注意力（HLA）。其主要贡献和优势如下：
-*   **表达能力强**: 通过引入二阶甚至更高阶的交互，HLA具备了比标准线性注意力更强的数据依赖混合能力。
-*   **计算高效**: HLA在推理时具有线性的时间复杂度（二阶为 $O(d^2 + d d\_v)$）和 $O(1)$ 的状态更新成本，非常适合长上下文场景。
-*   **严格因果**: 通过创新的扩展摘要，HLA能够在不牺牲流式计算效率的前提下，精确实现自回归任务所需的严格因果遮蔽。
-*   **并行训练**: 借助关联扫描技术，HLA的训练可以被高效并行化，且其结果与串行计算完全一致，避免了近似反向传播带来的问题。
+**Summary**
+This paper presents a complete, scalable attention framework—Higher-Order Linear Attention (HLA). Its main contributions and advantages are as follows:
+*   **Strong expressiveness**: By introducing second-order and even higher-order interactions, HLA has stronger data-dependent mixing capability than standard linear attention.
+*   **Computational efficiency**: HLA has linear time complexity at inference time (second order is $O(d^2 + d d\_v)$) and $O(1)$ state update cost, making it very suitable for long-context scenarios.
+*   **Strict causality**: Through an innovative extended summary, HLA can precisely achieve the strict causal masking required for autoregressive tasks without sacrificing streaming efficiency.
+*   **Parallel training**: With the associative scan technique, HLA training can be efficiently parallelized, and its results are exactly consistent with serial computation, avoiding the issues caused by approximate backpropagation.
 
-总而言之，HLA作为一个可直接替换标准注意力的构建模块，巧妙地融合了注意力机制的数据依赖加权特性与现代循环架构的高效率，为构建可扩展的长上下文语言模型提供了一个有力的、有原则的工具。
+In short, HLA, as a building block that can directly replace standard attention, cleverly combines the data-dependent weighting properties of attention with the high efficiency of modern recurrent architectures, providing a powerful and principled tool for building scalable long-context language models.

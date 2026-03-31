@@ -6,60 +6,60 @@ title: "QAgent: A modular Search Agent with Interactive Query Understanding"
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.08383v1
 
-- **作者**: Wenbo Su; Lei Shen; Bo Zheng; Sendong Zhao; Yi Jiang
+- **Author**: Wenbo Su; Lei Shen; Bo Zheng; Sendong Zhao; Yi Jiang
 
-- **发布机构**: Alibaba
+- **Publishing Organization**: Alibaba
 
 ---
 
 ## TL;DR
-本文提出了 QAgent，一个统一的智能体 RAG 框架，它通过一个采用两阶段强化学习策略训练的模块化搜索智能体，进行交互式查询理解和自适应检索，从而提高了对复杂问题的检索质量和作为可插拔模块的泛化能力。
+This paper proposes QAgent, a unified Agentic RAG framework that performs interactive query understanding and adaptive retrieval through a modular search intelligent agent trained with a two-stage reinforcement learning strategy, thereby improving retrieval quality for complex questions and its generalization as a plug-and-play module.
 
-## 关键定义
-*   **QAgent**: 本文提出的统一智能体 RAG (Agentic RAG) 框架。其核心是一个模块化的搜索智能体，通过多轮交互式推理和检索来优化对复杂查询的理解，旨在作为可插拔模块在复杂系统中部署。
-*   **智能体 RAG (Agentic RAG)**: 传统“检索-阅读”(retrieve-then-read) 范式的拓展。它将搜索过程建模为一个序贯决策问题，其中智能体通过多步动态推理和与环境的交互来决定何时以及检索什么内容。
-*   **端到端强化学习训练 (End-to-End RL Training)**: QAgent 的第一阶段训练策略。在此阶段，智能体的训练目标是最大化基于最终答案正确性的端到端奖励。该方法同时优化了智能体的信息检索与信息利用能力。
-*   **泛化强化学习训练 (Generalized RL Training)**: QAgent 的第二阶段训练策略。为提升智能体作为“子模块”的泛化能力，此阶段使用一个固定的（frozen）生成器来产出答案，并基于该生成器的回答计算奖励。这迫使智能体专注于提升检索信息本身的质量，而非其自身利用信息的能力，从而避免了“奖励黑客”(reward hacking)问题。
-*   **多轮查询优化循环 (Multi-Turn Query Optimation Loop)**: QAgent 智能体的核心工作流程。在一个“计划-搜索-信息整合-反思”(plan-search-information-reflect) 的循环中，智能体自主地生成、执行并评估检索动作，通过多轮交互逐步深化对复杂用户意图的理解，并构建出准确的搜索路径。
+## Key Definitions
+*   **QAgent**: The unified Agentic RAG framework proposed in this paper. Its core is a modular search intelligent agent that optimizes understanding of complex queries through multi-turn interactive reasoning and retrieval, with the goal of being deployed as a plug-and-play module in complex systems.
+*   **Agentic RAG**: An extension of the traditional retrieve-then-read paradigm. It models the search process as a sequential decision-making problem, where the intelligent agent decides when and what to retrieve through multi-step dynamic reasoning and interaction with the environment.
+*   **End-to-End RL Training**: The first-stage training strategy of QAgent. In this stage, the training objective of the intelligent agent is to maximize end-to-end rewards based on the correctness of the final answer. This method jointly optimizes the intelligent agent’s information retrieval and information utilization capabilities.
+*   **Generalized RL Training**: The second-stage training strategy of QAgent. To improve the intelligent agent’s generalization as a “submodule,” this stage uses a fixed (frozen) generator to produce answers and computes rewards based on that generator’s responses. This forces the intelligent agent to focus on improving the quality of the retrieved information itself rather than its own ability to use information, thereby avoiding the reward hacking problem.
+*   **Multi-Turn Query Optimation Loop**: The core workflow of the QAgent intelligent agent. In a plan-search-information-reflect loop, the intelligent agent autonomously generates, executes, and evaluates retrieval actions, progressively deepening its understanding of complex user intent through multi-turn interaction and constructing an accurate search path.
 
-## 相关工作
-当前，大型语言模型在处理知识密集型任务时，面临知识过时和幻觉等挑战。检索增强生成 (Retrieval-Augmented Generation, RAG) 通过引入外部知识缓解了这些问题，但传统 RAG 的“检索-阅读”工作流过于僵化，难以处理需要多步推理的复杂查询。
+## Related Work
+At present, large language models face challenges such as outdated knowledge and hallucination when handling knowledge-intensive tasks. Retrieval-Augmented Generation (RAG) alleviates these issues by introducing external knowledge, but the traditional retrieve-then-read workflow is too rigid to handle complex queries that require multi-step reasoning.
 
-为了提升灵活性，近期工作引入了查询优化、规划、反思和迭代检索等方法，形成了智能体 RAG (Agentic RAG) 的雏形。然而，这些方法大多缺乏有效的反馈和持续优化机制。基于强化学习 (Reinforcement Learning, RL) 的搜索智能体（如 Search-R1）虽然展示了强大的自主推理和决策能力，但在实际应用中仍面临两大瓶颈：
-1.  **复杂查询理解不足**：直接使用原始查询进行检索往往无法获取有效信息。
-2.  **泛化能力有限**：现有 RL 训练方法通常将检索和生成端到端优化，导致智能体可能过度拟合“信息利用”环节，而非专注于提升核心的“信息检索”能力，这使得其作为独立子模块部署时性能下降。
+To improve flexibility, recent work has introduced methods such as query optimization, planning, reflection, and iterative retrieval, forming the prototype of Agentic RAG. However, most of these methods lack effective feedback and continuous optimization mechanisms. Reinforcement Learning (RL)-based search intelligent agents (such as Search-R1) have demonstrated strong autonomous reasoning and decision-making abilities, but they still face two major bottlenecks in practical applications:
+1.  **Insufficient understanding of complex queries**: Directly using the original query for retrieval often fails to obtain useful information.
+2.  **Limited generalization ability**: Existing RL training methods usually optimize retrieval and generation end to end, causing the intelligent agent to overfit the “information utilization” stage rather than focusing on improving the core “information retrieval” capability, which leads to performance degradation when deployed as an independent submodule.
 
-本文旨在解决上述问题，核心目标是：
-1.  设计一个能够理解和分解复杂查询，以弥合用户意图与检索器能力之间差距的搜索智能体。
-2.  提出一种训练策略，确保智能体在作为可插拔子模块时具备强大的泛化能力，专注于为下游任务提供高质量信息。
+This paper aims to address the above issues, with the core objectives of:
+1.  Designing a search intelligent agent that can understand and decompose complex queries to bridge the gap between user intent and retriever capability.
+2.  Proposing a training strategy that ensures the intelligent agent has strong generalization when used as a plug-and-play submodule, focusing on providing high-quality information for downstream tasks.
 
-## 本文方法
-本文提出了一个名为 QAgent 的统一智能体框架，其核心是一个通过多轮交互循环进行推理和检索的搜索智能体，并通过一种创新的两阶段训练策略进行优化。
+## Method
+This paper proposes a unified intelligent agent framework called QAgent, whose core is a search intelligent agent that performs reasoning and retrieval through a multi-turn interaction loop, and is optimized with an innovative two-stage training strategy.
 
 ![](acl_latex/imgs/framework.png)
 
-### 创新点
-本文方法的核心创新在于其**为提升泛化能力而设计的两阶段训练策略**，它将搜索智能体显式地定位为一个专注于“信息检索”的独立模块，而非一个端到端的问答系统。
+### Innovations
+The core innovation of this method lies in its **two-stage training strategy designed to improve generalization**, which explicitly positions the search intelligent agent as an independent module focused on “information retrieval” rather than an end-to-end question answering system.
 
-#### 多轮查询优化循环
-QAgent 的工作流程被建模为一个序贯决策过程，智能体在一个循环中与检索系统进行多轮交互。
+#### Multi-Turn Query Optimation Loop
+The workflow of QAgent is modeled as a sequential decision process, in which the intelligent agent interacts with the retrieval system over multiple turns in a loop.
 ![](acl_latex/imgs/query.png)
 
-在每一轮 $t$，智能体遵循以下步骤：
-1.  **计划 ($I^{pre}\_{t}$)**: 基于历史信息和原始查询 $q$ 进行规划。
-2.  **生成搜索查询 ($S\_t$)**: 生成一组优化的查询 $\{q\_{t,1}, \dots, q\_{t,m\_t}\}$。
-3.  **检索与整合 ($C\_t$)**: 执行搜索并聚合所有查询返回的文档，形成上下文 $C\_t = \oplus\_{j=1}^{m\_i} \mathcal{R}(q\_{ij})$。
-4.  **反思 ($I^{post}\_{t}$)**: 评估当前累积的信息是否足以回答问题，并决定是继续下一轮交互还是停止。
+At each turn $t$, the intelligent agent follows these steps:
+1.  **Plan ($I^{pre}\_{t}$)**: Plan based on historical information and the original query $q$.
+2.  **Generate search queries ($S\_t$)**: Generate a set of optimized queries $\{q\_{t,1}, \dots, q\_{t,m\_t}\}$.
+3.  **Retrieve and integrate ($C\_t$)**: Execute the search and aggregate the documents returned by all queries to form the context $C\_t = \oplus\_{j=1}^{m\_i} \mathcal{R}(q\_{ij})$.
+4.  **Reflect ($I^{post}\_{t}$)**: Evaluate whether the currently accumulated information is sufficient to answer the question, and decide whether to continue to the next round of interaction or stop.
 
-整个过程形成一个轨迹 $\tau=(q,I^{pre}\_{1},S\_{1},\mathcal{C}\_{1},I^{post}\_{1},\dots,\mathcal{C}\_{T},I^{post}\_{T},\hat{A})$。这种灵活的交互模式允许智能体根据上下文动态调整搜索策略，以应对不同类型的复杂查询。
+The entire process forms a trajectory $\tau=(q,I^{pre}\_{1},S\_{1},\mathcal{C}\_{1},I^{post}\_{1},\dots,\mathcal{C}\_{T},I^{post}\_{T},\hat{A})$. This flexible interaction pattern allows the intelligent agent to dynamically adjust its search strategy according to context, addressing different types of complex queries.
 
-#### 两阶段强化学习训练策略
+#### Two-Stage Reinforcement Learning Training Strategy
 
-为解决现有 RL 训练智能体时泛化能力不足的问题，本文设计了一个两阶段的训练流程。
+To address the problem of insufficient generalization in existing RL training of intelligent agents, this paper designs a two-stage training process.
 
-**第一阶段：端到端强化学习训练**
+**Stage 1: End-to-End Reinforcement Learning Training**
 
-此阶段的目标是让智能体初步学会如何通过搜索来解决问题。训练采用端到端的方式，奖励函数直接与最终答案 $\hat{A}$ 的正确性挂钩：
+The goal of this stage is to enable the intelligent agent to initially learn how to solve problems through search. Training is conducted in an end-to-end manner, and the reward function is directly tied to the correctness of the final answer $\hat{A}$:
 
 
 {% raw %}$$
@@ -67,17 +67,17 @@ R(\tau)=\mathbb{I}\{r_{\mathrm{fmt}}(\tau)=1\}\cdot\mathrm{EM\_{s}}(A^{\*},\hat{
 $${% endraw %}
 
 
-其中 $A^\*$ 是标准答案，$\mathrm{EM\_s}$ 代表严格精确匹配。这种方式能同时提升智能体的信息检索和信息利用能力。然而，本文分析发现，训练后期模型会倾向于通过提升自身的“信息利用”能力来“hacking”奖励，而不是继续优化“信息检索”能力，这会损害其作为通用检索模块的泛化性。
+where $A^\*$ is the ground-truth answer, and $\mathrm{EM\_s}$ denotes strict exact match. This approach can improve both the intelligent agent’s information retrieval and information utilization capabilities. However, the paper finds that in the later stages of training, the model tends to “hack” the reward by improving its own “information utilization” ability rather than continuing to optimize “information retrieval,” which harms its generalization as a general retrieval module.
 
 ![](acl_latex/imgs/case_SearchR1.png)
 
 
-**第二阶段：泛化强化学习训练**
+**Stage 2: Generalized Reinforcement Learning Training**
 
-这是本文方法的核心，旨在将智能体训练成一个专注于信息检索的“子模块”。其关键设计是**解耦检索与生成**：
-1.  智能体执行搜索，收集到一个文档集 $\mathcal{K}$。
-2.  使用一个**固定的（frozen）**、独立于智能体的生成器 $\mathcal{G}$，基于 $\mathcal{K}$ 和原始查询 $q$ 生成答案 $\tilde{A} = \mathcal{G}(q, \mathcal{K})$。
-3.  奖励函数基于这个外部生成器的答案 $\tilde{A}$ 来计算，而非智能体自身的答案：
+This is the core of the paper’s method, aimed at training the intelligent agent into a “submodule” focused on information retrieval. Its key design is to **decouple retrieval from generation**:
+1.  The intelligent agent performs search and collects a document set $\mathcal{K}$.
+2.  A **fixed (frozen)** generator $\mathcal{G}$, independent of the intelligent agent, is used to generate an answer based on $\mathcal{K}$ and the original query $q$: $\tilde{A} = \mathcal{G}(q, \mathcal{K})$.
+3.  The reward function is computed based on the external generator’s answer $\tilde{A}$, rather than the intelligent agent’s own answer:
 
 
 {% raw %}$$
@@ -85,29 +85,29 @@ R(\tau)=\mathrm{EM}(A^{\*},\tilde{A})+0.5*Hit(\tau,A^{\*})
 $${% endraw %}
 
 
-其中 EM 为非严格匹配，Hit 表示智能体的完整轨迹中是否包含标准答案。
+where EM is non-strict exact match, and Hit indicates whether the ground-truth answer appears in the intelligent agent’s complete trajectory.
 
-**优点**
+**Advantages**
 
-这种两阶段设计的核心优点在于：
-*   **提升泛化能力**：由于奖励完全取决于检索到的信息能否让一个**通用的、固定的**生成器得出正确答案，智能体被迫专注于提升检索内容的质量和完备性，而不是学习如何巧妙地利用不完美的信息来拼凑答案。这使得训练出的智能体能够作为即插即用的模块，高效服务于各种不同的下游生成器。
-*   **缓解奖励黑客问题**：通过引入外部固定生成器作为“评判者”，有效避免了智能体在端到端训练中为获取高分而过度优化自身信息利用能力的倾向。
-*   **模块化与实用性**：训练出的 QAgent 是一个轻量级的搜索模块，可以灵活地与不同规模、不同能力的生成器组合，满足现实世界复杂系统的部署需求。
+The core advantages of this two-stage design are:
+*   **Improved generalization**: Since the reward depends entirely on whether the retrieved information enables a **general, fixed** generator to produce the correct answer, the intelligent agent is forced to focus on improving the quality and completeness of the retrieved content, rather than learning how to cleverly use imperfect information to piece together an answer. This allows the trained intelligent agent to function as a plug-and-play module that efficiently serves different downstream generators.
+*   **Mitigating reward hacking**: By introducing an external fixed generator as the “judge,” the tendency of the intelligent agent to over-optimize its own information utilization ability in end-to-end training to obtain higher rewards is effectively avoided.
+*   **Modularity and practicality**: The trained QAgent is a lightweight search module that can be flexibly combined with generators of different sizes and capabilities, meeting the deployment needs of real-world complex systems.
 
-## 实验结论
+## Experimental Conclusions
 
-实验在多个开放域问答数据集（包括多跳和单跳）上进行，验证了 QAgent 的性能和泛化能力。
+Experiments were conducted on multiple open-domain question answering datasets, including both multi-hop and single-hop settings, validating QAgent’s performance and generalization ability.
 
-### 主要结果
+### Main Results
 
-**1. 端到端问答性能**
+**1. End-to-End QA Performance**
 
-如下表所示，QAgent 在端到端问答任务中表现出色，相较于同样基于 RL 训练的 Search-R1，在平均 EM 和 F1 分数上分别提升了 0.52% 和 2.66%。这证明了 QAgent 框架的整体有效性。
+As shown in the table below, QAgent performs excellently on end-to-end question answering tasks. Compared with Search-R1, which is also trained based on RL, it improves the average EM and F1 scores by 0.52% and 2.66%, respectively. This demonstrates the overall effectiveness of the QAgent framework.
 
 <br>
 
 
-| 方法 | 2WikiMHQ | HotpotQA | Musique | NQ | TQA | 平均 |
+| Method | 2WikiMHQ | HotpotQA | Musique | NQ | TQA | Avg |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 |      | EM/F1    | EM/F1    | EM/F1   | EM/F1  | EM/F1 | EM/F1  |
 | Vanilla | 12.0/20.8 | 13.0/22.4 | 4.8/10.0 | 22.8/30.3 | 25.6/31.0 | 15.6/22.9 |
@@ -115,18 +115,18 @@ $${% endraw %}
 | Search-o1 | 37.0/49.4 | 48.2/60.8 | **27.6**/**36.7** | 51.6/60.3 | 49.8/57.9 | 42.8/53.0 |
 | ZeroSearch | 30.6/43.8 | 39.4/52.9 | 20.6/30.1 | 48.0/59.3 | 43.8/54.5 | 36.5/48.1 |
 | Search-R1 | 41.2/54.2 | 51.2/64.2 | 26.8/35.0 | 52.6/62.3 | **54.0**/62.4 | 45.2/55.6 |
-| **QAgent (本文)** | **42.2**/**55.4** | **52.6**/**66.1** | 27.2/35.8 | **52.8**/**63.8** | 53.6/**63.1** | **45.7**/**56.8** |
+| **QAgent (this paper)** | **42.2**/**55.4** | **52.6**/**66.1** | 27.2/35.8 | **52.8**/**63.8** | 53.6/**63.1** | **45.7**/**56.8** |
 
 <br>
 
-**2. 作为子模块的性能（泛化能力）**
+**2. Performance as a Submodule (Generalization Ability)**
 
-这是实验的核心。如下表所示，当将各种方法训练的智能体作为独立的检索模块，并搭配一个固定的生成器时，QAgent 的优势极为明显。其平均 EM 分数比 Search-R1 高出 4.59%，比 Naive RAG 高出 5.35%。这有力地证明了**第二阶段泛化训练的成功**，QAgent 具备出色的泛化能力，能作为高效的即插即用模块。
+This is the core of the experiment. As shown in the table below, when the agents trained by different methods are used as independent retrieval modules and paired with a fixed generator, QAgent’s advantage becomes extremely clear. Its average EM score is 4.59% higher than Search-R1 and 5.35% higher than Naive RAG. This strongly demonstrates the success of the **second-stage generalization training**. QAgent has excellent generalization ability and can serve as an efficient plug-and-play module.
 
 <br>
 
 
-| 方法 | 生成器 | 2WikiMHQ | HotpotQA | Musique | NQ | TQA | 平均 |
+| Method | Generator | 2WikiMHQ | HotpotQA | Musique | NQ | TQA | Avg |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 |      |        | EM       | EM       | EM      | EM   | EM  | EM     |
 | Naive RAG | 3B | 23.4 | 47.0 | 13.0 | 34.4 | 45.4 | 32.6 |
@@ -134,32 +134,32 @@ $${% endraw %}
 | Search-o1 | 3B | 31.6 | 46.8 | 17.6 | 36.2 | 43.6 | 35.2 |
 | ZeroSearch | 3B | 27.6 | 41.6 | 14.8 | 39.4 | 41.2 | 32.9 |
 | Search-R1 | 3B | 29.8 | 46.0 | 15.8 | 36.0 | 45.0 | 34.5 |
-| **QAgent (本文)** | 3B | **35.0** | **49.8** | **18.2** | **40.4** | **49.2** | **38.5** |
-| QAgent (本文) | 7B | **40.8** | **55.4** | **23.2** | **49.2** | **57.4** | **45.2** |
+| **QAgent (this paper)** | 3B | **35.0** | **49.8** | **18.2** | **40.4** | **49.2** | **38.5** |
+| QAgent (this paper) | 7B | **40.8** | **55.4** | **23.2** | **49.2** | **57.4** | **45.2** |
 
 <br>
 
-### 分析与洞察
-*   **消融研究**：证实了两阶段训练的必要性。第一阶段（端到端）带来了显著提升，但第二阶段（泛化训练）在提升模型泛化能力、尤其是在分布外数据集上的表现上起到了决定性作用。
+### Analysis and Insights
+*   **Ablation study**: This confirms the necessity of two-stage training. Stage one (end-to-end) brings significant gains, while stage two (generalization training) plays a decisive role in improving the model’s generalization ability, especially on out-of-distribution datasets.
 
 <br>
 
 
-| 训练阶段 | 2WikiMHQ | HotpotQA | Musique | NQ | TQA |
+| Training Stage | 2WikiMHQ | HotpotQA | Musique | NQ | TQA |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 |      | EM/F1    | EM/F1    | EM/F1   | EM/F1  | EM/F1 |
-| 无训练 | 37.0/49.4 | 48.2/60.8 | **27.6**/**36.7** | 51.6/60.3 | 49.8/57.9 |
-| 阶段一 | 41.0/53.5 | 50.8/63.6 | 26.6/34.9 | 52.4/62.2 | 53.4/61.9 |
-| **阶段二 (QAgent)** | **42.2**/**55.4** | **52.6**/**66.1** | 27.2/35.8 | **52.8**/**63.8** | **53.6**/**63.1** |
+| No training | 37.0/49.4 | 48.2/60.8 | **27.6**/**36.7** | 51.6/60.3 | 49.8/57.9 |
+| Stage one | 41.0/53.5 | 50.8/63.6 | 26.6/34.9 | 52.4/62.2 | 53.4/61.9 |
+| **Stage two (QAgent)** | **42.2**/**55.4** | **52.6**/**66.1** | 27.2/35.8 | **52.8**/**63.8** | **53.6**/**63.1** |
 
 <br>
 
-*   **组合增益分析**：实验表明，QAgent通过智能体的多轮查询优化，能够获得超越传统 RAG 范式（即使增加检索文档数量）的“组合增益”，有效突破了单个检索器能力的上限。
+*   **Combined gain analysis**: The experiments show that through multi-turn query optimization by the agent, QAgent can achieve “combined gains” that go beyond the traditional RAG paradigm, even when the number of retrieved documents is increased, effectively breaking through the upper limit of a single retriever’s capability.
 ![](acl_latex/imgs/upper_gain_v3.png)
 
 
-*   **信息利用能力分析**：验证了本文的核心动机。经过端到端训练的模型具有最强的信息利用能力，但在经过泛化训练后，该能力有所下降。这恰恰说明泛化训练成功地将模型的优化目标从“利用信息”转移到了“检索信息”，从而提升了其作为检索模块的泛化性。
+*   **Information utilization analysis**: This validates the core motivation of the paper. The model trained end-to-end has the strongest information utilization ability, but this ability declines after generalization training. This precisely shows that generalization training successfully shifts the model’s optimization objective from “using information” to “retrieving information,” thereby improving its generalization as a retrieval module.
 ![](acl_latex/imgs/info.png)
 
-### 总结
-实验结果充分证明，QAgent 通过其创新的两阶段训练策略，成功地训练出一个在复杂问答任务中表现优异、且具有强大泛化能力的模块化搜索智能体。它不仅在端到端任务上取得了领先，更重要的是，它能作为即插即用的组件高效地集成到大型系统中，为现实世界的 RAG 应用提供了可靠的解决方案。
+### Summary
+The experimental results fully demonstrate that QAgent, through its innovative two-stage training strategy, successfully trains a modular search agent that performs excellently on complex question answering tasks and has strong generalization ability. It not only achieves leading results on end-to-end tasks, but more importantly, it can be efficiently integrated into large systems as a plug-and-play component, providing a reliable solution for real-world RAG applications.

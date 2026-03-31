@@ -2,109 +2,108 @@
 layout: default
 title: "FLEX: Continuous Agent Evolution via Forward Learning from Experience"
 ---
+## Let AI “learn from a setback” like humans: the FLEX framework boosts Agent performance by 23%
 
-## 让AI像人一样“吃一堑长一智”：FLEX框架使Agent性能飙升23%
+Current large-model Agents, while powerful, all share a kind of “amnesia”: once training is complete, they become static tools. Whether they succeed or fail on a task, they cannot learn from it, and when they encounter the same problem again, they still make the same mistakes. This is a far cry from the human way of learning, where people keep growing through experience.
 
-当前的大模型Agent（智能体）虽然能力强大，但它们都有一个共同的“健忘症”：一旦训练完成，就变成了静态的工具。无论在任务中成功还是失败，它们都无法吸取教训，下次遇到同样的问题还是会犯同样的错。这与人类通过经验不断成长的学习方式相去甚远。
-
-> **论文标题**：FLEX: Continuous Agent Evolution via Forward Learning from Experience
+> **Paper title**: FLEX: Continuous Agent Evolution via Forward Learning from Experience
 
 > **ArXiv URL**：http://arxiv.org/abs/2511.06449v1
 
-现在，来自字节跳动和清华大学等机构的研究者们，提出了一种全新的学习范式——**FLEX**（**Forward Learning with EXperience**）。
+Now, researchers from ByteDance, Tsinghua University, and other institutions have proposed a brand-new learning paradigm — **FLEX** (**Forward Learning with EXperience**).
 
-它彻底颠覆了传统的学习方式，让AI Agent能够在与环境的交互中，通过反思成败来积累经验，实现持续进化。
+It completely overturns the traditional learning approach, enabling AI Agents to accumulate experience by reflecting on success and failure during interaction with the environment, and thus achieve continuous evolution.
 
-最关键的是，这个过程完全**无需梯度反向传播**，成本极低，却在数学、化学、生物等多个领域的难题上取得了高达23%的性能提升！
+Most importantly, this process requires **no gradient backpropagation** at all. It is extremely low-cost, yet it delivers performance gains of up to 23% on difficult problems across mathematics, chemistry, biology, and more!
 
 <img src="/images/2511.06449v1/front_pic.jpg" alt="FLEX范式概览与主要成果" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 困境：为何今天的Agent“学不会”？
+### The dilemma: why can’t today’s Agents “learn”?
 
-我们都知道，AI模型依赖于**梯度下降**（**Gradient Descent**）进行学习，通过反向传播来微调亿万个参数。
+We all know that AI models rely on **Gradient Descent** for learning, using backpropagation to fine-tune billions of parameters.
 
-但这个过程对于Agent的持续进化来说，存在三大障碍：
+But for the continuous evolution of Agents, this process faces three major obstacles:
 
-1.  **成本高昂**：对大型模型进行反向传播需要巨大的计算资源。
+1.  **High cost**: Backpropagation on large models requires enormous computing resources.
 
-2.  **灾难性遗忘**：在学习新知识时，模型很容易忘记旧有的能力。
+2.  **Catastrophic forgetting**: When learning new knowledge, the model can easily forget old capabilities.
 
-3.  **模型封闭**：像GPT-4这样的顶级模型都是闭源的，我们根本无法访问其参数进行微调。
+3.  **Closed models**: Top-tier models like GPT-4 are closed-source, so we simply cannot access their parameters for fine-tuning.
 
-虽然有研究尝试通过修改提示词或工作流来“进化”，但这些方法往往是任务特定的，无法跨领域泛化，也难以随着经验的增多而持续提升。
+Although some studies have tried to “evolve” models by modifying prompts or workflows, these methods are often task-specific, do not generalize across domains, and are hard to keep improving as experience accumulates.
 
-### FLEX：一种前向学习新范式
+### FLEX: a new paradigm of forward learning
 
-FLEX提出了一种截然不同的思路：**学习的重点不应是修改模型参数，而是构建和利用一个可演化的“经验图书馆”。**
+FLEX proposes a completely different idea: **the focus of learning should not be on changing model parameters, but on building and using an evolvable “experience library.”**
 
-传统学习包含“前向传播”和“反向传播”两个过程。
+Traditional learning includes two processes: “forward propagation” and “backpropagation.”
 
-而FLEX将学习简化为**纯粹的前向过程**，分为三个阶段：
+FLEX simplifies learning into a **purely forward process**, divided into three stages:
 
-1.  **前向探索**：大胆尝试解决问题，获取大量的成功与失败经验。
+1.  **Forward exploration**: Boldly try to solve the problem and collect plenty of successful and failed experiences.
 
-2.  **经验演化**：通过一个“更新器”Agent，对经验进行反思、提炼，并更新到经验库中。
+2.  **Experience evolution**: A “updater” Agent reflects on the experiences, distills them, and updates the experience library.
 
-3.  **前向引导**：在解决新问题时，从经验库中检索相关知识，指导推理过程。
+3.  **Forward guidance**: When solving new problems, retrieve relevant knowledge from the experience library to guide the reasoning process.
 
-这种范式带来了三个深刻的优势：
+This paradigm brings three profound advantages:
 
-- **可扩展性**：经验库可以持续扩充，AI的性能随经验积累而增长。
+- **Scalability**: The experience library can keep growing, and AI performance improves as experience accumulates.
 
-- **可继承性**：经验以结构化文本形式存储，可以轻松地在不同Agent间“即插即用”，无需从零开始学习。
+- **Inheritance**: Experience is stored as structured text, so it can be easily “plugged and played” across different Agents without starting from scratch.
 
-- **跨任务性**：从一个任务中学到的高阶策略，可以被用于解决其他任务。
+- **Cross-task transfer**: High-level strategies learned from one task can be used to solve other tasks.
 
-### 核心机制：双层MDP与经验图书馆
+### Core mechanism: a two-level MDP and an experience library
 
-为了实现这一优雅的构想，FLEX设计了一套精巧的机制，可以将其理解为一个分工明确的“战略指挥部”。该研究将其形式化为**分层马尔可夫决策过程**（**Meta-MDP**）。
+To realize this elegant idea, FLEX designs a sophisticated mechanism that can be understood as a clearly divided “strategic command center.” The study formalizes it as a **hierarchical Markov decision process** (**Meta-MDP**).
 
 <img src="/images/2511.06449v1/fig-fl.jpg" alt="FLEX的具体实现机制" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-#### 底层MDP：一线探索与经验提炼
+#### Lower-level MDP: frontline exploration and experience distillation
 
-这可以看作是“一线作战单元”。它由一个**行动者**（**Actor**）和一个**评论家**（**Critic**）组成。
+This can be seen as the “frontline combat unit.” It consists of an **Actor** and a **Critic**.
 
-- **行动者**负责生成解决问题的具体步骤。
+- The **Actor** is responsible for generating concrete steps to solve the problem.
 
-- **评论家**则负责评估行动者的方案。如果失败了，它会分析失败原因，并给出“语义反馈”（即用自然语言提出的改进建议），指导行动者进行下一轮尝试。
+- The **Critic** evaluates the Actor’s plan. If it fails, it analyzes the reason for failure and provides “semantic feedback” — improvement suggestions in natural language — to guide the Actor’s next attempt.
 
-这个“尝试-反馈-修正”的闭环，就是经验产生的过程。成功的路径和失败的教训都会被记录下来。
+This “try-feedback-correct” loop is the process by which experience is generated. Both successful paths and lessons from failure are recorded.
 
-#### 上层MDP：全局调度与经验演化
+#### Upper-level MDP: global scheduling and experience evolution
 
-这相当于“总指挥部”。它负责维护一个全局的、分层的**经验图书馆**。
+This is equivalent to the “headquarters.” It is responsible for maintaining a global, hierarchical **experience library**.
 
-- **分层结构**：这个图书馆被巧妙地组织为三个层次：高层战略原则、中层推理模式、底层具体案例。
+- **Hierarchical structure**: The library is cleverly organized into three layers: high-level strategic principles, mid-level reasoning patterns, and low-level concrete cases.
 
-- **双区设计**：它还分为“黄金区”（存储成功经验）和“警示区”（记录失败教训），实现从正反两方面学习。
+- **Two-zone design**: It is also divided into a “golden zone” for successful experience and a “warning zone” for failure lessons, enabling learning from both positive and negative outcomes.
 
-当底层探索单元提交新经验时，“更新器”Agent会决定是新增、合并还是丢弃该经验，确保图书馆的高效和无冗余。
+When the lower-level exploration unit submits new experience, the “updater” Agent decides whether to add, merge, or discard it, ensuring the library remains efficient and free of redundancy.
 
-在解决新问题时，Agent可以像查阅资料一样，在这个图书馆中进行上下文相关的检索，从而获得强大的外部知识支持。
+When solving new problems, the Agent can retrieve contextually relevant information from this library just like consulting reference materials, thereby gaining powerful external knowledge support.
 
-### 实践效果：跨领域的显著提升
+### Practical results: significant gains across domains
 
-理论再好，也要看疗效。FLEX在数学、化学、生物三大科学领域的挑战性任务上，都取得了惊人的成果。
+No matter how good the theory is, the proof is in the results. FLEX achieved remarkable outcomes on challenging tasks in mathematics, chemistry, and biology.
 
 
-| 模型 | 基准 | Vanilla | ICL | Agent | FLEX (本文) |
+| Model | Benchmark | Vanilla | ICL | Agent | FLEX (this paper) |
 | --- | --- | --- | --- | --- | --- |
 | Claude-Sonnet-4 | AIME25 | 40.0 | - | 42.0 | **63.3** (+23.3) |
 | GPT-4 | GSM8k | 93.4 | 92.5 | 95.3 | **95.9** (+0.6) |
 | Claude-Sonnet-4.5 | USPTO50k | 20.0 | 20.0 | 20.0 | **30.0** (+10.0) |
 | GenAI-FLEX-128k | ProteinGym | 0.460 | - | 0.460 | **0.602** (+0.142) |
 
-- **数学推理**：在极具挑战的AIME25数学竞赛数据集上，FLEX仅用49个例题进行学习，就将Claude-Sonnet-4的准确率从40.0%**大幅提升至63.3%**，实现了惊人的**23.3%**绝对性能增长。
+- **Mathematical reasoning**: On the highly challenging AIME25 math competition dataset, FLEX learned from just 49 examples and boosted Claude-Sonnet-4’s accuracy from 40.0%** to 63.3%**, achieving an astonishing **23.3%** absolute performance gain.
 
-- **化学合成**：在专业的USPTO50k逆合成任务上，通用大模型表现不佳。FLEX通过学习50个例子，就让Claude-Sonnet-4.5的准确率从20%提升至30%，效果翻倍。
+- **Chemical synthesis**: On the specialized USPTO50k retrosynthesis task, general-purpose large models perform poorly. By learning from 50 examples, FLEX raised Claude-Sonnet-4.5’s accuracy from 20% to 30%, effectively doubling the result.
 
-- **生物预测**：在ProteinGym蛋白质适应性预测任务中，FLEX同样表现出色，将模型的预测相关性从0.46提升至0.602，实现了**14.2%**的提升。
+- **Biological prediction**: On the ProteinGym protein fitness prediction task, FLEX also performed strongly, improving the model’s prediction correlation from 0.46 to 0.602, a **14.2%** gain.
 
-此外，研究还发现，Agent的性能与经验库的大小存在明确的**经验规模法则**（**Scaling Law of Experience**），并且经验库可以在不同模型间**继承**（**Experience Inheritance**），实现知识的快速迁移。
+In addition, the study found a clear **Scaling Law of Experience** between Agent performance and the size of the experience library, and showed that the experience library can be **inherited** across different models (**Experience Inheritance**), enabling rapid knowledge transfer.
 
-### 结语
+### Conclusion
 
-FLEX范式为我们描绘了一幅激动人心的未来图景：AI Agent不再是出厂即固化的静态工具，而是能够像智慧生命一样，在实践中不断学习、反思和成长的动态伙伴。
+The FLEX paradigm paints an exciting future: AI Agents are no longer static tools frozen at the factory, but dynamic partners that can keep learning, reflecting, and growing through practice, just like intelligent beings.
 
-通过将学习的核心从调整参数转向构建经验，FLEX开辟了一条高效、低成本且可解释的Agent进化之路，标志着我们向着可扩展、可继承的持续进化智能体迈出了坚实的一步。
+By shifting the core of learning from parameter adjustment to experience building, FLEX opens up an efficient, low-cost, and interpretable path for Agent evolution, marking a solid step toward scalable, inheritable, continuously evolving intelligent Agents.

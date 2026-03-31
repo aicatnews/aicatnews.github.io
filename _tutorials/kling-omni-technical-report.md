@@ -2,83 +2,82 @@
 layout: default
 title: "Kling-Omni Technical Report"
 ---
-
-## 10步推理生成电影级视频：快手Kling-Omni全能架构揭秘
+## 10-Step Reasoning for Movie-Quality Video Generation: Inside Kuaishou’s Kling-Omni All-in-One Architecture
 
 <img src="/images/2512.16776v1/A__title.jpg" alt="" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-视频生成领域长期存在着一种“割裂感”：有的模型擅长文生视频，有的专精于视频编辑，而有的则需要借助外部工具才能理解复杂的视觉指令。这种“流水线式”的拼凑方案，不仅效率低下，更难以捕捉用户细腻的创作意图。
+There has long been a sense of fragmentation in video generation: some models excel at text-to-video, some specialize in video editing, and others need external tools to understand complex visual instructions. This kind of pipeline-style patchwork is not only inefficient, but also makes it harder to capture the user’s nuanced creative intent.
 
 > ArXiv URL：http://arxiv.org/abs/2512.16776v1
 
-快手团队最新发布的 **Kling-Omni** 技术报告，正是为了终结这种割裂。作为一款端到端的全能生成框架，Kling-Omni 不仅打破了视频生成、编辑与推理之间的壁垒，更通过高效的蒸馏技术将推理步数压缩至惊人的 10 步。这不仅仅是一个内容创作工具，更是向着能够感知、推理并模拟物理世界的“多模态世界模拟器”迈出的关键一步。
+Kuaishou’s newly released **Kling-Omni** technical report is designed to put an end to this fragmentation. As an end-to-end all-in-one generation framework, Kling-Omni not only breaks down the barriers between video generation, editing, and reasoning, but also compresses the reasoning steps to an astonishing 10 through efficient distillation. It is more than just a content creation tool; it is a key step toward a “multimodal world simulator” that can perceive, reason about, and simulate the physical world.
 
-### 统一架构：从“拼凑”到“融合”
+### Unified Architecture: From “Patchwork” to “Integration”
 
-现有的视频模型往往依赖静态的文本编码器，难以捕捉复杂的视觉细节；而视频编辑通常需要独立的适配器，导致系统臃肿。Kling-Omni 的核心突破在于提出了一种全新的交互范式——**多模态视觉语言**（**Multimodal Visual Language, MVL**）。
+Existing video models often rely on static text encoders, making it difficult to capture complex visual details; video editing, meanwhile, usually requires separate adapters, which makes the system bloated. Kling-Omni’s core breakthrough is the proposal of a new interaction paradigm—**Multimodal Visual Language** (**MVL**).
 
-这种范式不再将文本、图像和视频视为分离的输入，而是将它们构建为一个统一的输入表示。
+This paradigm no longer treats text, images, and video as separate inputs, but instead builds them into a unified input representation.
 
 <img src="/images/2512.16776v1/x1.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-如上图所示，Kling-Omni 的架构主要由三个关键组件构成：
+As shown above, Kling-Omni’s architecture is mainly composed of three key components:
 
-1.  **提示增强器**（**Prompt Enhancer, PE**）：这是一个基于 MLLM 的模块，负责“翻译”用户的意图。它能将模糊的用户指令与世界知识结合，转化为模型更易理解的精细化提示。
+1.  **Prompt Enhancer** (**PE**): A module based on MLLM that “translates” user intent. It combines vague user instructions with world knowledge and turns them into refined prompts that the model can understand more easily.
 
-2.  **全能生成器**（**Omni-Generator**）：这是核心引擎。它在一个共享的嵌入空间中处理视觉和文本 Token，实现了深度的跨模态交互，确保了生成的视频既符合指令又具有视觉一致性。
+2.  **Omni-Generator**: The core engine. It processes visual and text tokens in a shared embedding space, enabling deep cross-modal interaction and ensuring that the generated video both follows the instructions and remains visually consistent.
 
-3.  **多模态超分辨率**（**Multimodal Super-Resolution**）：用于进一步提升画质，通过条件化原始 MVL 信号来恢复高频细节。
+3.  **Multimodal Super-Resolution**: Used to further improve image quality by restoring high-frequency details through conditioning on the original MVL signal.
 
-### 训练策略：从理解到直觉
+### Training Strategy: From Understanding to Intuition
 
-为了让模型具备“全能”的身手，研究团队设计了一套渐进式的多阶段训练策略。
+To give the model “all-in-one” capabilities, the research team designed a progressive multi-stage training strategy.
 
-在预训练阶段，模型通过大规模文本-视频对数据，建立了基础的指令遵循能力。随后进入**监督微调**（**Supervised Fine-tuning, SFT**）阶段，模型开始接触高度交错的图像、视频和文本混合数据，学习处理复杂的编辑任务和语义理解。
+During pretraining, the model builds basic instruction-following ability from large-scale text-video paired data. It then enters the **Supervised Fine-tuning** (**SFT**) stage, where it is exposed to highly interleaved image, video, and text mixed data, learning to handle complex editing tasks and semantic understanding.
 
-最值得关注的是**强化学习**（**Reinforcement Learning, RL**）阶段。为了让生成的视频符合人类审美，Kling-Omni 采用了**直接偏好优化**（**Direct Preference Optimization, DPO**）。
+The most noteworthy stage is **Reinforcement Learning** (**RL**). To make the generated videos align with human aesthetics, Kling-Omni adopts **Direct Preference Optimization** (**DPO**).
 
-为何选择 DPO？相比于 DeepSeekMath 等使用的 GRPO 算法，DPO 避免了计算昂贵的轨迹采样，仅需一步扩散前向过程即可完成优化。通过构建“偏好对”（即人类认为更好 vs 更差的视频），模型学会了如何生成动作更自然、视觉更完整的视频。
+Why choose DPO? Compared with the GRPO algorithm used by DeepSeekMath and others, DPO avoids expensive trajectory sampling and only requires a single diffusion forward process to complete optimization. By constructing “preference pairs” (that is, videos humans judge as better vs. worse), the model learns how to generate videos with more natural motion and more complete visuals.
 
-### 极致优化：10步推理的秘密
+### Extreme Optimization: The Secret Behind 10-Step Inference
 
-视频生成模型通常面临巨大的算力挑战。Kling-Omni 在推理效率上通过“蒸馏”技术实现了质的飞跃。
+Video generation models usually face enormous compute challenges. Kling-Omni achieves a qualitative leap in inference efficiency through distillation.
 
-研究人员开发了一种两阶段的蒸馏方法：
+The researchers developed a two-stage distillation method:
 
-1.  **轨迹匹配蒸馏**：让学生模型模仿教师模型的生成轨迹。
+1.  **Trajectory Matching Distillation**: Makes the student model imitate the teacher model’s generation trajectory.
 
-2.  **分布匹配蒸馏**：进一步优化生成性能。
+2.  **Distribution Matching Distillation**: Further optimizes generation performance.
 
-与常见的基于 SDE 的蒸馏方法（如 DMD 或 SiD）不同，Kling-Omni 采用了更适合视频任务的 ODE 采样蒸馏。这一套组合拳下来，将生成单个视频所需的函数评估次数（NFE）从原本的 150 次大幅压缩至 **10 NFE**。这意味着推理速度提升了 15 倍，且几乎没有牺牲画质。
+Unlike common SDE-based distillation methods such as DMD or SiD, Kling-Omni uses ODE sampling distillation, which is better suited to video tasks. With this combined approach, the number of function evaluations (NFE) required to generate a single video is dramatically reduced from 150 to **10 NFE**. This means a 15x speedup in inference with almost no loss in image quality.
 
-此外，针对长序列视频生成的显存瓶颈，Kling-Omni 采用了混合并行推理策略（Ulysses 并行 + 张量并行），并设计了专门的 Cache 机制，实现了约 $2\times$ 的额外加速。
+In addition, to address the memory bottleneck in long-sequence video generation, Kling-Omni adopts a hybrid parallel inference strategy (Ulysses parallelism + tensor parallelism) and designs a dedicated cache mechanism, achieving an additional speedup of about $2\times$.
 
-### 数据基石：构建多模态数据引擎
+### Data Foundation: Building a Multimodal Data Engine
 
-强大的模型离不开高质量的数据。Kling-Omni 构建了一个全面的数据系统，涵盖了从数据采集到处理的全流程。
+A powerful model depends on high-quality data. Kling-Omni has built a comprehensive data system covering the entire pipeline from data collection to processing.
 
-特别是在数据合成方面，单纯依赖真实数据往往难以学习到精确的控制力。因此，团队利用内部的图像编辑和视频理解模型，构建了大量高质量的合成数据，用于训练模型的编辑和多图参考能力。
+In particular, for data synthesis, relying solely on real data often makes it difficult to learn precise controllability. Therefore, the team used internal image editing and video understanding models to construct a large amount of high-quality synthetic data for training the model’s editing and multi-image reference capabilities.
 
 <img src="/images/2512.16776v1/Data_Filter_Pipeline_V4.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-为了保证数据质量，还建立了一个三层过滤系统（如上图），分别从基础质量、时间稳定性和跨模态对齐三个维度对数据进行清洗，确保“喂”给模型的数据都是精品。
+To ensure data quality, they also established a three-tier filtering system (as shown above), which cleans the data along three dimensions: basic quality, temporal stability, and cross-modal alignment, ensuring that only top-quality data is fed to the model.
 
-### 性能评估：超越 SOTA 的表现
+### Performance Evaluation: Results Beyond SOTA
 
-Kling-Omni 的实际表现如何？研究团队构建了 OmniVideo-1.0 基准测试，包含 500 多个涵盖不同主体、场景和挑战的测试案例。
+How well does Kling-Omni actually perform? The research team built the OmniVideo-1.0 benchmark, which includes more than 500 test cases covering different subjects, scenes, and challenges.
 
-在与行业领先模型（如 Veo 3.1 和 Runway-Aleph）的对比中，Kling-Omni 展现出了显著优势。
+In comparisons with industry-leading models such as Veo 3.1 and Runway-Aleph, Kling-Omni showed clear advantages.
 
 <img src="/images/2512.16776v1/x5.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-从上图的 GSB（Good-Same-Bad）评估结果可以看出：
+From the GSB (Good-Same-Bad) evaluation results above, we can see that:
 
-*   在**图像参考生成**任务中，Kling-Omni 在多个维度上优于 Veo 3.1。
+*   In the **image-reference generation** task, Kling-Omni outperforms Veo 3.1 across multiple dimensions.
 
-*   在**视频编辑**任务中，相比 Runway-Aleph，Kling-Omni 在保持原视频特征的同时，展现了更强的编辑能力。
+*   In the **video editing** task, compared with Runway-Aleph, Kling-Omni shows stronger editing ability while preserving the original video’s characteristics.
 
-### 结语
+### Conclusion
 
-Kling-Omni 不仅仅是一个视频生成模型，它展示了一种将感知、推理和生成融为一体的可能性。通过统一的架构和高效的推理策略，它让“所想即所得”的视频创作变得更加触手可及。
+Kling-Omni is more than just a video generation model; it demonstrates the possibility of integrating perception, reasoning, and generation into a single system. With a unified architecture and efficient inference strategy, it makes “what you imagine is what you get” video creation more accessible than ever.
 
-更重要的是，它展现出的对物理世界的初步理解和推理能力，让我们看到了未来“多模态世界模拟器”的雏形。在这个模拟器中，AI 不再只是被动地生成像素，而是开始理解像素背后动态而复杂的世界逻辑。
+More importantly, its emerging understanding of the physical world and reasoning ability gives us a glimpse of the future shape of a “multimodal world simulator.” In such a simulator, AI would no longer merely generate pixels passively, but would begin to understand the dynamic and complex logic of the world behind those pixels.

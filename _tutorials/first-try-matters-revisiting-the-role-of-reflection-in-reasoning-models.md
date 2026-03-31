@@ -6,95 +6,95 @@ title: "First Try Matters: Revisiting the Role of Reflection in Reasoning Models
 
 - **ArXiv URL**: http://arxiv.org/abs/2510.08308v1
 
-- **作者**: Zhanfeng Mo; Yao Xiao; Yue Deng; Wee Sun Lee; Lidong Bing; Liwei Kang
+- **Authors**: Zhanfeng Mo; Yao Xiao; Yue Deng; Wee Sun Lee; Lidong Bing; Liwei Kang
 
-- **发布机构**: MiroMind AI; National University of Singapore; Singapore University of Technology and Design
+- **Publishing Institutions**: MiroMind AI; National University of Singapore; Singapore University of Technology and Design
 
 ---
 
 ## TL;DR
-本文通过大规模量化分析揭示，当前推理模型中的“反思”步骤主要起确认作用而非纠错，其性能提升源于首次尝试正确率的提高，并基于此发现提出了一种可大幅提升推理效率的提前终止策略。
+This paper reveals through large-scale quantitative analysis that the “reflection” step in current reasoning models mainly serves a confirmatory role rather than a corrective one. Performance gains come from higher first-attempt accuracy, and based on this finding, the paper proposes an early-stopping strategy that can significantly improve reasoning efficiency.
 
-## 关键定义
-本文的核心分析建立在对“反思”行为的重新定义和量化之上，沿用并明确了以下关键概念：
+## Key Definitions
+The core analysis in this paper is built on a redefinition and quantification of “reflection,” using the following key concepts:
 
-*   **反思 (Reflection)**: 在一个推理过程（rollout）中，模型在生成第一个候选答案之后，继续进行的后续所有推理步骤。这一定义将推理过程清晰地划分为“前向推理”（至第一个候选答案）和“反思性推理”（第一个候选答案之后）。
-*   **确认性反思 (Confirmatory Reflection)**: 当模型在反思过程中，后续生成的候选答案与之前的答案保持一致或正确性不变时（例如，从正确到正确 T→T，或从同一个错误到同一个错误 F→F (same)），这种反思被视为确认性的。
-*   **纠正性反思 (Corrective Reflection)**: 当模型在反思过程中，成功地将一个错误的候选答案修正为正确的答案时（即 F→T 的转变），这种反思被视为纠正性的。
+*   **Reflection**: In a reasoning process (rollout), all subsequent reasoning steps the model continues to perform after generating the first candidate answer. This definition clearly divides the reasoning process into “forward reasoning” (up to the first candidate answer) and “reflective reasoning” (after the first candidate answer).
+*   **Confirmatory Reflection**: When, during reflection, the subsequently generated candidate answers remain consistent with the previous answer or do not change in correctness (for example, from correct to correct T→T, or from the same wrong answer to the same wrong answer F→F (same)), this reflection is considered confirmatory.
+*   **Corrective Reflection**: When, during reflection, the model successfully corrects an incorrect candidate answer into a correct one (that is, an F→T transition), this reflection is considered corrective.
 
-## 相关工作
-当前的先进大型语言模型（LLM），尤其是通过可验证奖励的强化学习（RLVR）训练的推理模型，展现出强大的推理能力。这通常被归因于它们能生成更长的思维链（Chain-of-Thought, CoT）并进行所谓的“反思性推理”——即在得出初步答案后，继续审视、评估和修正自己的推理路径。学界普遍认为，这种反思是模型实现自我纠错、提升最终答案准确率的关键机制。
+## Related Work
+Current state-of-the-art large language models (LLMs), especially reasoning models trained with reinforcement learning from verifiable rewards (RLVR), demonstrate strong reasoning capabilities. This is usually attributed to their ability to generate longer Chain-of-Thought (CoT) and perform so-called “reflective reasoning” — that is, after arriving at an initial answer, they continue to examine, evaluate, and revise their own reasoning path. The prevailing view in the field is that this reflection is the key mechanism by which models achieve self-correction and improve final answer accuracy.
 
-然而，对于反思的真实作用，现有研究结论不一且缺乏定论。一些研究认为反思机制很复杂且能防止推理崩溃，另一些则认为反思模式通常很肤浅，对结果没有改善。这些研究的关键瓶颈在于缺少对推理模型反思行为的大规模、系统性的量化分析。
+However, existing research has not reached a consensus on the true role of reflection. Some studies argue that the reflection mechanism is complex and can prevent reasoning collapse, while others believe that reflection patterns are often superficial and do not improve outcomes. The key bottleneck in these studies is the lack of large-scale, systematic quantitative analysis of reflection behavior in reasoning models.
 
-本文旨在解决这一核心问题：**推理模型中的反思步骤究竟是在进行有效的自我纠错，还是仅仅在确认已有的结论？**
+This paper aims to address this core question: **Are the reflection steps in reasoning models actually performing effective self-correction, or are they merely confirming existing conclusions?**
 
-## 本文方法
-本文首先设计了一套分析框架来量化反思行为，然后通过受控实验探究反思在训练中的作用，最后基于分析结论提出一种提升推理效率的方法。
+## Method
+This paper first designs an analytical framework to quantify reflection behavior, then investigates the role of reflection in training through controlled experiments, and finally proposes a method to improve reasoning efficiency based on the analysis results.
 
-### 反思行为的量化分析
+### Quantitative Analysis of Reflection Behavior
 
-为了系统性地研究反思，本文设计了一种创新的分析方法。
+To systematically study reflection, this paper designs an innovative analysis method.
 
-*   **方法核心**:
-    1.  **候选答案提取**: 本文提出一个基于LLM的候选答案提取器（LLM-based candidate answer extractor）。该提取器负责解析模型生成的长篇CoT文本，并识别出所有包含候选答案的位置。
+*   **Core Method**:
+    1.  **Candidate Answer Extraction**: The paper proposes an LLM-based candidate answer extractor. This extractor parses the model’s long CoT text and identifies all positions containing candidate answers.
     <img src="/images/2510.08308/x1.jpg" alt="Illustration of a long CoT and the extraction result of candidate answers." style="width:90%; max-width:700px; margin:auto; display:block;">
-    2.  **反思类型划分**: 根据提取出的候选答案序列 $\{a\_1, a\_2, ..., a\_n\}$ 及其正确性（True/False），分析相邻两个候选答案之间的转变类型。例如，从错误到正确（F→T）被定义为“纠正性反思”，而从正确到正确（T→T）或从同一错误到同一错误（F→F (same)）则被定义为“确认性反思”。
+    2.  **Reflection Type Classification**: Based on the extracted candidate answer sequence $\{a\_1, a\_2, ..., a\_n\}$ and their correctness (True/False), the transition type between adjacent candidate answers is analyzed. For example, a transition from wrong to correct (F→T) is defined as “corrective reflection,” while a transition from correct to correct (T→T) or from the same wrong answer to the same wrong answer (F→F (same)) is defined as “confirmatory reflection.”
 
-*   **创新点**:
-    *   **操作化定义与量化**: 首次为“反思”提供了一个清晰、可操作的定义（第一个候选答案后的内容），并开发了自动化工具进行大规模量化分析，从而将模糊的“反思”概念转化为可度量的数据。
-    *   **解耦推理阶段**: 该方法成功地将推理过程分解为“前向推理”（生成首个答案）和“反思性推理”，使得研究者可以独立评估不同阶段对最终性能的贡献。
+*   **Innovations**:
+    *   **Operational Definition and Quantification**: For the first time, a clear and operational definition of “reflection” is provided (content after the first candidate answer), and automated tools are developed for large-scale quantitative analysis, turning the vague concept of “reflection” into measurable data.
+    *   **Decoupling Reasoning Stages**: This method successfully decomposes the reasoning process into “forward reasoning” (generating the first answer) and “reflective reasoning,” allowing researchers to independently evaluate the contribution of each stage to final performance.
 
 <img src="/images/2510.08308/x2.jpg" alt="Distribution of first candidate answer positions across different LLMs and prompts. " style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 反思在训练中的作用探究
+### Investigating the Role of Reflection in Training
 
-基于上述分析框架，本文通过一系列监督微调（SFT）实验，探究了训练数据中的反思特性如何影响模型性能。
+Based on the above analytical framework, this paper explores how the reflection characteristics in training data affect model performance through a series of supervised fine-tuning (SFT) experiments.
 
-*   **方法核心**:
-    1.  **控制反思数量**: 通过对原始推理数据进行截断和续写，精心构建了多组训练集。这些数据集中的每个样本包含的“反思”数量是受控的（例如，“cut-at-1”数据集中的样本都在第一个候选答案后截断，“cut-at-6”则在第六个后截断），同时保持总训练tokens数量大致相等。
-    2.  **控制反思类型**: 构建了另一系列训练集，其中包含不同比例的“纠正性反思”（F→T）和“确认性反思”（T→T）的样本。
+*   **Core Method**:
+    1.  **Controlling the Number of Reflections**: By truncating and continuing the original reasoning data, multiple training sets were carefully constructed. In these datasets, the number of “reflections” contained in each sample is controlled (for example, samples in the “cut-at-1” dataset are truncated after the first candidate answer, while “cut-at-6” is truncated after the sixth), while keeping the total number of training tokens roughly the same.
+    2.  **Controlling the Reflection Type**: Another series of training sets was constructed with different proportions of samples containing “corrective reflections” (F→T) and “confirmatory reflections” (T→T).
 
-*   **创新点**:
-    *   **受控实验设计**: 通过精巧的数据集构建策略，本文得以在受控环境中分离并研究反思的“量”（多少）和“质”（是否纠错）对模型学习的影响，这是以往研究未能做到的。
+*   **Innovations**:
+    *   **Controlled Experimental Design**: Through a sophisticated dataset construction strategy, this paper is able to isolate and study in a controlled setting the impact of the “quantity” (how much) and “quality” (whether it corrects errors) of reflection on model learning, something previous studies had not achieved.
 
 <img src="/images/2510.08308/x6.jpg" alt="Comparison of performance and rollout length after SFT when training on rollouts cut at different positions." style="width:90%; max-width:700px; margin:auto; display:block;">
 
-### 高效推理的提前终止策略
+### Early-Stopping Strategy for Efficient Reasoning
 
-基于“反思主要是确认性的”这一核心发现，本文提出了一种在推理时提升效率的实用方法。
+Based on the core finding that “reflection is mainly confirmatory,” this paper proposes a practical method to improve efficiency at inference time.
 
-*   **方法核心**: 提出一种**问题感知的自适应提前终止 (Question-aware Adaptive Early-Stopping)** 策略。
-    1.  **候选答案检测器 (Candidate Answer Detector, CAD)**: 训练一个小型模型，在推理生成过程中实时监测每一句话是否包含候选答案。
-    2.  **问题感知反思控制器 (Question-aware Reflection Controller, QRC)**: 训练另一个小型分类器，它仅根据问题本身，预测该问题是否可能从更多的反思中受益（即，其原始推理路径中是否包含F→T的纠错过程）。
-    3.  **推理流程**: 对于一个新问题，首先由QRC判断其“反思价值”。如果价值低，推理过程将在CAD检测到第一个候选答案后立即终止；如果价值高，则允许进行更多轮次的反思（例如，在第三个候选答案后终止），从而动态平衡准确率与token消耗。
+*   **Core Method**: A **Question-aware Adaptive Early-Stopping** strategy is proposed.
+    1.  **Candidate Answer Detector (CAD)**: Train a small model to monitor in real time during generation whether each sentence contains a candidate answer.
+    2.  **Question-aware Reflection Controller (QRC)**: Train another small classifier that predicts, based only on the question itself, whether the question is likely to benefit from more reflection (that is, whether its original reasoning path contains an F→T corrective process).
+    3.  **Reasoning Workflow**: For a new question, QRC first judges its “reflection value.” If the value is low, the reasoning process is terminated immediately after CAD detects the first candidate answer; if the value is high, more rounds of reflection are allowed (for example, terminating after the third candidate answer), thereby dynamically balancing accuracy and token consumption.
 
-*   **创新点**:
-    *   **分析驱动的优化**: 该方法是直接将前文的分析结论转化为实际应用的典范。它没有盲目地削减所有反思，而是通过QRC实现自适应，为可能需要纠错的难题保留了反思预算。
-    *   **优点**: 该策略显著减少了不必要的推理token消耗，同时通过自适应控制，最大限度地降低了对模型性能的负面影响，实现了成本与效益的灵活权衡。
+*   **Innovations**:
+    *   **Analysis-driven Optimization**: This method is a prime example of directly translating the analytical findings above into practical application. Rather than blindly cutting all reflection, it uses QRC to adaptively preserve a reflection budget for difficult problems that may require correction.
+    *   **Advantages**: This strategy significantly reduces unnecessary reasoning token consumption while, through adaptive control, minimizing the negative impact on model performance, achieving a flexible trade-off between cost and effectiveness.
 
-## 实验结论
+## Experimental Conclusions
 
-### 反思行为分析
+### Reflection Behavior Analysis
 
-*   **反思以确认为主，纠错极少**: 对8个主流推理模型在5个数学数据集上的分析显示，超过90%的反思是“确认性”的。真正实现纠错（F→T）的反思占比极低，通常小于2%。这表明模型一旦产生一个答案，后续步骤很少会推翻它。
+*   **Reflection is mainly confirmatory, with very little error correction**: Analysis of 8 mainstream reasoning models across 5 math datasets shows that more than 90% of reflections are “confirmatory.” Reflections that truly correct errors (F→T) account for an extremely small share, usually less than 2%. This suggests that once a model produces an answer, later steps rarely overturn it.
 <img src="/images/2510.08308/x3.jpg" alt="Reflections type statistics of long CoTs of different models." style="width:85%; max-width:600px; margin:auto; display:block;">
-*   **性能增益主要源于首次尝试**: 尽管反思部分消耗了大量tokens（占总量的16.8%至47.8%），但其带来的准确率提升却非常有限（仅1.4%至3.5%）。最终准确率与第一个候选答案的正确率高度相关，说明“第一次就做对”是性能的关键驱动力。
+*   **Performance gains mainly come from the first attempt**: Although the reflection part consumes a large number of tokens (16.8% to 47.8% of the total), the accuracy improvement it brings is very limited (only 1.4% to 3.5%). Final accuracy is highly correlated with the correctness of the first candidate answer, indicating that “getting it right on the first try” is the key driver of performance.
 <img src="/images/2510.08308/x4.jpg" alt="Breakdown of long CoTs" style="width:85%; max-width:600px; margin:auto; display:block;">
-*   **反思行为与任务难度错配**: 一个反直觉的发现是，在更难的数据集（如AIME）上，模型倾向于花费更多tokens进行前向推理，导致第一个候选答案出现得更晚（反思更少）；而在更简单的数据集（如Math500）上，模型反而更早地给出答案并进行更多的反思。这表明当前模型的反思机制并未与任务难度有效对齐。
+*   **Reflection behavior is mismatched with task difficulty**: A counterintuitive finding is that on harder datasets (such as AIME), models tend to spend more tokens on forward reasoning, causing the first candidate answer to appear later (with less reflection); while on simpler datasets (such as Math500), models instead give answers earlier and perform more reflection. This suggests that current models’ reflection mechanisms are not effectively aligned with task difficulty.
 <img src="/images/2510.08308/x5.jpg" alt="Effect of Data Difficulty on Reflection Patterns" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 训练实验结论
+### Training experiment conclusions
 
-*   **多反思训练能提升性能，但机制是强化首次尝试**: 实验表明，使用包含更多反思步骤的数据进行SFT训练，确实能提升模型的最终准确率。然而，剖析性能增益的来源发现，这种提升主要来自“首次尝试正确率”的显著提高（平均提升3.75%），而反思阶段的纠错能力几乎没有变化（仅提升0.3%）。
+*   **Training with more reflections can improve performance, but the mechanism is strengthening the first attempt**: Experiments show that SFT training with data containing more reflection steps does indeed improve the model’s final accuracy. However, analyzing the source of the performance gain reveals that this improvement mainly comes from a significant increase in “first-attempt correctness” (an average gain of 3.75%), while the error-correction ability in the reflection stage changes almost not at all (only 0.3%).
     <img src="/images/2510.08308/x7.jpg" alt="Llama3.1-8B-Instruct" style="width:85%; max-width:600px; margin:auto; display:block;">
     <img src="/images/2510.08308/x8.jpg" alt="Qwen2.5-7B-Instruct" style="width:85%; max-width:600px; margin:auto; display:block;">
-*   **RL训练遵循同样模式**: 对比RL训练前后的模型，发现性能增益同样主要来自首次尝试正确率的提升，而非反思纠错能力的增强。
+*   **RL training follows the same pattern**: Comparing models before and after RL training shows that the performance gains also mainly come from improved first-attempt correctness, rather than stronger reflection-based error correction.
 <img src="/images/2510.08308/x9.jpg" alt="Changes of reasoning behavior after RL." style="width:85%; max-width:450px; margin:auto; display:block;">
-*   **训练纠正性反思样本无效**: 向训练数据中增加更多“纠正性反思”（F→T）的样本，并不能显著提升模型的纠错能力或整体性能。这进一步佐证了模型似乎难以从模仿纠错轨迹中学会通用的自我修正能力。
+*   **Training on corrective reflection samples is ineffective**: Adding more “corrective reflection” (F→T) samples to the training data does not significantly improve the model’s error-correction ability or overall performance. This further supports the idea that models seem unable to learn general self-correction ability from imitating correction trajectories.
 
 
-| 模型 | F→T 比例 | 平均 Tokens | 准确率 (%) | P(F→T) (%) |
+| Model | F→T Ratio | Average Tokens | Accuracy (%) | P(F→T) (%) |
 | :--- | :--- | :--- | :--- | :--- |
 | Llama3.1-8B-Instruct | 0% | 7618 | 49.3 | 2.1 |
 | | 25% | 7512 | 48.7 | 2.2 |
@@ -107,5 +107,5 @@ title: "First Try Matters: Revisiting the Role of Reflection in Reasoning Models
 | | 75% | 8711 | 55.1 | 1.8 |
 | | 100% | 8421 | 53.4 | 1.9 |
 
-### 最终结论
-本文的系统性分析颠覆了“反思即纠错”的普遍看法。研究表明，当前推理模型中的长篇推理，其核心价值在于通过多样化的推理路径展示来增强模型“第一次就做对”的能力，而非在出错后进行有效的自我修正。基于这一洞见，本文提出的问题感知提前终止策略，证明了在几乎不牺牲核心推理能力的前提下，大幅优化推理效率是完全可行的。这为未来推理模型的设计和优化指明了新的方向：与其寄希望于复杂的反思纠错，不如专注于如何提升模型首次推理的准确性和鲁棒性。
+### Final conclusion
+This systematic analysis overturns the common view that “reflection equals error correction.” The study shows that in current reasoning models, the core value of long-form reasoning lies in enhancing the model’s ability to “get it right on the first try” through the presentation of diverse reasoning paths, rather than in effective self-correction after making mistakes. Based on this insight, the question-aware early termination strategy proposed in this paper demonstrates that it is entirely feasible to greatly improve reasoning efficiency with almost no sacrifice in core reasoning ability. This points to a new direction for the design and optimization of future reasoning models: rather than pinning hopes on complex reflective error correction, it is better to focus on improving the accuracy and robustness of the model’s first reasoning attempt.

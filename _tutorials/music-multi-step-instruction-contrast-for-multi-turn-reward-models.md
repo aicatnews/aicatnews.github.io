@@ -2,56 +2,55 @@
 layout: default
 title: "MUSIC: MUlti-Step Instruction Contrast for Multi-Turn Reward Models"
 ---
-
-## 别只看最后一句话！DeepMind新作MUSIC：合成数据攻克多轮对话评估难题
+## Don’t just look at the last sentence! DeepMind’s new MUSIC: synthetic data tackles the challenge of multi-turn dialogue evaluation
 
 <img src="/images/2512.24693v1/A__title.jpg" alt="" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-大模型（LLM）如今已经能写出漂亮的诗歌或代码片段，但你是否发现，一旦和它多聊几轮，它的逻辑就开始“掉链子”？
+Large language models (LLMs) can now write beautiful poems or code snippets, but have you noticed that once you chat with them for a few more turns, their logic starts to “fall apart”?
 
 > ArXiv URL：http://arxiv.org/abs/2512.24693v1
 
-这背后的核心痛点在于：**我们很难教会模型什么是“好的多轮对话”。** 现有的评估数据大多只盯着对话的“最后一句话”看，就像评价一部电影只看最后五分钟，完全忽略了中间的情节是否连贯。
+The core pain point behind this is: **it is very hard to teach a model what “good multi-turn dialogue” is.** Most existing evaluation data only focuses on the “last sentence” of a conversation, like judging a movie by its final five minutes and completely ignoring whether the plot in between is coherent.
 
-为了解决这个问题，Google DeepMind 与普林斯顿大学的研究团队联合推出了一项名为 **MUSIC**（**MU**lti-**S**tep **I**nstruction **C**ontrast）的新技术。这项技术不需要昂贵的人工标注，通过无监督的方式合成数据，就能训练出“火眼金睛”的多轮奖励模型（Reward Model），让模型学会从整体上把控对话质量。
+To solve this problem, a research team from Google DeepMind and Princeton University jointly introduced a new technique called **MUSIC** (**MU**lti-**S**tep **I**nstruction **C**ontrast). This technique does not require expensive human annotation; instead, it can synthesize data in an unsupervised way to train a sharp-eyed multi-turn Reward Model (Reward Model), enabling the model to learn how to assess dialogue quality from the whole picture.
 
-### 为什么现在的奖励模型“目光短浅”？
+### Why are today’s reward models so short-sighted?
 
-在 **RLHF**（**Reinforcement Learning from Human Feedback**）的流程中，奖励模型（RM）扮演着裁判的角色。然而，训练这个裁判的数据集（如 Skywork, UltraFeedback 等）存在一个巨大的缺陷：**偏好对（Preference Pairs）通常只在最后一轮有差异。**
+In the **RLHF** (**Reinforcement Learning from Human Feedback**) pipeline, the reward model (RM) plays the role of the judge. However, the dataset used to train this judge (such as Skywork, UltraFeedback, etc.) has a major flaw: **preference pairs usually differ only in the final turn.**
 
-通常的数据长这样：
+Typical data looks like this:
 
-*   **好回答**：[用户：你好] -> [AI：你好] -> [用户：写首诗] -> [AI：**写了一首好诗**]
+*   **Good answer**: [User: Hello] -> [AI: Hello] -> [User: Write a poem] -> [AI: **wrote a good poem**]
 
-*   **坏回答**：[用户：你好] -> [AI：你好] -> [用户：写首诗] -> [AI：**写了一首烂诗**]
+*   **Bad answer**: [User: Hello] -> [AI: Hello] -> [User: Write a poem] -> [AI: **wrote a bad poem**]
 
-前几轮完全一样，只有最后不同。这导致训练出来的 RM 变得“偷懒”，只关注最后一句，而忽略了多轮对话中至关重要的**连贯性（Coherence）**和**一致性（Consistency）**。
+The first few turns are exactly the same, and only the last one differs. As a result, the trained RM becomes “lazy,” focusing only on the last sentence and ignoring the crucial **coherence** and **consistency** in multi-turn dialogue.
 
-### MUSIC：给对话“加点料”
+### MUSIC: adding some “ingredients” to the conversation
 
-为了让 RM 学会看全貌，研究团队提出了 MUSIC。这是一种无监督的数据增强策略，它的核心思想是：**制造在多轮对话中持续存在的质量差异。**
+To help the RM learn to see the full picture, the research team proposed MUSIC. This is an unsupervised data augmentation strategy whose core idea is: **create quality differences that persist across multiple turns of a conversation.**
 
-MUSIC 的工作流程非常巧妙，它利用 LLM 模拟用户和助手，生成两组对话轨迹：
+MUSIC’s workflow is quite clever. It uses an LLM to simulate the user and assistant, generating two sets of dialogue trajectories:
 
-1.  **种子上下文（Seed Context）**：从现有数据集中随机截取一段对话作为开头。
+1.  **Seed Context**: randomly take a segment of an existing dataset as the starting point.
 
-2.  **模拟对话（Simulation）**：让 LLM 分别扮演用户和助手，继续把对话聊下去。
+2.  **Simulation**: let the LLM play the roles of user and assistant and continue the conversation.
 
-3.  **制造差异（The Contrast）**：
+3.  **Creating the Contrast**:
 
-    *   **Chosen（胜出组）**：助手正常遵循指令，生成高质量回复。
+*   **Chosen**: the assistant follows the instruction normally and generates a high-quality response.
 
-    *   **Rejected（落败组）**：这是 MUSIC 的精髓所在。系统会在中间某一步，悄悄修改用户的指令（Instruction Contrast），诱导助手回答一个“相关但错误”的问题。
+*   **Rejected**: this is the essence of MUSIC. At some intermediate step, the system quietly modifies the user’s instruction (Instruction Contrast),诱导 the assistant to answer a “related but wrong” question.
 
-比如，用户原本问“如何做红烧肉？”，在 Rejected 组中，系统在后台把指令改成“如何做回锅肉？”，助手虽然写出了完美的回锅肉菜谱，但对于用户原本的“红烧肉”需求来说，这就是一个严重的**指令遵循错误**。这种错误会随着对话的进行被保留下来，从而形成贯穿多轮的质量差异。
+For example, if the user originally asks “How do I make braised pork belly?”, in the Rejected branch the system secretly changes the instruction to “How do I make twice-cooked pork?”, and although the assistant writes a perfect twice-cooked pork recipe, for the user’s original “braised pork belly” request, this is a serious **instruction-following error**. This error is preserved as the conversation continues, thereby creating a quality difference that runs through multiple turns.
 
 <img src="/images/2512.24693v1/x1.jpg" alt="MUSIC 数据增强流程概览" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-*图 1：MUSIC 数据增强流程概览。通过引入对比指令提示（Contrastive Instruction Prompt），在 Rejected 分支中诱导质量下降，从而生成具有多轮差异的偏好对。*
+*Figure 1: Overview of the MUSIC data augmentation pipeline. By introducing a Contrastive Instruction Prompt, quality degradation is induced in the Rejected branch, thereby generating preference pairs with multi-turn differences.*
 
-### 核心方法论
+### Core methodology
 
-从数学角度看，MUSIC 旨在优化 Bradley-Terry (BT) 模型的目标函数。假设我们有一个多轮对话偏好数据集 ${\mathcal{D}}$，包含胜出对话 $C\_{\text{chosen}}$ 和落败对话 $C\_{\text{rejected}}$，训练目标是最小化负对数似然损失：
+From a mathematical perspective, MUSIC aims to optimize the objective function of the Bradley-Terry (BT) model. Suppose we have a multi-turn dialogue preference dataset ${\mathcal{D}}$ containing the chosen dialogue $C\_{\text{chosen}}$ and the rejected dialogue $C\_{\text{rejected}}$; the training objective is to minimize the negative log-likelihood loss:
 
 
 
@@ -60,38 +59,38 @@ MUSIC 的工作流程非常巧妙，它利用 LLM 模拟用户和助手，生成
 
 
 
-MUSIC 的贡献在于构造了更具挑战性的 ${\mathcal{D}}\_{\text{MUSIC}}$，并将其与原始数据混合，形成增强数据集 ${\mathcal{D}}\_{\text{aug}}={\mathcal{D}}\cup{\mathcal{D}}\_{\text{MUSIC}}$。
+MUSIC’s contribution is to construct a more challenging ${\mathcal{D}}\_{\text{MUSIC}}$ and mix it with the original data to form the augmented dataset ${\mathcal{D}}\_{\text{aug}}={\mathcal{D}}\cup{\mathcal{D}}\_{\text{MUSIC}}$.
 
-在生成 Rejected 样本时，研究者使用了一种特殊的 Prompt，要求助手生成一个“对修改后的指令是好回答，但对原始用户问题是坏回答”的回复。这种精细的控制确保了模型必须理解上下文才能判断好坏，而不能仅仅通过回复的流畅度来作弊。
+When generating Rejected samples, the researchers used a special Prompt that asks the assistant to produce a response that is “a good answer to the modified instruction, but a bad answer to the original user question.” This fine-grained control ensures that the model must understand the context to judge quality, rather than cheating by relying only on response fluency.
 
-### 实验结果：多轮能力大涨，单轮也没落下
+### Experimental results: multi-turn ability jumps significantly, and single-turn performance does not drop
 
-研究团队基于 **Gemma-2-9B-Instruct** 模型，使用 Skywork 数据集进行了实验。他们对比了仅使用原始数据训练的 Baseline RM 和使用了 MUSIC 增强的 RM。
+The research team conducted experiments based on the **Gemma-2-9B-Instruct** model using the Skywork dataset. They compared a Baseline RM trained only on the original data with an RM enhanced by MUSIC.
 
-**1. 多轮对话评估能力显著提升**
+**1. Multi-turn dialogue evaluation ability improves significantly**
 
-在 Best-of-N (BoN) 推理任务中，MUSIC 增强后的 RM 能够挑选出质量更高的对话。经过 Gemini 1.5 Pro 的评审，MUSIC 指导下的对话在 Anthropic HH 和 UltraInteract 数据集上均优于 Baseline。
+In the Best-of-N (BoN) inference task, the MUSIC-enhanced RM was able to select higher-quality dialogues. Evaluated by Gemini 1.5 Pro, the dialogues guided by MUSIC outperformed the Baseline on both the Anthropic HH and UltraInteract datasets.
 
 <img src="/images/2512.24693v1/x2.jpg" alt="Best-of-N 推理胜率对比" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-*图 2：在 Best-of-N ($N\in\{2,4,8\}$) 设置下，MUSIC 增强 RM 与 Baseline RM 的胜率对比。随着 $N$ 的增加，MUSIC 利用候选池优势的能力更强。*
+*Figure 2: Win-rate comparison between the MUSIC-enhanced RM and the Baseline RM under the Best-of-N ($N\in\{2,4,8\}$) setting. As $N$ increases, MUSIC’s ability to leverage the candidate pool becomes stronger.*
 
-**2. 意外之喜：推理能力增强**
+**2. A pleasant surprise: improved reasoning ability**
 
-一个常见的问题是：针对多轮优化的模型，会不会在传统的单轮任务上退化？
+A common question is: if a model is optimized for multi-turn dialogue, will it degrade on traditional single-turn tasks?
 
-实验结果令人惊喜。在标准的 **RewardBench** 测试中，MUSIC 增强后的 RM 不仅没有退步，反而在**推理（Reasoning）**类别上取得了 3.9% 的提升。
+The experimental results were encouraging. In the standard **RewardBench** test, the MUSIC-enhanced RM not only did not regress, but actually achieved a 3.9% improvement in the **Reasoning** category.
 
 
-| 模型 | Chat | Chat Hard | Safety | Reasoning | Average |
+| Model | Chat | Chat Hard | Safety | Reasoning | Average |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | Skywork (Baseline) | 96.9 | 73.0 | 90.9 | 83.1 | 86.0 |
 | **Skywork + MUSIC** | 96.4 | 72.4 | 90.8 | **87.0** | **86.6** |
 
-这表明，接触逻辑连贯的多轮对话数据，似乎隐式地增强了模型处理复杂推理步骤的能力。
+This suggests that exposure to logically coherent multi-turn dialogue data may implicitly enhance the model’s ability to handle complex reasoning steps.
 
-### 总结与展望
+### Conclusion and outlook
 
-MUSIC 的出现揭示了一个重要的道理：**在对齐（Alignment）阶段，数据的“结构”比“数量”更重要。**
+The emergence of MUSIC reveals an important lesson: **during the Alignment stage, the “structure” of data matters more than its “quantity.”**
 
-通过合成具有多轮差异的对比数据，DeepMind 成功地让奖励模型学会了“顾全大局”。这种无需人工标注的方法具有极高的扩展性。未来，随着对话系统向更长、更复杂的 Agent 任务演进，类似 MUSIC 这样关注长程依赖（Long-horizon dependency）的评估方法，将成为打造更智能 AI 的关键拼图。
+By synthesizing contrastive data with multi-turn differences, DeepMind successfully taught the reward model to “keep the big picture in mind.” This human-annotation-free approach is highly scalable. In the future, as dialogue systems evolve toward longer and more complex Agent tasks, evaluation methods like MUSIC that focus on long-horizon dependency will become a key piece in building more intelligent AI.

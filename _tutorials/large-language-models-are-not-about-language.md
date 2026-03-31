@@ -2,58 +2,57 @@
 layout: default
 title: "Large language models are not about language"
 ---
+## Cambridge and other top universities issue a joint manifesto: LLMs fundamentally do not understand language! A probabilistic game under 70MW of power consumption
 
-## 剑桥等名校联合檄文：LLM根本不懂语言！70MW能耗下的概率游戏
-
-当全世界都在为 **大语言模型** (**Large Language Models, LLMs**) 的流畅对话和惊人能力欢呼时，来自剑桥大学、麦考瑞大学等顶尖学府的语言学家们却泼下了一盆冷水。
+When the whole world is cheering for the fluent conversations and astonishing capabilities of **Large Language Models** (**LLMs**), linguists from top institutions such as the University of Cambridge and Macquarie University have poured cold water on the excitement.
 
 > ArXiv URL：http://arxiv.org/abs/2512.13441v1
 
-他们在一篇最新的评论文章中直言不讳地指出：**对于语言学研究而言，LLM 几乎是“无用”的。**
+In a recent commentary, they bluntly stated: **for linguistic research, LLMs are almost “useless.”**
 
-这听起来可能有些刺耳，甚至反直觉。毕竟，ChatGPT 看起来似乎已经“掌握”了人类语言。但在这篇题为《Large language models are not about language》的文章中，作者们通过认知科学、神经生物学和计算效率的硬核对比，揭示了一个残酷的真相：**LLM 只是在玩一场昂贵的概率游戏，它并没有真正拥有人类的语言系统。**
+This may sound harsh, even counterintuitive. After all, ChatGPT seems to have “mastered” human language. But in the article titled *Large language models are not about language*, the authors, through hard-nosed comparisons from cognitive science, neurobiology, and computational efficiency, reveal a brutal truth: **LLMs are merely playing an expensive probabilistic game; they do not truly possess the human language system.**
 
-### 核心分歧：扁平的“串” vs 立体的“树”
+### The core divide: flat “strings” vs. three-dimensional “trees”
 
-为什么说 LLM 不懂语言？核心在于它处理信息的方式与人类大脑有着本质的区别。
+Why do LLMs not understand language? The key lies in the fundamental difference between the way they process information and the human brain.
 
-作者指出，LLM 本质上是概率模型。它们的工作原理可以追溯到 1913 年马尔可夫 (**Markov**) 对普希金诗歌的分析——通过统计前一个词来预测后一个词。虽然现在的模型参数量达到了万亿级别，但其底层逻辑依然是对 **外部化字符串** (**externalized strings**) 的统计分析。它们看到的是扁平的、线性的文字序列。
+The authors point out that LLMs are essentially probabilistic models. Their working principle can be traced back to Markov’s 1913 analysis of Pushkin’s poetry—predicting the next word by statistically analyzing the previous one. Although today’s models have reached trillion-scale parameter counts, their underlying logic is still statistical analysis of **externalized strings**. What they see is a flat, linear sequence of text.
 
-相反，人类语言不仅仅是“说话”。人类语言的基石是一个 **内在的计算系统** (**mind-internal computational system**)。
+By contrast, human language is not just “speaking.” The foundation of human language is an **mind-internal computational system**.
 
-根据语言学中的 **强极简主义论题** (**Strong Minimalist Thesis**)，人类大脑通过递归功能生成 **层级化的思想结构** (**hierarchical thought structures**)。这些结构决定了语义。换句话说，人类语言在脑海中是一棵立体的“树”，而 LLM 只能处理压扁后的“串”。
+According to the **Strong Minimalist Thesis** in linguistics, the human brain generates **hierarchical thought structures** through recursive functions. These structures determine semantics. In other words, human language is a three-dimensional “tree” in the mind, while LLMs can only handle flattened “strings.”
 
-正如作者所言：“LLM 的概率性质与人类心智生成层级结构的递归功能完全相反。”
+As the authors put it: “The probabilistic nature of LLMs is the exact opposite of the recursive function by which the human mind generates hierarchical structures.”
 
-### 70MW vs 20W：不仅是能耗，更是智能的鸿沟
+### 70MW vs. 20W: not just an energy gap, but a chasm in intelligence
 
-为了证明 LLM 的学习方式与人类毫无相似之处，作者抛出了一组令人咋舌的数据对比。
+To prove that LLM learning bears no resemblance to human learning, the authors present a staggering data comparison.
 
-LLM 的“习得”依赖于海量的数据投喂和惊人的算力堆叠。文章特别提到了马斯克旗下的 xAI 在孟菲斯的数据中心：为了运行 10 万个 GPU，该中心需要 **70MW** 的电力，以至于当地电网无法负荷，不得不额外部署 18 台天然气发电机。谷歌甚至计划为其 AI 数据中心订购核反应堆。
+LLM “acquisition” depends on massive data feeding and astonishing computational power. The article specifically mentions xAI’s data center in Memphis: to run 100,000 GPUs, the center requires **70MW** of power, so much that the local grid cannot handle it and 18 natural gas generators had to be deployed. Google is even planning to order nuclear reactors for its AI data centers.
 
-相比之下，人类大脑的运行功率仅约为 **20W**，其中用于语言处理的能量更是少之又少。
+By comparison, the human brain operates at only about **20W**, and the energy used for language processing is even less.
 
-更重要的是，人类婴儿的学习过程展现了 **刺激贫乏** (**Poverty of the Stimulus**) 现象。婴儿不需要阅读整个互联网的文本，甚至在输入极其有限的情况下，就能在脑海中构建出复杂的句法结构。这种“少即是多”的高效机制，是依赖暴力计算的 LLM 无法企及的。
+More importantly, the learning process of human infants exhibits the phenomenon of **Poverty of the Stimulus**. Infants do not need to read the entire internet, and even with extremely limited input, they can build complex syntactic structures in their minds. This highly efficient “less is more” mechanism is something brute-force-computing LLMs can never match.
 
-### “不可能的语言”测试：AI 的死穴
+### The “impossible language” test: AI’s fatal flaw
 
-如果说能耗只是工程问题，那么对“不可能的语言”的反应，则暴露了 LLM 的认知缺陷。
+If energy consumption is merely an engineering issue, then the response to “impossible languages” exposes LLMs’ cognitive shortcomings.
 
-神经科学实验表明，人类大脑对语言有严格的筛选机制。当我们处理符合层级规则的“真实语言”时，大脑中的 **布罗卡区** (**Broca’s area**) 会被激活；而面对基于线性规则（比如简单地将单词倒序排列）的“不可能语言”时，大脑会表现出抑制。这说明人类大脑天生就能区分什么是语言，什么不是。
+Neuroscience experiments show that the human brain has a strict filtering mechanism for language. When we process “real language” that conforms to hierarchical rules, **Broca’s area** in the brain is activated; when faced with “impossible languages” based on linear rules—such as simply reversing the order of words—the brain shows inhibition. This indicates that the human brain is naturally able to distinguish what is language and what is not.
 
-然而，LLM 对此毫无分辨能力。
+LLMs, however, have no such ability to discriminate.
 
-研究显示，LLM 既能学会正常的英语，也能同样“完美”地学会单词随机打乱或完全倒序的“不可能语言”。对于 LLM 来说，只要数据量足够大，它能拟合任何统计规律，无论这种规律是否符合人类语言的本质。
+Studies show that LLMs can learn normal English, and can just as “perfectly” learn “impossible languages” in which words are randomly shuffled or completely reversed. For LLMs, as long as the data is large enough, they can fit any statistical pattern, regardless of whether that pattern conforms to the essence of human language.
 
-作者反驳了 Futrell 和 Mahowald 等人关于“LLM 具有语言学归纳偏置”的观点，指出 LLM 在面对毫无结构的随机文本时表现出的“学习能力”，恰恰证明了它们缺乏人类特有的认知架构。
+The authors rebut the view held by Futrell, Mahowald, and others that “LLMs have linguistic inductive biases,” pointing out that LLMs’ “learning ability” when confronted with structureless random text precisely proves that they lack the cognitive architecture unique to humans.
 
-### 结论：它像鸭子叫，但它不是鸭子
+### Conclusion: it sounds like a duck, but it isn’t one
 
-这篇文章的结论既犀利又清醒。作者们认为，既然 LLM 和人类语言机能在基本原理、学习方式和神经生物学基础上有如此根本的差异，那么指望通过研究 LLM 来理解人类语言认知，无异于缘木求鱼。
+The article’s conclusion is both sharp and sober. The authors argue that since LLMs and human language faculty differ so fundamentally in basic principles, learning methods, and neurobiological foundations, expecting to understand human language cognition by studying LLMs is like trying to find a needle in a haystack.
 
-文章最后用一句经典的谚语做了总结：
+The article ends with a classic proverb:
 
 > "An LLM may quack like a duck, but isn’t one."
-> **LLM 可能叫起来像只鸭子，但它绝不是鸭子。**
+> **LLMs may sound like a duck, but they are not ducks.**
 
-在当前这个概率模型形式下，它永远也成不了那只“鸭子”。这不仅是对 AI 狂热的一次降温，更是对人类大脑这一精妙生物进化奇迹的致敬。
+Under the current probabilistic model paradigm, it will never become that “duck.” This is not only a cooling-off of AI hype, but also a tribute to the exquisite biological evolutionary miracle that is the human brain.

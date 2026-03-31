@@ -2,81 +2,80 @@
 layout: default
 title: "Knowledge-tuning Large Language Models with Structured Medical Knowledge Bases for Reliable Response Generation in Chinese"
 ---
-
-## 准确率飙升至86.7%！哈工大发布“知识调优”，专治医疗大模型“一本正经胡说八道”
+## Accuracy Soars to 86.7%! HIT Releases “Knowledge-tuning” to Tackle Medical LLMs That “Sound Serious While Talking Nonsense”
 
 <img src="/images/2309.04175v1/A__title.jpg" alt="" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-当AI大模型被问到“肝胆管结石”的治疗药物时，它却推荐了治疗结核病的“利福平”。这个真实案例暴露了一个致命问题：通用大模型在专业领域，尤其是在人命关天的医疗领域，可能会产生严重“幻觉”。
+When an AI large model was asked about drugs for treating “hepatic bile duct stones,” it recommended “rifampin,” a drug used to treat tuberculosis. This real case exposes a fatal problem: in specialized domains, especially in the life-and-death field of medicine, general-purpose large models may produce serious “hallucination.”
 
 > ArXiv URL：http://arxiv.org/abs/2309.04175v1
 
-如何让AI医生变得既博学又可靠？
+How can we make AI doctors both knowledgeable and reliable?
 
-哈尔滨工业大学的研究者们给出了一个漂亮的答案。他们提出了一种名为**知识调优**（**Knowledge-tuning**）的新方法，让大模型学会像专家一样，先查阅权威资料，再给出严谨回答。
+Researchers at Harbin Institute of Technology gave a compelling answer. They proposed a new method called **Knowledge-tuning**, which teaches large models to act like experts: first consult authoritative sources, then give a rigorous answer.
 
-### 为什么医疗大模型会“犯错”？
+### Why Do Medical Large Models “Make Mistakes”?
 
-大模型虽强，但其知识主要来自海量的通用互联网语料。
+Large models are powerful, but their knowledge mainly comes from massive amounts of general internet text.
 
-这导致它们在面对高度专业化的医疗问题时，知识储备不足，容易“凭感觉”编造事实，也就是我们常说的“幻觉”。
+As a result, when faced with highly specialized medical questions, they often lack sufficient knowledge and may “go by intuition” to fabricate facts, which is what we commonly call “hallucination.”
 
-传统的方法，如简单的指令微调，只是将医疗对话数据“喂”给模型，但很难保证模型能真正消化和理解其中的知识，更无法杜绝错误信息的产生。
+Traditional methods, such as simple instruction fine-tuning, merely “feed” medical dialogue data to the model, but it is hard to ensure that the model truly digests and understands the knowledge, let alone eliminate the generation of incorrect information.
 
-### “知识调优”：让大模型学会“查资料”
+### “Knowledge-tuning”: Teaching Large Models to “Look Things Up”
 
-为了解决这个问题，研究团队提出了**知识调优**（**Knowledge-tuning**）这一创新范式。
+To solve this problem, the research team proposed **Knowledge-tuning**, an innovative paradigm.
 
-它的核心思想非常巧妙：不再强迫模型“背诵”所有医学知识，而是教会它一个更重要的技能——如何主动、准确地查询结构化的医学知识库。
+Its core idea is very clever: instead of forcing the model to “memorize” all medical knowledge, it teaches the model a more important skill—how to proactively and accurately query a structured medical knowledge base.
 
-整个过程分为三个阶段，如下图所示：
+The whole process is divided into three stages, as shown below:
 
 ![知识调优流程图](images/page_3_Figure_2.jpg)
 
-1.  **理解问题，生成查询**：当模型收到一个问题（如“瘢痕性幽门梗阻有什么症状？”），它首先会预测出问题核心的**医疗实体**（如“瘢痕性幽门梗阻”）和**属性**（如“临床表现”）。
+1.  **Understand the question and generate a query**: When the model receives a question (such as “What are the symptoms of cicatricial pyloric obstruction?”), it first predicts the core **medical entity** (such as “cicatricial pyloric obstruction”) and **attribute** (such as “clinical manifestations”).
 
-2.  **精准检索知识**：利用上一步生成的实体和属性，模型会自动去结构化的医学知识库中进行查询，精准地找到相关的知识条目。
+2.  **Precisely retrieve knowledge**: Using the entity and attribute generated in the previous step, the model automatically queries the structured medical knowledge base to accurately find the relevant knowledge entries.
 
-3.  **参考知识，生成回答**：最后，模型会基于检索到的权威知识，生成一个既自然流畅又忠于事实的回答。
+3.  **Refer to the knowledge and generate an answer**: Finally, based on the retrieved authoritative knowledge, the model generates an answer that is both natural and fluent while remaining faithful to the facts.
 
-通过这种方式，模型的回答不仅有了可靠的知识来源，还大大降低了幻觉的风险。
+In this way, the model’s answers not only have a reliable knowledge source, but also greatly reduce the risk of hallucination.
 
-### cMedKnowQA：首个中文医疗知识问答数据集
+### cMedKnowQA: The First Chinese Medical Knowledge Question-Answering Dataset
 
-为了训练和评估模型，研究团队还构建并开源了首个中文医疗知识问答数据集 **cMedKnowQA**。
+To train and evaluate the model, the research team also built and open-sourced the first Chinese medical knowledge question-answering dataset, **cMedKnowQA**.
 
-该数据集包含7449个高质量的问答对，每一对都与结构化的医学知识库条目严格对应。这为后续的医疗大模型研究提供了宝贵的资源。
+The dataset contains 7,449 high-quality question-answer pairs, and each pair strictly corresponds to an entry in a structured medical knowledge base. This provides a valuable resource for future research on medical large models.
 
 ![cMedKnowQA数据集示例](images/page_3_Figure_0.jpg)
 
-### 实验效果如何？
+### How Effective Are the Experiments?
 
-是骡子是马，拉出来遛遛。研究者们在 LLaMA 和 Bloom 等主流模型上进行了实验。
+The proof of the pudding is in the eating. The researchers conducted experiments on mainstream models such as LLaMA and Bloom.
 
-为了更科学地评估模型，他们摒弃了传统的BLEU等指标，引入了由医学专家评判的 **H2**（**Helpfulness & Harmlessness**）评分体系，从“有用性”和“无害性”两个维度进行评估。
+To evaluate the models more scientifically, they abandoned traditional metrics such as BLEU and introduced the **H2** (**Helpfulness & Harmlessness**) scoring system, judged by medical experts, to assess the models from two dimensions: helpfulness and harmlessness.
 
-结果非常惊艳：
+The results were impressive:
 
-- **知识检索更准**：知识调优后的模型，在预测医疗实体的准确率上高达 **86.7%**，在检索相关知识的准确率上也达到了 **71.4%**，远超传统的检索方法。
+- **More accurate knowledge retrieval**: The knowledge-tuned model achieved an accuracy of **86.7%** in predicting medical entities, and **71.4%** in retrieving relevant knowledge, far surpassing traditional retrieval methods.
 
-- **回答质量更高**：在专家的H2评分中，经过知识调优的模型在有用性和无害性上均显著优于基线模型，证明其回答更专业、更可信。
+- **Higher answer quality**: In expert H2 evaluations, the knowledge-tuned model significantly outperformed baseline models in both helpfulness and harmlessness, proving that its answers are more professional and trustworthy.
 
 ![模型响应质量评估](images/page_6_Figure_10.jpg)
 
-更重要的是，知识调优展现出了强大的小样本学习和泛化能力。
+More importantly, Knowledge-tuning demonstrated strong few-shot learning and generalization capabilities.
 
-即使只用少量数据进行训练，模型也能快速掌握知识检索的能力。
+Even with only a small amount of training data, the model could quickly learn knowledge retrieval skills.
 
 ![小样本学习能力](images/page_6_Figure_10.jpg)
 
-同时，模型还能将学到的能力迁移到训练中未见过的新疾病上，表现出良好的泛化性。
+At the same time, the model could transfer the learned ability to new diseases unseen during training, showing good generalization.
 
 ![对未见实体的泛化能力](images/page_6_Figure_15.jpg)
 
-### 总结
+### Conclusion
 
-这项研究提出的“知识调优”方法，为解决大模型在专业领域的知识准确性问题提供了一条清晰、有效的路径。
+The “Knowledge-tuning” method proposed in this study provides a clear and effective path to solving the problem of knowledge accuracy in large models for specialized domains.
 
-它通过教会模型“如何查找”而非“死记硬背”，巧妙地将大模型的语言能力与结构化知识库的准确性结合起来。
+By teaching the model how to “look up” information rather than “memorize it by rote,” it cleverly combines the language ability of large models with the accuracy of structured knowledge bases.
 
-这不仅为构建更可靠的中文医疗大模型铺平了道路，也为其他专业领域（如法律、金融）的大模型落地应用带来了重要启示。也许在不远的将来，我们就能拥有一个真正值得信赖的AI家庭医生。
+This not only paves the way for building more reliable Chinese medical large models, but also offers important insights for the deployment of large models in other specialized fields such as law and finance. Perhaps in the not-too-distant future, we will have a truly trustworthy AI family doctor.

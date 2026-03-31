@@ -2,99 +2,98 @@
 layout: default
 title: "Memorization Dynamics in Knowledge Distillation for Language Models"
 ---
-
-## 蒸馏即遗忘？大模型记忆率暴跌50%，揭秘知识蒸馏的“隐私红利”
+## Distillation as Forgetting? Large Model Memorization Rate Plummets by 50%, Uncovering the “Privacy Dividend” of Knowledge Distillation
 
 <img src="/images/2601.15394v1/A__title.jpg" alt="" style="width:80%; max-width:300px; margin:auto; display:block;">
 
-在当今的大模型（LLM）时代，**知识蒸馏**（**Knowledge Distillation, KD**）已经成为一种标准的“降本增效”手段。无论是 DeepSeek-R1 的蒸馏系列，还是各大厂商推出的端侧小模型，本质上都是为了把千亿参数巨兽的能力迁移到更轻量级的模型上。
+In today’s LLM era, **Knowledge Distillation (KD)** has become a standard way to “cut costs and boost efficiency.” Whether it is the distilled series of DeepSeek-R1 or the small on-device models released by major vendors, the essence is to transfer the capabilities of a trillion-parameter giant to a lighter-weight model.
 
 > ArXiv URL：http://arxiv.org/abs/2601.15394v1
 
-通常我们认为，蒸馏只是为了让小模型“变强”。但你是否想过，蒸馏过程本身可能也是一种极佳的“隐私防火墙”？
+We usually think distillation is only about making a small model “stronger.” But have you ever considered that the distillation process itself may also be an excellent “privacy firewall”?
 
-来自 CMU、Meta 和 Northeastern University 的最新研究揭示了一个反直觉的现象：**相比于标准的微调（Fine-tuning），知识蒸馏能将训练数据的记忆率降低 50% 以上。** 这意味着，蒸馏后的模型不仅更聪明，而且更不容易泄露训练数据中的隐私信息。
+The latest research from CMU, Meta, and Northeastern University reveals a counterintuitive phenomenon: **compared with standard fine-tuning, knowledge distillation can reduce the memorization rate of training data by more than 50%.** This means the distilled model is not only smarter, but also less likely to leak private information from the training data.
 
-本文将带你深入解读这篇论文 *Memorization Dynamics in Knowledge Distillation for Language Models*，看看蒸馏是如何在保留能力的同时，悄悄“遗忘”掉那些危险的原文记忆的。
+This article will take you through the paper *Memorization Dynamics in Knowledge Distillation for Language Models* and show how distillation, while preserving capability, quietly “forgets” those dangerous verbatim memories.
 
-### 核心发现：蒸馏让模型“嘴更严”
+### Key Finding: Distillation Makes the Model “More Tight-Lipped”
 
-研究团队在 Pythia、OLMo-2 和 Qwen-3 三个模型家族上进行了广泛实验，对比了“教师模型”（Teacher）、“学生模型”（Student）和“基线模型”（Baseline，即同等大小但使用标准微调训练的模型）。
+The research team conducted extensive experiments on three model families: Pythia, OLMo-2, and Qwen-3, comparing the “teacher” model, the “student” model, and the “baseline” model (i.e., a model of the same size trained with standard fine-tuning).
 
 <img src="/images/2601.15394v1/exp_setup.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-最核心的结论非常直观：**蒸馏模型的记忆率显著低于标准微调模型。**
+The most important conclusion is very straightforward: **the memorization rate of distilled models is significantly lower than that of standard fine-tuned models.**
 
-在 FineWeb 和 Wikitext 等数据集上，学生模型的记忆率相比基线模型降低了 **2.4 倍** 甚至更多。更重要的是，这种记忆的减少并没有以牺牲能力为代价。相反，学生模型在困惑度（Perplexity）和验证损失上表现得比基线模型更好。
+On datasets such as FineWeb and Wikitext, the student model’s memorization rate was reduced by **2.4x** or more compared with the baseline model. More importantly, this reduction in memorization did not come at the cost of capability. On the contrary, the student model performed better than the baseline model in perplexity and validation loss.
 
-这是一个非常理想的“双赢”局面：**模型学到了教师的泛化能力（Generalization），却拒绝了教师死记硬背的具体样本（Memorization）。**
+This is an ideal “win-win” situation: **the model learns the teacher’s generalization ability, while rejecting the teacher’s rote memorization of specific samples.**
 
-下表展示了不同模型家族的记忆率对比，可以明显看到 $M\_{student}$ 的数值远低于 $M\_{baseline}$：
+The table below shows the memorization rate comparison across different model families, and it is clear that $M\_{student}$ is far lower than $M\_{baseline}$:
 
 <img src="/images/2601.15394v1/memorization_vs_temperature.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-### 哪些数据容易被“记住”？
+### Which Data Is Easy to “Remember”?
 
-如果蒸馏能减少记忆，那它到底记住了什么？研究发现，记忆并非随机发生的，而是具有高度的**确定性**。
+If distillation can reduce memorization, then what exactly does it remember? The study found that memorization is not random, but highly **deterministic**.
 
-研究者提出了一个概念：**“易于记忆”（Easy-to-memorize）的样本**。
+The researchers introduced a concept: **“easy-to-memorize” samples**.
 
-1.  **层级效应**：大模型通常会包含小模型的记忆。例如，12B 的教师模型记住了 80% 1.4B 基线模型记住的内容。
+1.  **Hierarchy effect**: Larger models usually contain the memories of smaller models. For example, the 12B teacher model remembered 80% of what the 1.4B baseline model remembered.
 
-2.  **蒸馏的筛选**：学生模型几乎只记住了那些“最容易记”的样本。数据显示，学生模型记忆的样本中，有 **95.7%** 是教师和基线模型都能记住的“大路货”。
+2.  **Distillation filtering**: The student model almost only remembers the samples that are “easiest to remember.” The data show that among the samples memorized by the student model, **95.7%** are the “common” ones that both the teacher and baseline models can remember.
 
-3.  **拒绝继承**：对于那些只有教师模型记住的“独家记忆”（往往是过拟合或难样本），学生模型继承的比例极低（仅约 0.9%）。
+3.  **Refusal to inherit**: For those “exclusive memories” remembered only by the teacher model (often overfitted or difficult samples), the student model inherits very little of them (only about 0.9%).
 
 <img src="/images/2601.15394v1/venn.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-上图清晰地展示了这种重叠关系：中间加粗的黑框代表那些“易于记忆”的样本，学生模型（Student）的记忆几乎完全落在这一区域内。
+The figure above clearly shows this overlap: the bold black box in the middle represents those “easy-to-memorize” samples, and the student model’s memorization almost entirely falls within this area.
 
-### 未卜先知：在蒸馏前预测泄露风险
+### Predicting Leakage Risk Before Training
 
-既然记忆是有规律的，我们能不能在训练开始前就预测哪些数据会被泄露？
+If memorization follows patterns, can we predict which data will be leaked before training even begins?
 
-答案是肯定的。研究表明，利用 **zlib 熵**（压缩率）、**KL 散度**和**困惑度**等特征，可以训练一个简单的分类器来预测学生模型会记忆哪些样本。
+The answer is yes. The study shows that features such as **zlib entropy** (compression ratio), **KL divergence**, and **perplexity** can be used to train a simple classifier to predict which samples the student model will memorize.
 
-这具有极大的工程价值：你不需要等到模型训练完再去审计，而是在数据预处理阶段，就能识别出高风险样本。实验表明，如果在蒸馏前移除这些被预测为“会被记忆”的样本，最终模型的记忆数量可以从 1698 个暴跌至 4 个，**减少了 99.8% 的风险**。
+This has huge engineering value: you do not need to wait until training is finished to audit the model; instead, you can identify high-risk samples during data preprocessing. Experiments show that if these samples predicted to be “memorized” are removed before distillation, the final model’s memorized samples can drop from 1698 to 4, **reducing the risk by 99.8%**.
 
-### 深度解析：为什么蒸馏能抑制记忆？
+### Deep Dive: Why Can Distillation Suppress Memorization?
 
-为什么标准的交叉熵（Cross-Entropy）训练会导致记忆，而基于 KL 散度的蒸馏却能抑制记忆？
+Why does standard cross-entropy training lead to memorization, while KL-divergence-based distillation suppresses it?
 
-论文通过分析**香农熵（Shannon Entropy）**和**对数概率（Log-Probability）**给出了精妙的解释：
+The paper provides an elegant explanation through **Shannon Entropy** and **Log-Probability**:
 
-*   **标准微调（基线模型）**：在面对高熵（即不确定性高、难学）的样本时，为了最小化 Loss，模型被迫强行记住这些样本，表现为“高熵但高置信度”，这就是**强制记忆（Forced Memorization）**。
+*   **Standard fine-tuning (baseline model)**: When facing high-entropy (i.e., highly uncertain, hard-to-learn) samples, the model is forced to memorize them in order to minimize loss, resulting in “high entropy but high confidence,” which is **forced memorization**.
 
-*   **知识蒸馏（学生模型）**：教师模型在面对难样本时，输出的分布本身就是平滑的（高熵）。学生模型通过 KL 散度模仿教师，学到的是“对这个样本保持不确定”，而不是“死记硬背这个词”。
+*   **Knowledge distillation (student model)**: When the teacher model faces difficult samples, the output distribution itself is smooth (high entropy). By imitating the teacher through KL divergence, the student learns to “remain uncertain about this sample” rather than “memorize this word by rote.”
 
 <img src="/images/2601.15394v1/entropy_prob.jpg" alt="Refer to caption" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-如上图所示，红色点（基线模型）中有大量高熵样本被赋予了极高的概率（强行记忆），而蓝色点（学生模型）则老老实实地保持了较低的置信度。
+As shown in the figure above, the red points (baseline model) contain many high-entropy samples assigned extremely high probabilities (forced memorization), while the blue points (student model) honestly maintain lower confidence.
 
-### 软蒸馏 vs. 硬蒸馏：谁更安全？
+### Soft Distillation vs. Hard Distillation: Which Is Safer?
 
-在实际应用中，我们有时拿不到教师模型的完整概率分布（Logits），只能拿到它生成的文本，这就是**序列级蒸馏**（**Sequence-level KD**，或称硬蒸馏）。
+In practice, we sometimes cannot obtain the teacher model’s full probability distribution (Logits) and can only get the text it generates. This is **sequence-level distillation** (**Sequence-level KD**, or hard distillation).
 
-这就引出了一个关键问题：**硬蒸馏安全吗？**
+This raises a key question: **Is hard distillation safe?**
 
-研究发现，虽然软蒸馏（Logit-level）和硬蒸馏的总体记忆率差不多（都很低），但**硬蒸馏的风险更大**。
+The study found that although soft distillation (logit-level) and hard distillation have roughly the same overall memorization rate (both are very low), **hard distillation carries greater risk**.
 
-*   **软蒸馏**：通过概率分布传递知识，模糊了具体细节。
+*   **Soft distillation**: Transfers knowledge through probability distributions, blurring specific details.
 
-*   **硬蒸馏**：直接学习教师生成的文本。结果显示，硬蒸馏继承了 **2.7 倍** 于软蒸馏的“教师特有记忆”。
+*   **Hard distillation**: Directly learns the text generated by the teacher. The results show that hard distillation inherited **2.7x** as much “teacher-specific memory” as soft distillation.
 
-这意味着，如果你使用 GPT-4 生成的数据来训练小模型（硬蒸馏），你的小模型更有可能泄露 GPT-4 训练数据中的隐私片段。
+This means that if you use data generated by GPT-4 to train a small model (hard distillation), your small model is more likely to leak private fragments from GPT-4’s training data.
 
-### 总结
+### Conclusion
 
-这篇论文为我们重新审视知识蒸馏提供了一个全新的视角。它不仅是提升小模型性能的利器，更是一种天然的**隐私防御机制**。
+This paper gives us a completely new perspective on knowledge distillation. It is not only a powerful way to improve small-model performance, but also a natural **privacy defense mechanism**.
 
-1.  **蒸馏即遗忘**：相比微调，蒸馏能大幅减少对训练数据的死记硬背。
+1.  **Distillation as forgetting**: Compared with fine-tuning, distillation can greatly reduce rote memorization of training data.
 
-2.  **有的放矢**：模型倾向于记忆那些“简单”的样本，而过滤掉复杂的长尾样本。
+2.  **Targeted effect**: The model tends to remember “simple” samples while filtering out complex long-tail samples.
 
-3.  **防患未然**：我们可以通过简单的指标在训练前预测并剔除高风险数据。
+3.  **Prevention first**: We can predict and remove high-risk data before training using simple metrics.
 
-4.  **警惕硬蒸馏**：如果关注隐私，尽量使用包含 Logits 的软蒸馏，因为硬蒸馏更容易继承教师模型的“私货”。
+4.  **Be cautious with hard distillation**: If privacy matters, try to use soft distillation with Logits, because hard distillation is more likely to inherit the teacher model’s “private stash.”
 
-在追求大模型落地的今天，利用好蒸馏的这一特性，或许能让我们在性能与安全之间找到更好的平衡点。
+In today’s push to deploy large models, making good use of this property of distillation may help us find a better balance between performance and security.

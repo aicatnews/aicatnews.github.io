@@ -6,69 +6,69 @@ title: "Object Recognition Datasets and Challenges: A Review"
 
 - **ArXiv URL**: http://arxiv.org/abs/2507.22361v1
 
-- **作者**: 
+- **Author**:
 
-- **发布机构**: University of British Columbia
+- **Publishing Organization**: University of British Columbia
 
 ---
 
 ## TL;DR
-本文通过对超过160个数据集的统计和描述，对物体识别领域的数据集和挑战赛进行了全面的回顾与分析，重点探讨了数据集在推动算法发展中的关键作用、主要数据集的演进趋势以及评估基准的变化。
+This article provides a comprehensive review and analysis of object recognition datasets and challenges through statistics and descriptions of more than 160 datasets, with a focus on the key role datasets play in driving algorithm development, the evolution of major datasets, and changes in evaluation benchmarks.
 
-## 关键定义
-本文主要沿用并梳理了计算机视觉领域已有的核心概念，并未提出新的定义。关键概念如下：
-*   **物体识别 (Object Recognition)**：一个通用术语，涵盖了图像分类、物体定位、物体检测、实例分割和语义分割等一系列相关的计算机视觉任务。
-*   **图像分类 (Image Classification)**：为整张图像分配一个类别标签。
-*   **物体检测 (Object Detection)**：在图像中定位感兴趣的物体并为其分配类别标签，通常通过边界框（Bounding Box）实现。
-*   **语义分割 (Semantic Segmentation)**：为图像中的每个像素分配一个类别标签（类别感知），不区分同一类的不同实例。
-*   **实例分割 (Instance Segmentation)**：在像素级别识别物体边界，并区分同一类别的不同实例（实例感知）。
-*   **全景分割 (Panoptic Segmentation)**：结合语义分割和实例分割，对图像中的所有像素进行分割，既要识别“事物”（Things，可数物体）的实例，也要分割“材料”（Stuff，背景区域）。
+## Key Definitions
+This article mainly follows and organizes the core concepts already established in the computer vision field, and does not propose any new definitions. The key concepts are as follows:
+*   **Object Recognition**: A general term covering a series of related computer vision tasks, including image classification, object localization, object detection, instance segmentation, and semantic segmentation.
+*   **Image Classification**: Assigning a category label to an entire image.
+*   **Object Detection**: Locating objects of interest in an image and assigning category labels to them, usually via bounding boxes.
+*   **Semantic Segmentation**: Assigning a category label to each pixel in an image (category-aware), without distinguishing different instances of the same class.
+*   **Instance Segmentation**: Identifying object boundaries at the pixel level and distinguishing different instances of the same category (instance-aware).
+*   **Panoptic Segmentation**: Combining semantic segmentation and instance segmentation to segment all pixels in an image, recognizing both instances of “things” (countable objects) and segmenting “stuff” (background regions).
 
-## 相关工作
-物体识别是计算机视觉的基础任务之一。随着研究的深入，特别是深度学习技术的兴起，算法的性能越来越依赖于大规模、高质量的训练数据。在算法发展的每个阶段，都有相应的数据集被构建出来以匹配当时最先进算法的能力。
+## Related Work
+Object recognition is one of the foundational tasks in computer vision. As research has advanced, especially with the rise of deep learning, algorithm performance has become increasingly dependent on large-scale, high-quality training data. At every stage of algorithm development, corresponding datasets have been built to match the capabilities of the state-of-the-art algorithms of the time.
 
-然而，现有文献中虽然有许多关于算法进展和应用的综述，但缺乏一篇专门从数据集发展的角度对物体识别领域进行深入分析的综述。本文旨在填补这一空白，通过详细剖析过去二十年中主流物体识别数据集的演进、挑战和趋势，为研究者提供一个关于数据在物体识别领域所扮演角色的全面理解，并为未来的数据集构建指明方向。
+However, although the existing literature contains many reviews of algorithmic progress and applications, there is a lack of a review that specifically and deeply analyzes the object recognition field from the perspective of dataset development. This article aims to fill that gap by examining in detail the evolution, challenges, and trends of mainstream object recognition datasets over the past two decades, providing researchers with a comprehensive understanding of the role data plays in object recognition and pointing the way for future dataset construction.
 
-## 背景
+## Background
 
-## 物体识别任务概述
+## Overview of Object Recognition Tasks
 
-物体识别是涵盖多个具体任务的总称。这些任务在粒度和目标上有所不同，构成了一个层次化的理解体系。
+Object recognition is a general term that covers multiple specific tasks. These tasks differ in granularity and objectives, forming a hierarchical understanding framework.
 
 <img src="/images/2507.22361v1/1.jpg" alt="物体识别任务概述" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-*   **图像分类**：判断图像整体属于哪个类别。
-*   **物体定位 (Object Localization)**：在图像中用边界框标出单个或多个物体的位置。
-*   **物体检测**：结合了定位和分类，找出所有感兴趣的物体并给出其类别。
-*   **图像分割**：在像素层面进行划分。
-    *   **语义分割**：为每个像素标记其所属的类别（如所有标记为“车”的像素）。
-    *   **实例分割**：不仅标记类别，还区分同类别的不同个体（如“车1”、“车2”）。
+*   **Image Classification**: Determining which category the entire image belongs to.
+*   **Object Localization**: Marking the position of one or more objects in an image with bounding boxes.
+*   **Object Detection**: Combining localization and classification to find all objects of interest and assign them categories.
+*   **Image Segmentation**: Partitioning at the pixel level.
+    *   **Semantic Segmentation**: Labeling the category to which each pixel belongs (e.g., all pixels labeled as “car”).
+    *   **Instance Segmentation**: Not only labeling the category, but also distinguishing different individuals of the same category (e.g., “car 1,” “car 2”).
 
-## 物体识别历史里程碑
+## Milestones in the History of Object Recognition
 
-物体识别算法和数据集的发展历程与技术进步紧密相连，大致可分为深度学习兴起前后的两个阶段。
+The development of object recognition algorithms and datasets is closely tied to technological progress and can roughly be divided into two stages: before and after the rise of deep learning.
 
-**深度学习前时代（2012年以前）**：
-早期的算法主要依赖于为特定应用设计的精巧的手工特征，如 SIFT (Scale-Invariant Feature Transform) 、HOG (Histogram of Oriented Gradients) 等。数据集也多为特定应用而生，如人脸识别的FERET、手写数字识别的MNIST。这些数据集通常分辨率较低，场景简单，物体姿态受控。PASCAL VOC系列挑战赛的推出，为当时的算法提供了一个标准的基准测试平台，推动了领域发展。
+**Pre-deep-learning era (before 2012)**:
+Early algorithms mainly relied on sophisticated hand-crafted features designed for specific applications, such as SIFT (Scale-Invariant Feature Transform) and HOG (Histogram of Oriented Gradients). Datasets were also mostly created for specific applications, such as FERET for face recognition and MNIST for handwritten digit recognition. These datasets typically had low resolution, simple scenes, and controlled object poses. The introduction of the PASCAL VOC challenge series provided a standard benchmark platform for algorithms at the time and drove the field forward.
 
-**深度学习时代（2012年至今）**：
-2012年，AlexNet在ImageNet大规模视觉识别挑战赛 (ILSVRC) 上取得突破性成功，标志着深度学习时代的到来。这证明了大规模、高质量标注的数据集对于释放深度神经网络（DCNNs）潜力的重要性。此后，算法和数据集的复杂性都大幅提升。
-*   **算法演进**：出现了一系列经典的深度学习模型，如R-CNN系列 (R-CNN, Fast R-CNN, Faster R-CNN)、SSD、YOLO系列、用于实例分割的Mask R-CNN，以及用于语义分割的DeepLab系列和U-Net等。
-*   **数据集演进**：数据集向着更大规模、更精细标注（从边界框到像素级掩码）、更自然场景（而非标志性视图）的方向发展。
+**Deep learning era (2012 to present)**:
+In 2012, AlexNet achieved a breakthrough success in the ImageNet Large Scale Visual Recognition Challenge (ILSVRC), marking the arrival of the deep learning era. This demonstrated the importance of large-scale, high-quality annotated datasets in unleashing the potential of deep neural networks (DCNNs). Since then, both algorithms and datasets have become much more complex.
+*   **Algorithm evolution**: A series of classic deep learning models emerged, such as the R-CNN family (R-CNN, Fast R-CNN, Faster R-CNN), SSD, the YOLO family, Mask R-CNN for instance segmentation, and the DeepLab family and U-Net for semantic segmentation.
+*   **Dataset evolution**: Datasets have moved toward larger scale, finer-grained annotations (from bounding boxes to pixel-level masks), and more natural scenes (rather than iconic views).
 
-下图展示了物体识别算法和数据集发展的关键里程碑。
-<img src="/images/2507.22361v1/OR_Timeline.jpg" alt="物体识别算法和数据集发展里程碑" style="width:90%; max-width:700px; margin:auto; display:block;">
+The figure below shows the key milestones in the development of object recognition algorithms and datasets.
+<img src="/images/2507.22361v1/OR_Timeline.jpg" alt="Milestones in the development of object recognition algorithms and datasets" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-## 评估指标
+## Evaluation Metrics
 
-为了量化评估算法性能，本文介绍了几种核心指标。这些指标基于以下四个基本概念：
-*   **真阳性 (True Positive, TP)**：正确预测为正例。
-*   **假阳性 (False Positive, FP)**：错误预测为正例。
-*   **真阴性 (True Negative, TN)**：正确预测为负例。
-*   **假阴性 (False Negative, FN)**：错误预测为负例。
+To quantitatively evaluate algorithm performance, this article introduces several core metrics. These metrics are based on the following four basic concepts:
+*   **True Positive (TP)**: Correctly predicted as positive.
+*   **False Positive (FP)**: Incorrectly predicted as positive.
+*   **True Negative (TN)**: Correctly predicted as negative.
+*   **False Negative (FN)**: Incorrectly predicted as negative.
 
-### 主要评估指标
-*   **精确率 (Precision)**：预测为正的样本中有多少是真正的正例。
+### Main Evaluation Metrics
+*   **Precision**: Among the samples predicted as positive, how many are truly positive.
     
 
     {% raw %}$$
@@ -77,7 +77,7 @@ title: "Object Recognition Datasets and Challenges: A Review"
 
 
 
-*   **召回率 (Recall)**：所有真实正例中有多少被成功预测。
+*   **Recall**: Among all true positive samples, how many are successfully predicted.
     
 
     {% raw %}$$
@@ -85,7 +85,7 @@ title: "Object Recognition Datasets and Challenges: A Review"
     $${% endraw %}
 
 
-*   **准确率 (Accuracy)**：所有样本中被正确预测的比例。
+*   **Accuracy**: The proportion of all samples that are correctly predicted.
     
 
     {% raw %}$$
@@ -93,7 +93,7 @@ title: "Object Recognition Datasets and Challenges: A Review"
     $${% endraw %}
 
 
-*   **$F\_1$ 分数 ($F\_1$ Score)**：精确率和召回率的调和平均数，用于综合考量两者。
+*   **$F\_1$ Score**: The harmonic mean of precision and recall, used to jointly consider both.
     
 
     {% raw %}$$
@@ -101,7 +101,7 @@ title: "Object Recognition Datasets and Challenges: A Review"
     $${% endraw %}
 
 
-*   **交并比 (Intersection over Union, IoU)**：预测区域与真实区域的交集面积除以并集面积，是衡量检测和分割任务中预测区域准确度的常用指标。
+*   **Intersection over Union (IoU)**: The area of intersection between the predicted region and the ground-truth region divided by the area of their union; a commonly used metric for measuring the accuracy of predicted regions in detection and segmentation tasks.
     
 
     {% raw %}$$
@@ -109,8 +109,8 @@ title: "Object Recognition Datasets and Challenges: A Review"
     $${% endraw %}
 
 
-*   **平均精度 (Average Precision, AP)**：在不同召回率水平下精确率的平均值，常用于评估单个类别的检测或分割性能。通过对所有类别的AP取平均，得到**平均精度均值 (mean Average Precision, mAP)**。
-*   **全景质量 (Panoptic Quality, PQ)**：用于评估全景分割任务，同时衡量分割质量和检测质量。
+*   **Average Precision (AP)**: The average precision at different recall levels, often used to evaluate detection or segmentation performance for a single class. By averaging AP across all classes, we obtain **mean Average Precision (mAP)**.
+*   **Panoptic Quality (PQ)**: Used to evaluate panoptic segmentation tasks, measuring both segmentation quality and detection quality.
     
 
     {% raw %}$$
@@ -118,75 +118,75 @@ title: "Object Recognition Datasets and Challenges: A Review"
     $${% endraw %}
 
 
-    其中，第一项是匹配分割的平均IoU（分割质量），第二项是类$F\_1$分数（检测质量）。
+Here, the first term is the mean IoU of matched segments (segmentation quality), and the second term is the class $F\_1$ score (detection quality).
 
-<img src="/images/2507.22361v1/2.jpg" alt="ROC曲线" style="width:85%; max-width:600px; margin:auto; display:block;">
+<img src="/images/2507.22361v1/2.jpg" alt="ROC Curve" style="width:85%; max-width:600px; margin:auto; display:block;">
 *Figure 3: ROC Curve*
 
-*   **ROC曲线 (Receiver Operative Characteristic Curve)**：通过绘制真阳性率（召回率）与假阳性率（1-特异度）的关系曲线来评估分类器性能。曲线下面积（AUC）越大，性能越好。
+*   **Receiver Operative Characteristic (ROC) Curve**: Evaluates classifier performance by plotting the relationship between the true positive rate (recall) and the false positive rate (1-specificity). The larger the area under the curve (AUC), the better the performance.
 
-## 通用物体识别数据集
+## General Object Recognition Datasets
 
-近年来，公开的标注数据集数量激增。本节对通用物体识别数据集及其相关挑战赛进行综述。
+In recent years, the number of publicly available annotated datasets has surged. This section reviews general object recognition datasets and their related challenges.
 
-## 主要大规模数据集
+## Major Large-Scale Datasets
 
-有四个公认的主要大规模物体识别数据集，它们极大地推动了领域的发展。
+There are four widely recognized major large-scale object recognition datasets that have greatly driven the development of the field.
 
 
-| 数据集 | 类别数 | 图像数 | 每张图平均物体数 | 首次发布 |
+| Dataset | Number of Classes | Number of Images | Average Objects per Image | First Released |
 | :--- | :--- | :--- | :--- | :--- |
 | PASCAL VOC | 20 | 22,591 | 2.3 | 2005 |
 | ImageNet | 21,841 | 14,197,122 | 3 | 2009 |
 | Microsoft COCO | 91 | 328,000 | 7.7 | 2014 |
 | Open Images | 600 | 9,178,275 | 8.1 | 2017 |
-*Table 1: PASCAL VOC, ImageNet, MS COCO, 和 Open Images 的数据集统计*
+*Table 1: Dataset statistics for PASCAL VOC, ImageNet, MS COCO, and Open Images*
 
-<img src="/images/2507.22361v1/Untitled.jpg" alt="主要挑战赛中获胜算法的准确率提升" style="width:90%; max-width:700px; margin:auto; display:block;">
-*Figure 4: 主要挑战赛物体检测赛道获胜算法的准确率提升。PASCAL VOC 2007年准确率下降是由于类别从4个增加到20个。*
+<img src="/images/2507.22361v1/Untitled.jpg" alt="Accuracy improvements of winning algorithms in major challenges" style="width:90%; max-width:700px; margin:auto; display:block;">
+*Figure 4: Accuracy improvements of winning algorithms in the object detection tracks of major challenges. The drop in PASCAL VOC 2007 accuracy is due to the number of classes increasing from 4 to 20.*
 
-### 数据集概述
-*   **PASCAL VOC**：最早的大型挑战赛数据集，于2005年发布。它奠定了物体识别评估指标的基础。虽然规模相对较小，但仍被用作新算法的便捷基准。
-*   **ImageNet**：于2010年推出，拥有千万级的图像和上万个细粒度类别。其层次化结构基于WordNet。ILSVRC挑战赛（2010-2017）极大地推动了深度学习的发展。ImageNet至今仍是预训练复杂模型的标准数据集，但其每图仅单物体标注和缺乏丰富上下文的缺点也催生了更复杂的数据集。
-*   **Microsoft COCO**：为解决ImageNet的问题而生，图像数量较少但标注更丰富。它强调物体在自然上下文中的表现，并提供像素级的实例分割掩码。COCO还注重类别间的实例数量平衡，并发布了补充的COCO-Stuff数据集用于背景区域分割。
-*   **Open Images**：最新一代的大规模数据集，包含超过九百万张图像、600个物体类别的边界框以及部分分割掩码。其特点是引入了视觉关系标注（如“人骑自行车”）和负标签（明确指出图像中不存在的物体），以增强模型的分类能力。
+### Dataset Overview
+*   **PASCAL VOC**: The earliest large-scale challenge dataset, released in 2005. It laid the foundation for object recognition evaluation metrics. Although relatively small in scale, it is still used as a convenient benchmark for new algorithms.
+*   **ImageNet**: Launched in 2010, it contains tens of millions of images and tens of thousands of fine-grained classes. Its hierarchical structure is based on WordNet. The ILSVRC challenge (2010-2017) greatly accelerated the development of deep learning. ImageNet remains the standard dataset for pretraining complex models, but its single-object-per-image annotations and lack of rich context have also driven the creation of more complex datasets.
+*   **Microsoft COCO**: Created to address the shortcomings of ImageNet, it has fewer images but much richer annotations. It emphasizes objects in natural contexts and provides pixel-level instance segmentation masks. COCO also focuses on balancing instance counts across categories and released the supplementary COCO-Stuff dataset for background region segmentation.
+*   **Open Images**: The latest generation of large-scale datasets, containing over nine million images, bounding boxes for 600 object categories, and partial segmentation masks. Its distinctive features include visual relationship annotations (such as “person riding bicycle”) and negative labels (explicitly indicating objects absent from the image) to enhance a model’s classification ability.
 
-### 挑战赛任务
+### Challenge Tasks
 
-四大挑战赛涵盖了从简单到复杂的各种任务，其评估标准也随之演进。
+The four major challenges cover tasks ranging from simple to complex, and their evaluation criteria have evolved accordingly.
 
 
-| 挑战赛 | 任务 | 类别数 | 图像 | 已标注物体 | 活跃年份 | 任务描述 | 评估指标 |
+| Challenge | Task | Number of Classes | Images | Annotated Objects | Active Years | Task Description | Evaluation Metric |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **PASCAL VOC** | 图像分类 | 20 | 11,540 | 27,450 | 2005 - 2012 | 预测每张图中是否至少存在一个各类别的实例 | AP |
-| | 检测 | 20 | 11,540 | 27,450 | 2005 - 2012 | 为图像中所有挑战类别的实例预测边界框 | AP (IoU > 0.5) |
-| | 分割 | 20 | 2,913 | 6,929 | 2007 - 2012 | 对物体类别进行语义分割 | IoU |
-| **ILSVRC** | 图像分类 | 1000 | 1,331,167 | 1,331,167 | 2010 - 2014 | 对每张图的一个已标注类别进行分类 | Top-5预测的二元类别错误率 |
-| | 物体检测 | 200 | 476,688 | 534,309 | 2013 - 2017 | 为每张图的所有实例预测边界框 | AP（IoU阈值与框大小成比例） |
-| **MS COCO** | 检测 | 80 | 123,000+ | 500,000+ | 2015 - 至今 | 对物体类别（things）进行实例分割 | AP at IoU in [0.5:0.05:0.95] |
-| | 关键点 | 17 | 123,000+ | 250,000+ | 2017 - 至今 | 同时进行物体检测和关键点定位 | 基于OKS的AP |
-| | Stuff | 91 | 123,000+ | - | 2017 - 至今 | 对背景类别进行像素级分割 | mIoU |
-| | 全景 | 171 | 123,000+ | 500,000+ | 2018 - 至今 | 对图像进行完整分割（stuff 和 things） | Panoptic Quality (PQ) |
-| **Open Images** | 物体检测 | 500 | 1,743,042 | 12,421,955 | 2018 - 至今 | 基于层次结构的边界框检测 | mAP |
-| | 实例分割 | 300 | 848,000 | 2,148,896 | 2018 - 至今 | 对物体类别进行实例分割；包含负标签以优化训练 | mAP (IoU > 0.5) |
-| | 视觉关系检测 | 57 | 1,743,042 | 380,000关系三元组 | 2018 - 至今 | 用关系三元组标记图像 | mAP和召回率的加权和 |
-*Table 2: PASCAL VOC, ILSVRC, MS COCO, 和 Open Images 的挑战赛描述*
+| **PASCAL VOC** | Image classification | 20 | 11,540 | 27,450 | 2005 - 2012 | Predict whether at least one instance of each category exists in each image | AP |
+| | Detection | 20 | 11,540 | 27,450 | 2005 - 2012 | Predict bounding boxes for all instances of the challenge categories in the image | AP (IoU > 0.5) |
+| | Segmentation | 20 | 2,913 | 6,929 | 2007 - 2012 | Perform semantic segmentation of object categories | IoU |
+| **ILSVRC** | Image classification | 1000 | 1,331,167 | 1,331,167 | 2010 - 2014 | Classify one annotated category in each image | Top-5 prediction binary classification error rate |
+| | Object detection | 200 | 476,688 | 534,309 | 2013 - 2017 | Predict bounding boxes for all instances in each image | AP (IoU threshold proportional to box size) |
+| **MS COCO** | Detection | 80 | 123,000+ | 500,000+ | 2015 - present | Perform instance segmentation for object categories (things) | AP at IoU in [0.5:0.05:0.95] |
+| | Keypoints | 17 | 123,000+ | 250,000+ | 2017 - present | Perform object detection and keypoint localization simultaneously | OKS-based AP |
+| | Stuff | 91 | 123,000+ | - | 2017 - present | Perform pixel-level segmentation of background categories | mIoU |
+| | Panoptic | 171 | 123,000+ | 500,000+ | 2018 - present | Perform full image segmentation (stuff and things) | Panoptic Quality (PQ) |
+| **Open Images** | Object detection | 500 | 1,743,042 | 12,421,955 | 2018 - present | Hierarchy-based bounding box detection | mAP |
+| | Instance segmentation | 300 | 848,000 | 2,148,896 | 2018 - present | Perform instance segmentation for object categories; includes negative labels to improve training | mAP (IoU > 0.5) |
+| | Visual relationship detection | 57 | 1,743,042 | 380,000 relationship triplets | 2018 - present | Annotate images with relationship triplets | Weighted sum of mAP and recall |
+*Table 2: Challenge descriptions for PASCAL VOC, ILSVRC, MS COCO, and Open Images*
 
-*   **分类**：主要在PASCAL VOC和ILSVRC中出现，后者采用Top-5错误率作为标准。
-*   **检测**：四大挑战赛均包含此任务，但评估标准从固定的IoU阈值（PASCAL VOC, Open Images）演变为更复杂的动态阈值（ILSVRC）和多阈值平均（MS COCO）。
-*   **分割**：从PASCAL VOC的语义分割，发展到MS COCO更全面的实例分割、Stuff分割和全景分割，评估指标也从简单的IoU发展到更综合的PQ。
-*   **特定任务**：各挑战赛还推出了特定应用的任务，如PASCAL VOC的人体部件布局、MS COCO的人体关键点检测和Open Images的视觉关系检测，推动了更细分领域的发展。
+*   **Classification**: Mainly appears in PASCAL VOC and ILSVRC, with the latter using Top-5 error rate as the standard.
+*   **Detection**: All four major challenges include this task, but the evaluation criteria have evolved from a fixed IoU threshold (PASCAL VOC, Open Images) to more complex dynamic thresholds (ILSVRC) and multi-threshold averaging (MS COCO).
+*   **Segmentation**: From semantic segmentation in PASCAL VOC to the more comprehensive instance segmentation, Stuff segmentation, and panoptic segmentation in MS COCO, the evaluation metric has also evolved from simple IoU to the more comprehensive PQ.
+*   **Specific tasks**: Each challenge also introduced application-specific tasks, such as human part layout in PASCAL VOC, human keypoint detection in MS COCO, and visual relationship detection in Open Images, driving development in more specialized areas.
 
-## 其他物体识别数据集
+## Other Object Recognition Datasets
 
-除了上述四大主流数据集，还存在许多其他有价值的数据集。
+In addition to the four major mainstream datasets above, there are many other valuable datasets.
 
-### 物体检测数据集
+### Object Detection Datasets
 
-尽管趋势是向分割掩码发展，但边界框标注因其成本低、一致性高而仍在许多数据集中使用。
+Although the trend is toward segmentation masks, bounding box annotations are still used in many datasets because they are cheaper and more consistent.
 
 
-| 数据集 | 图像数 | 类别数 | 边界框数 | 年份 |
+| Dataset | Number of Images | Number of Classes | Number of Bounding Boxes | Year |
 | :--- | :--- | :--- | :--- | :--- |
 | Caltech 101 [75] | 9,144 | 102 | 9,144 | 2003 |
 | MIT CSAIL [234] | 2,500 | 21 | 2,500 | 2004 |
@@ -194,24 +194,24 @@ title: "Object Recognition Datasets and Challenges: A Review"
 | Visual Genome [126] | 108,000 | 76,340 | 4,102,818 | 2016 |
 | YouTube BB [197] | 5.6 m | 23 | 5.6 m | 2017 |
 | Objects 365 [211] | 638,000 | 365 | 10.1 m | 2019 |
-*Table 3: 通用物体检测数据集（不含3.1节中已介绍的）*
+*Table 3: General object detection datasets (excluding those already introduced in Section 3.1)*
 
-### 物体分割数据集
+### Object Segmentation Datasets
 
-这些数据集提供实例级或语义级的分割掩码。近年来，视频物体分割 (Video Object Segmentation, VOS) 成为一个热门方向，DAVIS和YouTube-VOS是该领域的主要基准。
+These datasets provide instance-level or semantic-level segmentation masks. In recent years, Video Object Segmentation (Video Object Segmentation, VOS) has become a hot topic, and DAVIS and YouTube-VOS are the main benchmarks in this field.
 
 
-| 数据集 | 图像数 | 类别数 | 物体数 | 年份 | 挑战赛 | 描述 |
+| Dataset | # Images | # Classes | # Objects | Year | Challenge | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| SUN [256] | 130,519 | 3819 | 313,884 | 2010 | 否 | 主要用于场景识别，但也提供了实例级分割掩码 |
-| SBD [95] | 10,000 | 20 | 20,000 | 2011 | 否 | PASCAL VOC训练/验证图像上的物体轮廓 |
-| Pascal Part [46] | 11,540 | 191 | 27,450 | 2014 | 否 | PASCAL VOC数据集中20个类别的物体部件分割 |
-| DAVIS [30] | 150 (视频) | 4 | 449 | 2016 | 是 | 一个专注于半监督和无监督分割任务的视频物体分割数据集和挑战赛 |
-| YouTube-VOS [260] | 4,453 | 94 | 7,755 | 2018 | 是 | 从短视频片段（3-6秒）收集的视频物体分割数据集 |
-| LVIS [94] | 164,000 | 1000 | 2 m | 2019 | 是 | 针对长尾分布类别的实例分割标注，这些类别样本很少 |
-| LabelMe[207] | 62,197 | 182 | 250,250 | 2005 | 否 | 实例级分割；部分背景类别也被标注 |
-*Table 4: 物体分割数据集*
+| SUN [256] | 130,519 | 3819 | 313,884 | 2010 | No | Mainly used for scene recognition, but also provides instance-level segmentation masks |
+| SBD [95] | 10,000 | 20 | 20,000 | 2011 | No | Object contours on PASCAL VOC training/validation images |
+| Pascal Part [46] | 11,540 | 191 | 27,450 | 2014 | No | Object part segmentation for 20 categories in the PASCAL VOC dataset |
+| DAVIS [30] | 150 (videos) | 4 | 449 | 2016 | Yes | A video object segmentation dataset and challenge focused on semi-supervised and unsupervised segmentation tasks |
+| YouTube-VOS [260] | 4,453 | 94 | 7,755 | 2018 | Yes | A video object segmentation dataset collected from short video clips (3-6 seconds) |
+| LVIS [94] | 164,000 | 1000 | 2 m | 2019 | Yes | Instance segmentation annotations for long-tail categories with few samples |
+| LabelMe[207] | 62,197 | 182 | 250,250 | 2005 | No | Instance-level segmentation; some background categories are also annotated |
+*Table 4: Object segmentation datasets*
 
-## 场景理解数据集中的物体识别
+## Object Recognition in Scene Understanding Datasets
 
-对图像的全面理解不仅需要识别物体，还需要理解场景。单纯的物体识别可能提供一些上下文线索，但也可能产生误导。背景属性（Stuff），如草地、天空，在传统物体识别数据集中常被忽略，但它们对提供几何关系和上下文推理至关重要。因此，许多以场景为中心的数据集被提出来，以实现更深层次的视觉理解。
+A comprehensive understanding of an image requires not only recognizing objects, but also understanding the scene. Pure object recognition may provide some contextual clues, but it can also be misleading. Background attributes (Stuff), such as grass and sky, are often ignored in traditional object recognition datasets, yet they are crucial for providing geometric relationships and contextual reasoning. Therefore, many scene-centric datasets have been proposed to enable deeper visual understanding.

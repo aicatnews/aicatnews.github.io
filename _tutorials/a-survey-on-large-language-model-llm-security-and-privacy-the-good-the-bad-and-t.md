@@ -6,50 +6,50 @@ title: "A Survey on Large Language Model (LLM) Security and Privacy: The Good, t
 
 - **ArXiv URL**: http://arxiv.org/abs/2312.02003v3
 
-- **作者**: Yue Zhang; Eric Sun; Yifan Yao; Yuanfang Cai; Kaidi Xu; Jinhao Duan
+- **Author**: Yue Zhang; Eric Sun; Yifan Yao; Yuanfang Cai; Kaidi Xu; Jinhao Duan
 
-- **发布机构**: Drexel University
+- **Publisher**: Drexel University
 
 ---
 
-## 大型语言模型（LLM）安全与隐私综述：善、恶与丑
+## A Survey of Large Language Model (LLM) Security and Privacy: The Good, the Bad, and the Ugly
 
-## 引言
+## Introduction
 
-大型语言模型 (Large Language Model, LLM) 是一种拥有海量参数的语言模型，通过预训练任务（如掩码语言建模和自回归预测）来理解和处理人类语言。一个强大的LLM应具备四个关键特征：对自然语言上下文的深刻理解、生成类人文本的能力、上下文感知能力（尤其是在知识密集型领域）以及强大的指令遵循能力。
+Large Language Model (LLM) is a language model with massive parameters that understands and processes human language through pretraining tasks such as masked language modeling and autoregressive prediction. A powerful LLM should have four key characteristics: deep understanding of natural language context, the ability to generate human-like text, context awareness, especially in knowledge-intensive domains, and strong instruction-following ability.
 
-LLM在安全社区也获得了广泛关注。例如，GPT-3在一个代码库中发现了213个安全漏洞。这些初步尝试促使本文探讨关于LLM安全与隐私的三个核心研究问题：
+LLMs have also attracted widespread attention in the security community. For example, GPT-3 discovered 213 security vulnerabilities in a codebase. These early efforts prompted this paper to explore three core research questions about LLM security and privacy:
 
-*   **RQ1 (善):** LLM如何在不同领域对安全和隐私产生积极影响？
-*   **RQ2 (恶):** 在网络安全领域使用LLM会带来哪些潜在风险和威胁？
-*   **RQ3 (丑):** LLM自身存在哪些漏洞和弱点，以及如何防御这些威胁？
+*   **RQ1 (Good):** How can LLMs positively impact security and privacy across different domains?
+*   **RQ2 (Bad):** What potential risks and threats arise from using LLMs in cybersecurity?
+*   **RQ3 (Ugly):** What vulnerabilities and weaknesses do LLMs themselves have, and how can these threats be defended against?
 
-为回答这些问题，本文回顾了281篇相关论文，并将其分为三类：“善”（有益的应用）、“恶”（攻击性应用）和“丑”（LLM的漏洞及防御）。
+To answer these questions, this paper reviews 281 related papers and categorizes them into three groups: “good” (beneficial applications), “bad” (offensive applications), and “ugly” (LLM vulnerabilities and defenses).
 
-**本文发现：**
-*   **善 (§4):** LLM对安全社区的积极影响最大，尤其在代码安全和数据安全与隐私方面。在代码的全生命周期（安全编码、测试、检测、修复）中，LLM的应用通常优于传统方法。
-*   **恶 (§5):** LLM也可被用于攻击，尤其是在用户层面，如制造虚假信息和进行社会工程。这是由于其类人推理能力。
-*   **丑 (§6):** LLM的漏洞分为AI模型固有漏洞（如数据投毒）和非AI模型固有漏洞（如提示注入）。防御策略可在模型架构、训练和推理阶段实施。模型提取、参数提取等攻击的研究仍很有限，而安全指令微调等新兴防御技术则需要更多探索。
+**Findings of this paper:**
+*   **Good (§4):** LLMs have the greatest positive impact on the security community, especially in code security and data security and privacy. Across the full lifecycle of code (secure coding, testing, detection, and repair), LLM applications generally outperform traditional methods.
+*   **Bad (§5):** LLMs can also be used for attacks, especially at the user level, such as generating misinformation and carrying out social engineering. This is due to their human-like reasoning ability.
+*   **Ugly (§6):** LLM vulnerabilities are divided into AI-model-inherent vulnerabilities (such as data poisoning) and non-AI-model-inherent vulnerabilities (such as prompt injection). Defense strategies can be implemented at the model architecture, training, and inference stages. Research on attacks such as model extraction and parameter extraction remains very limited, while emerging defense techniques such as security instruction fine-tuning require further exploration.
 
-**本文贡献：**
-本文首次全面总结了LLM在安全与隐私中的角色，涵盖了其积极影响、潜在风险、自身漏洞及防御机制。本文发现LLM对安全领域的贡献多于其负面影响，并指出用户级攻击是当前最主要的威胁。
+**Contributions of this paper:**
+This paper is the first to provide a comprehensive summary of the role of LLMs in security and privacy, covering their positive impact, potential risks, inherent vulnerabilities, and defense mechanisms. The paper finds that LLMs contribute more to the security field than they harm it, and points out that user-level attacks are currently the most significant threat.
 
-## 背景
+## Background
 
-## 大型语言模型 (LLM)
+## Large Language Models (LLM)
 
-LLM是语言模型的演进，其规模在Transformer架构出现后显著增加。这些模型在巨大的数据集上进行训练，以理解和生成高度模仿人类语言的文本。一个合格的LLM应具备四个关键特征：
-1.  **深刻理解自然语言**：能从中提取信息并执行翻译等任务。
-2.  **生成类人文本**：能完成句子、撰写段落甚至文章。
-3.  **上下文感知**：具备领域专业知识，即“知识密集型”特性。
-4.  **强大的解决问题能力**：能利用文本信息进行信息检索和问答。
+LLMs are the evolution of language models, whose scale increased significantly after the emergence of the Transformer architecture. These models are trained on massive datasets to understand and generate text that closely mimics human language. A qualified LLM should have four key characteristics:
+1.  **Deep understanding of natural language**: able to extract information from it and perform tasks such as translation.
+2.  **Human-like text generation**: able to complete sentences, write paragraphs, and even articles.
+3.  **Context awareness**: possess domain expertise, i.e., the “knowledge-intensive” property.
+4.  **Strong problem-solving ability**: able to use textual information for information retrieval and question answering.
 
-## 流行LLM的比较
+## Comparison of Popular LLMs
 
-下表展示了不同供应商提供的多种语言模型，显示了该领域的快速发展。较新的模型如GPT-4不断涌现。虽然多数模型不开源，但BERT、LLaMA等模型的开源促进了社区发展。通常，模型参数越多，能力越强，计算需求也越高。“可调优性” (Tunability) 指的是模型是否可以针对特定任务进行微调。
+The table below shows a variety of language models from different vendors, illustrating the rapid development of this field. Newer models such as GPT-4 continue to emerge. Although most models are not open source, the open-sourcing of models such as BERT and LLaMA has promoted community development. In general, the more parameters a model has, the stronger its capabilities, but the higher its computational requirements. “Tunability” refers to whether the model can be fine-tuned for specific tasks.
 
 
-| 模型 | 日期 | 提供商 | 开源 | 参数 | 可调优 |
+| Model | Date | Provider | Open Source | Parameters | Tunable |
 | --- | --- | --- | --- | --- | --- |
 | gpt-4 | 2023.03 | OpenAI | ✗ | 1.7T | ✗ |
 | gpt-3.5-turbo | 2021.09 | OpenAI | ✗ | 175B | ✗ |
@@ -64,137 +64,137 @@ LLM是语言模型的演进，其规模在Transformer架构出现后显著增加
 | CTRL | 2019 | Salesforce| ✓ | 1.6B | ✓ |
 | Dolly 2.0 | 2023.04 | Databricks| ✓ | 12B | ✓ |
 
-## 概览
+## Overview
 
-## 范围
+## Scope
 
-本文旨在对LLM背景下的安全和隐私研究进行全面的文献综述，确定当前的技术水平并找出知识缺口。本文的焦点严格限定在安全与隐私问题上。
+This paper aims to provide a comprehensive literature review of security and privacy research in the context of LLMs, identify the current state of the art, and pinpoint knowledge gaps. The focus of this paper is strictly limited to security and privacy issues.
 
-## 研究问题
+## Research Questions
 
-本文围绕以下三个核心研究问题展开：
-*   **善 (§4):** LLM如何对安全和隐私做出积极贡献？
-*   **恶 (§5):** LLM如何被用于恶意目的，可能助长哪些网络攻击？
-*   **丑 (§6):** LLM自身存在哪些漏洞，它们如何威胁安全与隐私？
+This paper is organized around the following three core research questions:
+*   **Good (§4):** How can LLMs make positive contributions to security and privacy?
+*   **Bad (§5):** How can LLMs be used for malicious purposes, and what cyberattacks may they facilitate?
+*   **Ugly (§6):** What vulnerabilities do LLMs themselves have, and how do they threaten security and privacy?
 
-本文收集了281篇相关论文，其中“善”类83篇，“恶”类54篇，“丑”类144篇。如下图所示，大多数论文发表于2023年，显示出该领域研究热度的迅速上升。
+This paper collected 281 related papers, including 83 in the “good” category, 54 in the “bad” category, and 144 in the “ugly” category. As shown in the figure below, most papers were published in 2023, indicating a rapid rise in research interest in this field.
 
 <img src="/images/2312.02003v3/page_3_Figure_1.jpg" alt="论文分类概览" style="width:85%; max-width:450px; margin:auto; display:block;">
 
-**发现 I:** 在安全相关应用中，大多数研究者倾向于利用LLM来增强安全性（如漏洞检测），而不是将其用作攻击工具。总体而言，LLM对安全社区的贡献是积极大于消极的。
+**Finding I:** In security-related applications, most researchers tend to use LLMs to enhance security, such as vulnerability detection, rather than as attack tools. Overall, LLMs contribute more positively than negatively to the security community.
 
-## 积极影响（善）
+## Positive Impacts (Good)
 
-本节探讨LLM在代码安全和数据安全与隐私方面的有益应用。
+This section discusses beneficial applications of LLMs in code security and data security and privacy.
 
-## LLM在代码安全中的应用
+## Applications of LLMs in Code Security
 
-LLM能够利用其强大的语言理解和上下文分析能力，在代码安全的整个生命周期中发挥关键作用，包括安全编码、测试用例生成、漏洞/恶意代码检测以及代码修复。
+With their strong language understanding and contextual analysis capabilities, LLMs can play a key role throughout the entire lifecycle of code security, including secure coding, test case generation, vulnerability/malicious code detection, and code repair.
 
 
-| 生命周期 | 工作 | 编码(C) | 测试用例生成(TCG) | 漏洞检测 | 恶意代码检测 | 修复 | LLM | 领域 | 相比SOTA的优势 |
+| Lifecycle | Task | Coding (C) | Test Case Generation (TCG) | Vulnerability Detection | Malicious Code Detection | Repair | LLM | Domain | Advantages over SOTA |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- | :--- | :--- |
-| RE | Sandoval等 [234] | ○ | | | | | Codex | - | 风险可忽略 |
-| RE | SVEN [98] | ○ | | | | | CodeGen | - | 更快/更安全 |
-| RE | SALLM [254] | ○ | | | | | ChatGPT等 | - | -- |
-| RE | Madhav等 [197] | ○ | | | | | ChatGPT | 硬件 | -- |
-| RE | Zhang等 [343] | | + | | | | ChatGPT | 供应链 | 更有效的案例 |
-| RE | Libro [136] | | + | | | | LLaMA | - | ↑ 覆盖率 |
-| RE | TitanFuzz [56] | | + | | | | Codex | DL库 | ↑ 覆盖率 |
-| RE | FuzzGPT [57] | | + | | | | ChatGPT | DL库 | ↑ 覆盖率 |
-| RE | Fuzz4All [313] | | + | | | | ChatGPT | 语言 | 高质量测试 |
-| RE | WhiteFox [321] | | + | | | | GPT4 | 编译器 | 更快4倍 |
-| RE | Zhang等 [337] | | + | | | | ChatGPT | API | ↑ 覆盖率，但FP/FN高 |
-| RE | CHATAFL [190] | | + | | | | ChatGPT | 协议 | 低FP/FN，但FP/FN高 |
-| RE | Henrik [105] | | | | + | | N/A | - | 不优于SOTA |
-| RE | Apiiro [74] | | | | + | | ChatGPT | - | 成本效益高 |
+| RE | Sandoval et al. [234] | ○ | | | | | Codex | - | Negligible risk |
+| RE | SVEN [98] | ○ | | | | | CodeGen | - | Faster/safer |
+| RE | SALLM [254] | ○ | | | | | ChatGPT et al. | - | -- |
+| RE | Madhav et al. [197] | ○ | | | | | ChatGPT | Hardware | -- |
+| RE | Zhang et al. [343] | | + | | | | ChatGPT | Supply chain | More effective cases |
+| RE | Libro [136] | | + | | | | LLaMA | - | ↑ Coverage |
+| RE | TitanFuzz [56] | | + | | | | Codex | DL libraries | ↑ Coverage |
+| RE | FuzzGPT [57] | | + | | | | ChatGPT | DL libraries | ↑ Coverage |
+| RE | Fuzz4All [313] | | + | | | | ChatGPT | Languages | High-quality tests |
+| RE | WhiteFox [321] | | + | | | | GPT4 | Compiler | 4x faster |
+| RE | Zhang et al. [337] | | + | | | | ChatGPT | API | ↑ Coverage, but high FP/FN |
+| RE | CHATAFL [190] | | + | | | | ChatGPT | Protocols | Low FP/FN, but FP/FN high |
+| RE | Henrik [105] | | | | + | | N/A | - | Not better than SOTA |
+| RE | Apiiro [74] | | | | + | | ChatGPT | - | Cost-effective |
 | RE | Noever [201] | | | + | | | ChatGPT | - | -- |
-| RE | Bakhshandeh等 [15]| | | + | | | ChatGPT | - | -- |
-| RE | Moumita等 [218] | | | + | | | ChatGPT | - | -- |
-| RE | Cheshkov等 [41] | | | + | | | GPT | - | 减少人工 |
-| RE | LATTE [174] | | | + | | | Codex | - | ↑ 准确率/速度 |
-| RE | DefectHunter [296]| | | + | | | ChatGPT | 区块链 | 修复更多漏洞 |
-| RE | Chen等 [37] | | | + | | | ChatGPT | 区块链 | CI流水线 |
-| RE | Hu等 [110] | | | + | | | LLaMa | Web应用 | -- |
-| RE | KARTAL [233] | | | + | | | Codex | 库 | -- |
-| RE | VulLibGen [38] | | | + | | | Codex | 硬件 | Zero-shot |
-| RE | Ahmad等 [3] | | | + | | | Codex等 | APR | ↑ 准确率 |
-| RE | InferFix [125] | | | | | + | ChatGPT | APR | ↑ 准确率 |
-| RE | Pearce等 [211] | | | + | | + | ChatGPT等 | APR | ↑ 准确率 |
-| RE | Fu等 [83] | | | + | | | ChatGPT | APR | -- |
-| RE | Sobania等 [257] | | | + | | + | | | |
-| RE | Jiang等 [123] | | | + | | | | | |
+| RE | Bakhshandeh et al. [15]| | | + | | | ChatGPT | - | -- |
+| RE | Moumita et al. [218] | | | + | | | ChatGPT | - | -- |
+| RE | Cheshkov et al. [41] | | | + | | | GPT | - | Reduces manual effort |
+| RE | LATTE [174] | | | + | | | Codex | - | ↑ Accuracy/speed |
+| RE | DefectHunter [296]| | | + | | | ChatGPT | Blockchain | Fixes more vulnerabilities |
+| RE | Chen et al. [37] | | | + | | | ChatGPT | Blockchain | CI pipeline |
+| RE | Hu et al. [110] | | | + | | | LLaMa | Web applications | -- |
+| RE | KARTAL [233] | | | + | | | Codex | Libraries | -- |
+| RE | VulLibGen [38] | | | + | | | Codex | Hardware | Zero-shot |
+| RE | Ahmad et al. [3] | | | + | | | Codex et al. | APR | ↑ Accuracy |
+| RE | InferFix [125] | | | | | + | ChatGPT | APR | ↑ Accuracy |
+| RE | Pearce et al. [211] | | | + | | + | ChatGPT et al. | APR | ↑ Accuracy |
+| RE | Fu et al. [83] | | | + | | | ChatGPT | APR | -- |
+| RE | Sobania et al. [257] | | | + | | + | | | |
+| RE | Jiang et al. [123] | | | + | | | | | |
 
-*   **安全编码 (Secure Coding):** 研究表明，在LLM（如OpenAI Codex）辅助下，开发者编写的代码并未引入更多安全风险。SVEN等方法通过连续提示引导LLM生成更安全的代码，成功率显著提高。
-*   **测试用例生成 (Test Case Generating):** LLM被用于生成安全测试用例，在供应链攻击、深度学习库模糊测试 (fuzzing) 和协议模糊测试等场景中，其生成的测试用例覆盖率和效率均超过现有工具。例如，Fuzz4All在多种语言上的覆盖率平均提高了36.8%。
-*   **漏洞代码检测 (Vulnerable Code Detecting):** GPT-4等LLM在检测软件漏洞方面表现出色，其发现的漏洞数量远超传统静态分析工具。然而，也有研究指出LLM在某些场景下会产生较高的误报率。在智能合约、Web应用等特定领域，LLM也展现了强大的漏洞检测能力。
-*   **恶意代码检测 (Malicious Code Detecting):** 利用LLM的自然语言处理能力来检测恶意软件是一个新兴方向。Apiiro等工具通过将代码表示为向量来识别恶意软件包。
-*   **漏洞/错误代码修复 (Vulnerable/Buggy Code Fixing):** LLM在程序修复任务中表现出强大的能力。即便是未经专门漏洞修复训练的LLM，也能修复不安全的代码。ChatGPT在修复错误方面与标准程序修复方法相当，ChatRepair等框架进一步提升了其代码修复能力。
+*   **Secure Coding:** Studies show that, with the assistance of LLMs (such as OpenAI Codex), the code written by developers does not introduce more security risks. Methods like SVEN guide LLMs to generate safer code through continuous prompting, significantly improving success rates.
+*   **Test Case Generating:** LLMs are used to generate security test cases. In scenarios such as supply chain attacks, fuzzing of deep learning libraries, and protocol fuzzing, the coverage and efficiency of the generated test cases exceed those of existing tools. For example, Fuzz4All improves average coverage across multiple languages by 36.8%.
+*   **Vulnerable Code Detecting:** LLMs such as GPT-4 perform well in detecting software vulnerabilities, finding far more vulnerabilities than traditional static analysis tools. However, some studies also point out that LLMs can produce relatively high false positive rates in certain scenarios. In specific domains such as smart contracts and Web applications, LLMs also demonstrate strong vulnerability detection capabilities.
+*   **Malicious Code Detecting:** Using the natural language processing capabilities of LLMs to detect malware is an emerging direction. Tools such as Apiiro identify malicious packages by representing code as vectors.
+*   **Vulnerable/Buggy Code Fixing:** LLMs show strong capabilities in program repair tasks. Even LLMs that have not been specifically trained for vulnerability repair can fix insecure code. ChatGPT performs comparably to standard program repair methods in fixing bugs, and frameworks such as ChatRepair further improve its code repair ability.
 
-**发现 II:** 大多数研究（25篇中的17篇）认为，基于LLM的方法在代码安全方面优于传统方法，具有代码覆盖率更高、检测准确率更高、成本更低等优点。LLM方法最常被诟病的问题是在检测漏洞时倾向于产生较高的假阴性 (false negatives) 和假阳性 (false positives)。
+**Finding II:** Most studies (17 out of 25) believe that LLM-based methods outperform traditional methods in code security, with advantages such as higher code coverage, higher detection accuracy, and lower cost. The most commonly criticized issue with LLM methods is their tendency to produce relatively high false negatives and false positives when detecting vulnerabilities.
 
-## LLM在数据安全与隐私中的应用
+## Applications of LLMs in Data Security and Privacy
 
-LLM在数据安全领域也做出了贡献，主要体现在数据完整性、机密性、可靠性和可追溯性等方面。
+LLMs have also contributed to data security, mainly in terms of data integrity, confidentiality, reliability, and traceability.
 
 
-| 工作 | 特性 | 模型 | 领域 | 相比SOTA的优势 |
+| Work | Features | Model | Domain | Advantage over SOTA |
 | :--- | :--- | :--- | :--- | :--- |
 | ... | I C R T | | | |
-| Fang [294] | ○+○+ | ChatGPT | 勒索软件 | - |
-| Liu等 [187] | ○+○+ | ChatGPT | 勒索软件 | - |
-| Amine等 [73] | ○○○+ | ChatGPT | 语义 | 与SOTA相当 |
-| HuntGPT [8] | ○○○+ | ChatGPT | 网络 | 更有效 |
-| Chris等 [71] | ○○○+ | ChatGPT | 日志 | 减少人工 |
-| AnomalyGPT [91] | ○○○+ | ChatGPT | 视频 | 减少人工 |
-| LogGPT [221] | ○○○+ | ChatGPT | 日志 | 减少人工 |
-| Arpita等 [286] | +○++ | BERT等 | - | - |
-| Takashi等 [142]| ++○+ | ChatGPT | 钓鱼 | 高精度 |
-| Fredrik等 [102]| ++○+ | ChatGPT等| 钓鱼 | 有效 |
-| IPSDM [119] | ++○+ | BERT | 钓鱼 | - |
-| Kwon等 [149] | +○++ | ChatGPT | - | 对非专家友好 |
-| Scanlon等 [237]| +++○ | ChatGPT | 取证 | 更有效 |
-| Sladić等 [255] | +++○ | ChatGPT | 蜜罐 | 更真实 |
-| WASA [297] | ++○○ | - | 水印 | 更有效 |
-| REMARK [340] | ++○○ | - | 水印 | 更有效 |
-| SWEET [154] | ++○○ | - | 水印 | 更有效 |
+| Fang [294] | ○+○+ | ChatGPT | ransomware | - |
+| Liu et al. [187] | ○+○+ | ChatGPT | ransomware | - |
+| Amine et al. [73] | ○○○+ | ChatGPT | semantics | comparable to SOTA |
+| HuntGPT [8] | ○○○+ | ChatGPT | network | more effective |
+| Chris et al. [71] | ○○○+ | ChatGPT | logs | reduces manual effort |
+| AnomalyGPT [91] | ○○○+ | ChatGPT | video | reduces manual effort |
+| LogGPT [221] | ○○○+ | ChatGPT | logs | reduces manual effort |
+| Arpita et al. [286] | +○++ | BERT etc. | - | - |
+| Takashi et al. [142]| ++○+ | ChatGPT | phishing | high accuracy |
+| Fredrik et al. [102]| ++○+ | ChatGPT etc.| phishing | effective |
+| IPSDM [119] | ++○+ | BERT | phishing | - |
+| Kwon et al. [149] | +○++ | ChatGPT | - | friendly to non-experts |
+| Scanlon et al. [237]| +++○ | ChatGPT | forensics | more effective |
+| Sladić et al. [255] | +++○ | ChatGPT | honeypot | more realistic |
+| WASA [297] | ++○○ | - | watermarking | more effective |
+| REMARK [340] | ++○○ | - | watermarking | more effective |
+| SWEET [154] | ++○○ | - | watermarking | more effective |
 
-*   **数据完整性 (Data Integrity, I):** 保证数据在生命周期内不被篡改。LLM被用于理论上提出针对勒索软件的防御策略，如实时分析和自动策略生成。在异常检测方面，LLM可以识别可能破坏数据完整性的可疑行为，且无需过多人工干预。
-*   **数据机密性 (Data Confidentiality, C):** 防止敏感信息被未经授权的访问。LLM可用于数据脱敏，通过用通用标记替换个人身份信息（PII）来保护用户隐私。此外，ChatGPT也被用于帮助非专家实现加密算法，从而保护数据机密性。
-*   **数据可靠性 (Data Reliability, R):** 保证数据的准确性。LLM在检测钓鱼网站和钓鱼邮件方面表现出高精度和召回率，其效果甚至超过人类。
-*   **数据可追溯性 (Data Traceability, T):** 追踪数据的来源和历史。在数字取证中，LLM可用于分析日志、内存转储等操作系统产物。在知识产权保护方面，数字水印 (Watermarking) 技术被用于在LLM的输出中嵌入难以察觉的信号，以追踪内容使用情况，防止抄袭和滥用。
+*   **Data Integrity (I):** Ensures that data is not tampered with throughout its lifecycle. LLMs have been used to theoretically propose defense strategies against ransomware, such as real-time analysis and automatic policy generation. In anomaly detection, LLMs can identify suspicious behaviors that may compromise data integrity, with little human intervention.
+*   **Data Confidentiality (C):** Prevents unauthorized access to sensitive information. LLMs can be used for data anonymization by replacing personally identifiable information (PII) with generic tokens to protect user privacy. In addition, ChatGPT has been used to help non-experts implement encryption algorithms, thereby protecting data confidentiality.
+*   **Data Reliability (R):** Ensures data accuracy. LLMs have shown high precision and recall in detecting phishing websites and phishing emails, with performance even surpassing humans.
+*   **Data Traceability (T):** Tracks the source and history of data. In digital forensics, LLMs can be used to analyze logs, memory dumps, and other operating system artifacts. For intellectual property protection, digital watermarking techniques are used to embed imperceptible signals in LLM outputs to track content usage and prevent plagiarism and misuse.
 
-**发现 III:** LLM在数据保护方面表现出色，通常优于现有解决方案且需要更少的人工干预。在各类安全应用中，ChatGPT是使用最广泛的LLM模型。
+**Finding III:** LLMs perform exceptionally well in data protection, often outperforming existing solutions while requiring less human intervention. Across various security applications, ChatGPT is the most widely used LLM model.
 
-## 消极影响（恶）
+## Negative Impacts (Evil)
 
-本节探讨LLM的攻击性应用，根据其在系统架构中的位置，将其分为五类。
+This section examines the offensive applications of LLMs and classifies them into five categories based on their position in the system architecture.
 
 <img src="/images/2312.02003v3/page_7_Figure_1.jpg" alt="网络攻击分类体系" style="width:80%; max-width:300px; margin:auto; display:block;">
 
 <img src="/images/2312.02003v3/page_7_Figure_3.jpg" alt="现有攻击的普遍性" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-## 分类体系总结
+## Summary of the Taxonomy
 
-本文将基于LLM的网络攻击分为五个层级：
-*   **硬件层攻击 (Hardware-Level Attacks):** LLM虽不能直接物理访问硬件，但可分析硬件相关的侧信道 (side-channel) 信息泄露，以推断密钥等秘密信息。
-*   **操作系统层攻击 (OS-Level Attacks):** LLM缺乏执行OS级攻击所需的低级系统访问权限。但它们可用于分析从OS收集的信息，从而辅助攻击。已有研究展示了LLM如何分析虚拟机状态、识别漏洞并自动执行攻击。
-*   **软件层攻击 (Software-Level Attacks):** 最普遍的软件层攻击是利用LLM创建恶意软件 (malware)。研究表明，LLM擅长根据功能描述构建恶意软件模块，并能生成多种逃避杀毒软件检测的恶意软件变体。
-*   **网络层攻击 (Network-Level Attacks):** LLM被广泛用于发起网络钓鱼 (phishing) 攻击，通过生成高度个性化和令人信服的钓鱼邮件来提高点击率。此外，LLM还可能破解用于区分人机的CAPTCHA验证码。
-*   **用户层攻击 (User-Level Attacks):** 这是最普遍的攻击类型。LLM能够生成极其令人信服但虚假的内容，并关联看似无关的信息，从而被用于多种恶意活动。
-    *   **虚假信息 (Misinformation):** LLM生成的虚假内容更难被检测，且可能使用更具欺骗性的风格。
-    *   **社会工程 (Social Engineering):** LLM可以从看似无害的文本中推断出用户的个人属性（如位置、收入），甚至直接提取个人信息。
-    *   **学术不端 (Scientific Misconduct):** LLM能够生成连贯的原创文本，甚至完整的学术论文，这给检测学术不端行为带来了巨大挑战。
-    *   **欺诈 (Fraud):** 出现了专为网络犯罪设计的工具，如FraudGPT和WormGPT，它们缺乏安全护栏，可用于生成欺诈邮件、策划攻击。
+This paper divides LLM-based cyberattacks into five levels:
+*   **Hardware-Level Attacks:** Although LLMs cannot directly access hardware physically, they can analyze hardware-related side-channel information leakage to infer secret information such as keys.
+*   **OS-Level Attacks:** LLMs lack the low-level system access required to carry out OS-level attacks. However, they can be used to analyze information collected from the OS to assist attacks. Existing studies have shown how LLMs can analyze virtual machine states, identify vulnerabilities, and automatically execute attacks.
+*   **Software-Level Attacks:** The most common software-level attack is using LLMs to create malware. Studies show that LLMs are good at building malware modules from functional descriptions and can generate multiple malware variants that evade antivirus detection.
+*   **Network-Level Attacks:** LLMs are widely used to launch phishing attacks by generating highly personalized and convincing phishing emails to increase click-through rates. In addition, LLMs may also break CAPTCHA challenges used to distinguish humans from machines.
+*   **User-Level Attacks:** This is the most prevalent type of attack. LLMs can generate extremely convincing but false content and associate seemingly unrelated information, making them useful for a variety of malicious activities.
+    *   **Misinformation:** False content generated by LLMs is harder to detect and may use more deceptive styles.
+    *   **Social Engineering:** LLMs can infer users’ personal attributes, such as location and income, from seemingly harmless text, and can even directly extract personal information.
+    *   **Scientific Misconduct:** LLMs can generate coherent original text and even complete academic papers, posing a major challenge for detecting academic misconduct.
+    *   **Fraud:** Tools designed specifically for cybercrime, such as FraudGPT and WormGPT, have emerged. They lack safety guardrails and can be used to generate fraudulent emails and plan attacks.
 
-**发现 IV:** 用户层攻击是最普遍的，这主要归因于LLM日益增强的类人推理能力，使其能生成逼真的对话和内容。目前，LLM对操作系统和硬件功能的访问权限有限，这限制了其他层级攻击的普遍性。
+**Finding IV:** User-level attacks are the most prevalent, mainly due to LLMs’ increasingly human-like reasoning abilities, which enable them to generate realistic conversations and content. At present, LLMs have limited access to OS and hardware capabilities, which constrains the prevalence of attacks at other levels.
 
-## LLM的漏洞与防御（丑）
+## Vulnerabilities and Defenses of LLMs (Ugly)
 
-本节探讨LLM自身的漏洞、面临的威胁以及相应的防御对策。
+This section examines the vulnerabilities of LLMs themselves, the threats they face, and the corresponding defense measures.
 
-## LLM的漏洞与威胁
+## Vulnerabilities and Threats of LLMs
 
-本文将针对LLM的威胁分为两类：AI模型固有漏洞和非AI模型固有漏洞。
+This paper categorizes threats against LLMs into two types: AI model inherent vulnerabilities and non-AI model inherent vulnerabilities.
 
-*   **AI模型固有漏洞 (AI Model Inherent Vulnerabilities):** 这类漏洞源于机器学习模型本身的特性。
+*   **AI Model Inherent Vulnerabilities:** These vulnerabilities stem from the characteristics of machine learning models themselves.

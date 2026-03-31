@@ -2,74 +2,73 @@
 layout: default
 title: "MobileLLM-Pro Technical Report"
 ---
+## Meta MobileLLM-Pro: A 1B-Parameter Mobile Model Takes the Crown, with Four Major Innovations Surpassing Gemma and Llama 3.2
 
-## Meta MobileLLM-Pro：10亿参数手机模型称王，四大创新超越Gemma与Llama 3.2
+While powerful AI models are still orchestrating everything from cloud servers, a transformation is quietly taking place on the devices in our hands. Yet making AI run smoothly on phones has always faced a tricky challenge: large models are too bulky, while small models are not smart enough.
 
-当强大的AI模型还在云端服务器上运筹帷幄时，一场变革正在我们的掌上设备中悄然发生。然而，让AI在手机上流畅运行，始终面临一个棘手的难题：大模型太笨重，小模型又不够聪明。
+> **Paper Title**: MobileLLM-Pro Technical Report
+> **ArXiv URL**: http://arxiv.org/abs/2511.06719v1
 
-> **论文标题**：MobileLLM-Pro Technical Report
-> **ArXiv URL**：http://arxiv.org/abs/2511.06719v1
+Meta Reality Labs’ latest research result, **MobileLLM-Pro**, is designed to break this deadlock. It is a lightweight language model with only 1 billion parameters, yet it significantly outperforms Google’s Gemma 3-1B and Meta’s own Llama 3.2-1B across 11 standard benchmark tests.
 
-Meta Reality Labs最新的研究成果 **MobileLLM-Pro**，正是为了打破这一僵局而来。它是一个仅有10亿参数的轻量级语言模型，却在11项标准基准测试中，显著超越了Google的Gemma 3-1B和Meta自家的Llama 3.2-1B。
-
-更惊人的是，它支持高达128K的上下文窗口，并在4-bit量化后，性能几乎没有衰减。这一切是如何实现的？答案藏在 MobileLLM-Pro 的四大核心创新之中。
+Even more impressive, it supports a context window of up to 128K, and after 4-bit quantization, its performance barely degrades. How was this achieved? The answer lies in the four core innovations of MobileLLM-Pro.
 
 <img src="/images/2511.06719v1/process.jpg" alt="MobileLLM-Pro的四阶段训练流程" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-### 核心架构：小身材，大容量
+### Core Architecture: Small Size, Big Capacity
 
-MobileLLM-Pro的“骨架”基于成熟的Transformer架构，并借鉴了Llama系列的设计精髓。虽然只有10亿参数，但它拥有与Llama 4等前沿模型相同的202,048个词汇表，通过**嵌入层共享**（embedding sharing）技术，节省了约2.6亿参数。
+MobileLLM-Pro’s “skeleton” is based on the mature Transformer architecture and draws on the design essence of the Llama family. Although it has only 1 billion parameters, it uses the same 202,048-token vocabulary as frontier models such as Llama 4, saving about 260 million parameters through **embedding sharing**.
 
-为了在端侧设备上高效处理128K长文本，该研究采用了**局部-全局注意力**（Local-Global Attention）机制。模型大部分层使用滑动窗口为512个token的局部注意力，仅在少数关键层（每隔3层）使用全局注意力，从而在计算效率和长上下文能力之间取得了绝佳平衡。
+To efficiently handle 128K-long text on edge devices, the study adopts a **Local-Global Attention** mechanism. Most layers use local attention with a sliding window of 512 token, while global attention is used only in a few key layers (every 3 layers), striking an excellent balance between computational efficiency and long-context capability.
 
-### 创新一：隐式位置蒸馏，巧学长文本
+### Innovation 1: Implicit Positional Distillation, Learning Long Text the Smart Way
 
-传统模型要学会处理长文本，通常需要“投喂”大量长序列数据。但这不仅计算成本高昂，还容易导致模型在学习新位置信息时，忘记已有的知识。
+Traditional models usually need to be “fed”大量 long-sequence data to learn how to handle long text. But this is not only computationally expensive, it can also cause the model to forget existing knowledge while learning new positional information.
 
-MobileLLM-Pro提出了一种名为**隐式位置蒸馏**（implicit positional distillation）的全新技术。
+MobileLLM-Pro proposes a new technique called **implicit positional distillation**.
 
 <img src="/images/2511.06719v1/impl_pos_emb_2.jpg" alt="隐式位置蒸馏示意图" style="width:90%; max-width:700px; margin:auto; display:block;">
 
-它的核心思想是：让一个看过128K长文本的强大教师模型（Llama 4-Scout），将长距离依赖关系和位置理解能力，“蒸馏”提炼出来，再传授给学生模型（MobileLLM-Pro）。整个过程中，学生模型根本不需要看到完整的长文本数据。
+Its core idea is to let a powerful teacher model that has seen 128K-long text (Llama 4-Scout) distill long-range dependencies and positional understanding, and then pass them on to the student model (MobileLLM-Pro). Throughout the process, the student model never needs to see the full long-text data.
 
-这就好比一位经验丰富的导师，不需要让学生完整阅读一部巨著，而是通过讲解书中关键章节的关联，就能让学生领悟整本书的脉络。这种方法巧妙地扩展了模型的上下文能力，同时避免了从短文本到长文本训练时的分布剧变问题。
+This is like an experienced mentor who does not need a student to read a massive tome from start to finish; by explaining the connections between key chapters, the student can grasp the structure of the entire book. This method cleverly expands the model’s context capability while avoiding the distribution shift problem that arises when training moves from short text to long text.
 
-### 创新二：专家模型融合，不增参数能力更强
+### Innovation 2: Specialist Model Merging, Stronger Without Adding Parameters
 
-为了让小模型变得“博学多才”，研究者们通常会在训练数据中混合代码、推理、知识等不同领域的内容。但这可能导致不同能力在训练中相互“竞争”和干扰。
+To make small models more “well-rounded,” researchers usually mix code, reasoning, knowledge, and other domain content in the training data. But this can cause different capabilities to “compete” and interfere with one another during training.
 
-MobileLLM-Pro采用了**专家模型融合**（Specialist Model Merging）策略。在预训练的最后阶段，他们基于同一个模型检查点，并行训练出多个“领域专家”，比如一个编码专家、一个推理专家。
+MobileLLM-Pro adopts a **Specialist Model Merging** strategy. In the final stage of pretraining, they train multiple “domain experts” in parallel based on the same model checkpoint, such as a coding expert and a reasoning expert.
 
 <img src="/images/2511.06719v1/btm.jpg" alt="专家模型融合过程" style="width:85%; max-width:600px; margin:auto; display:block;">
 
-最后，通过**非均匀权重平均**（non-uniform weight averaging）的方法，将这些专家的“智慧”（模型权重）融合到一个模型中。这种方法不增加任何参数，却能创造出一个在各项能力上超越单个专家的“全能选手”。
+Finally, using **non-uniform weight averaging**, they merge the “wisdom” (model weights) of these experts into a single model. This approach adds no parameters, yet creates an “all-rounder” that outperforms any single expert across capabilities.
 
-### 创新三：模拟驱动的数据配比
+### Innovation 3: Simulation-Driven Data Mixing
 
-小模型对训练数据的质量和配比极为敏感。不同领域数据（如代码、数学、通用知识）的比例稍有不慎，就可能导致性能下降。
+Small models are extremely sensitive to the quality and mix of training data. A slight mistake in the proportions of different domain data, such as code, math, and general knowledge, can lead to performance drops.
 
-该研究采用了**可扩展数据混合器**（**Scalable Data Mixer, SDM**）框架。通过一次模拟训练运行，自动估算不同数据领域对模型性能的贡献度，从而为正式训练找到一个最优的数据配比方案。这确保了模型在训练的每个阶段都能“吃”到最科学、最营养的“数据餐”。
+This study adopts the **Scalable Data Mixer (SDM)** framework. Through a single simulated training run, it automatically estimates the contribution of different data domains to model performance, thereby finding an optimal data-mixing scheme for formal training. This ensures that at every stage of training, the model gets the most scientific and nutritious “data meal.”
 
-消融实验表明，与均匀混合数据相比，这种方法让预训练性能提升了超过10%（绝对值）。
+Ablation experiments show that, compared with uniformly mixed data, this method improves pretraining performance by more than 10% in absolute terms.
 
-### 创新四：量化感知训练，4-bit部署不掉队
+### Innovation 4: Quantization-Aware Training, No Drop in 4-bit Deployment
 
-模型要部署到手机上，**量化**（Quantization）是必经之路，即将模型权重从32位浮点数压缩到4位整数（INT4）。然而，直接对训练好的模型进行**训练后量化**（**Post-Training Quantization, PTQ**）会导致MobileLLM-Pro性能严重下降。
+To deploy a model on a phone, **quantization** is unavoidable: compressing model weights from 32-bit floating-point numbers to 4-bit integers (INT4). However, directly applying **Post-Training Quantization (PTQ)** to a trained model causes MobileLLM-Pro’s performance to drop sharply.
 
-为此，研究团队采用了**量化感知训练**（**Quantization-Aware Training, QAT**）。在训练过程中就将量化操作引入计算图中，让模型提前“感知”到自己未来将被量化的事实，并学会在这种约束下保持高性能。
+To address this, the research team adopted **Quantization-Aware Training (QAT)**. During training, quantization operations are introduced into the computation graph, allowing the model to “anticipate” that it will be quantized in the future and learn to maintain high performance under this constraint.
 
-此外，他们还结合了**自蒸馏**（self-distillation），让全精度的模型作为教师，指导量化模型进行学习，最大程度地保留了模型的推理和长上下文能力。最终，4-bit量化后的模型性能仅有约1%的轻微下降，在实际应用中几乎可以忽略不计。
+In addition, they combined this with **self-distillation**, using the full-precision model as the teacher to guide the quantized model’s learning, preserving the model’s reasoning and long-context capabilities to the greatest extent. In the end, the 4-bit quantized model saw only a slight performance drop of about 1%, which is almost negligible in practical applications.
 
-### 性能表现：全面超越同级模型
+### Performance: Comprehensive Outperformance of Peer Models
 
-无论是预训练还是指令微调，MobileLLM-Pro的表现都堪称惊艳。
+Whether in pretraining or instruction fine-tuning, MobileLLM-Pro’s performance is truly impressive.
 
-在预训练阶段，它在MMLU、GSM8K等11个基准测试的平均分上，超过了Gemma 3-1B和Llama 3.2-1B。
+During pretraining, it outperformed Gemma 3-1B and Llama 3.2-1B in the average scores across 11 benchmarks including MMLU and GSM8K.
 
-在指令微调后，它在代码生成（MBPP, HumanEval）、函数调用（BFCLv2）、文本改写（OpenRewrite）等多个“助理风格”任务上同样领先于竞争对手，展现了作为端侧AI助手的巨大潜力。
+After instruction fine-tuning, it also led the competition on multiple “assistant-style” tasks such as code generation (MBPP, HumanEval), function calling (BFCLv2), and text rewriting (OpenRewrite), demonstrating huge potential as an on-device AI assistant.
 
-### 总结
+### Conclusion
 
-MobileLLM-Pro并非简单地对现有模型进行缩减，而是通过一系列精心设计的创新，系统性地解决了端侧模型面临的核心挑战：如何在有限的资源下实现强大的通用能力、长上下文理解和高效部署。
+MobileLLM-Pro is not simply a downsized version of an existing model; rather, through a series of carefully designed innovations, it systematically addresses the core challenges faced by edge models: how to achieve strong general capabilities, long-context understanding, and efficient deployment under limited resources.
 
-通过开源模型权重，Meta不仅为业界提供了一个可以直接使用的强大端侧模型，更重要的是，它为未来如何构建更高效、更智能的端侧AI系统提供了一份宝贵的“Pro”级蓝图。
+By open-sourcing the model weights, Meta not only provides the industry with a powerful edge model that can be used directly, but more importantly, it offers a valuable “Pro”-level blueprint for how to build more efficient and smarter on-device AI systems in the future.

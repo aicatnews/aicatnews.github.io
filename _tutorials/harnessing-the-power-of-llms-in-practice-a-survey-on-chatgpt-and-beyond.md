@@ -6,188 +6,188 @@ title: "Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond
 
 - **ArXiv URL**: http://arxiv.org/abs/2304.13712v2
 
-- **作者**: Bing Yin; Qizhang Feng; Ruixiang Tang; Xia Hu; Haoming Jiang; Jingfeng Yang; Xiaotian Han; Hongye Jin
+- **Authors**: Bing Yin; Qizhang Feng; Ruixiang Tang; Xia Hu; Haoming Jiang; Jingfeng Yang; Xiaotian Han; Hongye Jin
 
-- **发布机构**: Amazon; Rice University; Texas A&M University
+- **Publishing Institutions**: Amazon; Rice University; Texas A&M University
 
 ---
 
 ## TL;DR
-本文是一份面向实践者和终端用户的综合性实践指南，围绕模型、数据和下游任务三个维度，深入探讨了如何有效利用大型语言模型（LLMs）解决自然语言处理（NLP）问题，并详细剖析了不同场景下选择LLMs或微调模型的利弊。
+This article is a comprehensive practical guide for practitioners and end users. It takes a deep dive into how to effectively use large language models (LLMs) to solve natural language processing (NLP) problems from three dimensions: models, data, and downstream tasks, and it also analyzes in detail the pros and cons of choosing LLMs versus fine-tuned models in different scenarios.
 
-## 模型实用指南
-本节首先对现代语言模型的发展历程进行了概述和观察，然后将其主要分为两大类：BERT风格（编码器-解码器或仅编码器）和GPT风格（仅解码器）。
+## Practical Guide to Models
+This section first provides an overview and observations on the development of modern language models, and then mainly divides them into two categories: BERT-style (encoder-decoder or encoder-only) and GPT-style (decoder-only).
 
 <img src="/images/2304.13712v2/page_2_Figure_1.jpg" alt="Refer to caption" style="width:85%; max-width:450px; margin:auto; display:block;">
-图1. 现代LLMs的演化树。它追溯了近年来语言模型的发展，并突出了一些最知名的模型。同一分支上的模型关系更近。基于Transformer的模型以非灰色显示：蓝色分支为仅解码器模型，粉色分支为仅编码器模型，绿色分支为编码器-解码器模型。模型在时间轴上的垂直位置代表其发布日期。开源模型用实心方块表示，闭源模型用空心方块表示。右下角的堆叠条形图显示了来自不同公司和机构的模型数量。
+Figure 1. The evolutionary tree of modern LLMs. It traces the development of language models in recent years and highlights some of the best-known models. Models on the same branch are more closely related. Transformer-based models are shown in non-gray colors: the blue branch is decoder-only models, the pink branch is encoder-only models, and the green branch is encoder-decoder models. A model’s vertical position on the timeline represents its release date. Open-source models are shown as solid squares, while closed-source models are shown as hollow squares. The stacked bar chart in the lower right shows the number of models from different companies and institutions.
 
-从图1的演化树中，可以观察到以下趋势：
-a) **仅解码器（Decoder-only）模型逐渐主导LLMs的发展**：早期，这类模型不及编码器-解码器或仅编码器模型流行。但自2021年GPT-3问世后，仅解码器模型迎来爆发式增长，而以BERT为代表的仅编码器模型则逐渐式微。
+From the evolutionary tree in Figure 1, the following trends can be observed:
+a) **Decoder-only models are gradually dominating the development of LLMs**: In the early days, these models were less popular than encoder-decoder or encoder-only models. But since the release of GPT-3 in 2021, decoder-only models have seen explosive growth, while encoder-only models represented by BERT have gradually declined.
 
-b) **OpenAI在LLM领域保持领先**：无论是过去还是现在，OpenAI在开发与GPT-3及GPT-4相媲美的模型方面始终处于领导地位，其他机构难以追赶。
+b) **OpenAI remains the leader in the LLM field**: Both in the past and now, OpenAI has consistently been at the forefront of developing models comparable to GPT-3 and GPT-4, and other institutions have found it difficult to catch up.
 
-c) **Meta对开源LLM贡献卓著**：Meta是商业公司中对开源社区最慷慨的贡献者之一，其开发的所有LLM均已开源。
+c) **Meta has made outstanding contributions to open-source LLMs**: Meta is one of the most generous contributors to the open-source community among commercial companies, and all of the LLMs it has developed have been open-sourced.
 
-d) **LLM呈现闭源趋势**：在2020年之前，大多数LLM是开源的。但自GPT-3之后，公司越来越倾向于闭源其模型（如PaLM, LaMDA, GPT-4），这增加了学术界进行模型训练研究的难度，基于API的研究可能成为主流。
+d) **LLMs are trending toward closed source**: Before 2020, most LLMs were open source. But since GPT-3, companies have increasingly preferred to keep their models closed source (e.g., PaLM, LaMDA, GPT-4), which has made model-training research more difficult for academia, and API-based research may become the mainstream.
 
-e) **编码器-解码器模型仍有潜力**：尽管仅解码器模型因其灵活性和通用性看似更有前景，但编码器-解码器架构仍在被积极探索，且其中多数是开源的。
+e) **Encoder-decoder models still have potential**: Although decoder-only models seem more promising because of their flexibility and generality, encoder-decoder architectures are still being actively explored, and most of them are open source.
 
-下表总结了这两类模型的特点和代表模型。
+The table below summarizes the characteristics and representative models of these two types of models.
 
 
-| | 特点 | 代表性LLMs |
+| | Features | Representative LLMs |
 | :--- | :--- | :--- |
-| **编码器-解码器或仅编码器 (BERT风格)** | **训练** <br> **模型类型** <br> **预训练任务** | 掩码语言模型 (Masked Language Models) <br> 判别式 (Discriminative) <br> 预测被掩码的词 | ELMo, BERT, RoBERTa, DistilBERT, BioBERT, XLM, XLNet, ALBERT, ELECTRA, T5, GLM, XLM-E, ST-MoE, AlexaTM |
-| **仅解码器 (GPT风格)** | **训练** <br> **模型类型** <br> **预训练任务** | 自回归语言模型 (Autoregressive Language Models) <br> 生成式 (Generative) <br> 预测下一个词 | GPT-3, OPT, PaLM, BLOOM, MT-NLG, GLaM, Gopher, Chinchilla, LaMDA, GPT-J, LLaMA, GPT-4, BloombergGPT |
+| **Encoder-decoder or encoder-only (BERT-style)** | **Training** <br> **Model type** <br> **Pretraining task** | Masked Language Models <br> Discriminative <br> Predict masked words | ELMo, BERT, RoBERTa, DistilBERT, BioBERT, XLM, XLNet, ALBERT, ELECTRA, T5, GLM, XLM-E, ST-MoE, AlexaTM |
+| **Decoder-only (GPT-style)** | **Training** <br> **Model type** <br> **Pretraining task** | Autoregressive Language Models <br> Generative <br> Predict the next word | GPT-3, OPT, PaLM, BLOOM, MT-NLG, GLaM, Gopher, Chinchilla, LaMDA, GPT-J, LLaMA, GPT-4, BloombergGPT |
 
-<center>表1. 大型语言模型总结</center>
+<center>Table 1. Summary of large language models</center>
 
-### BERT风格语言模型：编码器-解码器或仅编码器
-这类模型的核心训练范式是掩码语言模型（Masked Language Model），即在输入句子中掩盖一部分词，然后让模型根据上下文预测这些被掩盖的词。这种方式使模型能深入理解词与词之间以及词与上下文之间的关系。这类模型，如BERT、RoBERTa和T5，在许多NLP任务（如情感分析、命名实体识别）上取得了SOTA（State-of-the-art）成果。
+### BERT-style language models: encoder-decoder or encoder-only
+The core training paradigm of this type of model is the Masked Language Model, in which some words in the input sentence are masked and the model is then asked to predict those masked words based on the context. This approach enables the model to deeply understand the relationships between words and between words and context. Models of this kind, such as BERT, RoBERTa, and T5, have achieved SOTA (State-of-the-art) results on many NLP tasks, such as sentiment analysis and named entity recognition.
 
-### GPT风格语言模型：仅解码器
-这类模型通常是自回归语言模型（Autoregressive Language Models），其训练方式是根据前面的词序列来预测下一个词。研究发现，大幅扩展这类模型的规模能显著提升其在少样本（few-shot）甚至零样本（zero-shot）场景下的性能。以GPT-3为代表的模型通过提示（prompting）和上下文学习（in-context learning）展现了卓越的少样本/零样本能力。近期的突破是ChatGPT，它在GPT-3的基础上针对对话任务进行了优化，实现了更具交互性、连贯性和上下文感知能力的对话。
+### GPT-style language models: decoder-only
+These models are usually Autoregressive Language Models, trained by predicting the next word based on the preceding sequence of words. Research has found that scaling up these models significantly can greatly improve their performance in few-shot and even zero-shot settings. Models represented by GPT-3 demonstrate outstanding few-shot/zero-shot capabilities through prompting and in-context learning. A recent breakthrough is ChatGPT, which was optimized on top of GPT-3 for dialogue tasks, enabling more interactive, coherent, and context-aware conversations.
 
-## 数据实用指南
-数据在模型选择和性能中扮演着至关重要的角色，其影响贯穿预训练、微调和推理（inference）的全过程。
+## Practical Guide to Data
+Data plays a crucial role in model selection and performance, and its impact runs through the entire process of pretraining, fine-tuning, and inference.
 
-> **核心观点 1**
+> **Core Viewpoint 1**
 >
-> (1) 在面临分布外数据（out-of-distribution, OOD），如对抗样本和领域偏移时，LLMs比微调模型具有更好的泛化能力。
+> (1) When facing out-of-distribution (OOD) data, such as adversarial examples and domain shift, LLMs have better generalization ability than fine-tuned models.
 >
-> (2) 当标注数据有限时，LLMs是更优选择；当标注数据充足时，两者皆可，具体取决于任务需求。
+> (2) When labeled data is limited, LLMs are the better choice; when labeled data is sufficient, either can be used, depending on the task requirements.
 >
-> (3) 建议选择那些在与下游任务相似领域数据上进行过预训练的模型。
+> (3) It is recommended to choose models that have been pretrained on data from domains similar to the downstream task.
 
-### 预训练数据
-预训练数据的质量、数量和多样性是LLMs强大能力的基础，对模型性能有决定性影响。预训练数据通常包含书籍、文章、网站等海量文本，旨在为模型灌输丰富的词汇知识、语法、句法、语义以及常识。数据的多样性也至关重要，例如，PaLM和BLOOM因包含大量多语言数据而在多语言任务和机器翻译上表现出色；GPT-3.5因包含代码数据而在代码生成方面能力突出。因此，选择LLM时，应优先考虑其预训练数据与下游任务的相似性。
+### Pretraining Data
+The quality, quantity, and diversity of pretraining data are the foundation of LLMs’ powerful capabilities and have a decisive impact on model performance. Pretraining data usually contains massive amounts of text from books, articles, websites, and more, aiming to instill rich vocabulary knowledge, grammar, syntax, semantics, and common sense into the model. Data diversity is also crucial. For example, PaLM and BLOOM perform well on multilingual tasks and machine translation because they include large amounts of multilingual data; GPT-3.5 excels at code generation because it includes code data. Therefore, when choosing an LLM, priority should be given to the similarity between its pretraining data and the downstream task.
 
-### 微调数据
-根据可用标注数据的数量，可以分为三种场景：
-*   **零标注数据 (Zero annotated data)**：在此情况下，直接使用LLMs的零样本能力是最佳选择。LLMs在零样本设置下通常优于传统的零样本方法，并且由于不更新模型参数，可以避免灾难性遗忘（catastrophic forgetting）。
-*   **少量标注数据 (Few annotated data)**：LLMs的上下文学习（in-context learning）能力此时表现突出。通过在输入提示中加入少量示例，LLMs能够有效地泛化到新任务，其性能甚至能媲美经过微调的SOTA模型。相比之下，传统的少样本学习方法（如元学习）应用于小模型时，可能因模型规模和过拟合问题而表现不佳。
-*   **充足标注数据 (Abundant annotated data)**：当有大量标注数据时，微调小模型和使用LLMs都是可行的。微调模型通常能很好地拟合数据，而LLM则可能在满足特定约束（如隐私保护）时更有优势。此时的选择需综合考虑性能、计算资源和部署限制。
+### Fine-tuning Data
+Depending on the amount of labeled data available, there are three scenarios:
+*   **Zero annotated data**: In this case, directly using the zero-shot capability of LLMs is the best choice. LLMs usually outperform traditional zero-shot methods in zero-shot settings, and because model parameters are not updated, catastrophic forgetting can be avoided.
+*   **Few annotated data**: LLMs’ in-context learning ability stands out here. By including a few examples in the input prompt, LLMs can generalize effectively to new tasks, and their performance can even match that of fine-tuned SOTA models. In contrast, traditional few-shot learning methods, such as meta-learning, when applied to small models, may perform poorly due to model size and overfitting issues.
+*   **Abundant annotated data**: When there is a large amount of labeled data, both fine-tuning small models and using LLMs are viable. Fine-tuned models usually fit the data well, while LLMs may have an advantage when specific constraints, such as privacy protection, must be satisfied. The choice here should take performance, computational resources, and deployment constraints into account.
 
-总结而言，LLMs在数据可用性方面更具通用性，而微调模型在有充足标注数据时是一个可靠选项。
+In summary, LLMs are more versatile in terms of data availability, while fine-tuned models are a reliable option when sufficient labeled data is available.
 
-### 测试/用户数据
-在实际部署中，测试数据与训练数据之间常存在分布差异，如领域偏移（domain shifts）、分布外变异（out-of-distribution variations）或对抗性样本（adversarial examples）。精调模型由于拟合了特定数据分布，在面对这些挑战时泛化能力较差。而LLMs因其未经过显式的拟合过程，表现出更强的鲁棒性。特别是经过人类反馈强化学习（Reinforcement Learning from Human Feedback, RLHF）训练的LLMs（如InstructGPT和ChatGPT），其泛化能力得到显著增强，在多数对抗性和OOD任务上表现优越。
+### Test/User Data
+In real-world deployment, there are often distribution differences between test data and training data, such as domain shifts, out-of-distribution variations, or adversarial examples. Fine-tuned models, having been fitted to a specific data distribution, tend to generalize poorly when facing these challenges. LLMs, by contrast, show stronger robustness because they have not undergone an explicit fitting process. In particular, LLMs trained with Reinforcement Learning from Human Feedback (RLHF) (such as InstructGPT and ChatGPT) have significantly improved generalization and perform well on most adversarial and OOD tasks.
 
-## NLP 任务实用指南
-本节详细探讨LLMs在各类NLP下游任务中的适用与不适用场景。下图提供了一个决策流程，可作为快速选择模型的参考。
+## Practical Guide to NLP Tasks
+This section examines in detail where LLMs are and are not suitable across various NLP downstream tasks. The figure below provides a decision flowchart that can serve as a quick reference for model selection.
 
 <img src="/images/2304.13712v2/page_6_Figure_1.jpg" alt="Refer to caption" style="width:85%; max-width:600px; margin:auto; display:block;">
-<center>图2. 决策流程图</center>
+<center>Figure 2. Decision flowchart</center>
 
-### 传统NLU任务
-传统自然语言理解（Natural Language Understanding, NLU）任务包括文本分类、命名实体识别（NER）、文本蕴含等，通常作为更大型AI系统的中间步骤。
+### Traditional NLU Tasks
+Traditional Natural Language Understanding (NLU) tasks include text classification, named entity recognition (NER), textual entailment, and so on, and are usually intermediate steps in larger AI systems.
 
-> **核心观点 2**
+> **Core Viewpoint 2**
 >
-> 在传统NLU任务中，微调模型通常是更好的选择，但当需要强泛化能力时，LLMs可以提供帮助。
+> In traditional NLU tasks, fine-tuned models are usually the better choice, but LLMs can help when strong generalization is required.
 
-*   **不适用场景 (No use case)**：在大多数有充足、高质量标注数据且测试集分布内外差异不大的NLU基准（如GLUE, SuperGLUE）上，微调模型的性能通常优于LLMs。
-    *   **文本分类**：在多数数据集上，LLMs略逊于微调模型。尤其在**毒性检测**任务上，差距非常大，LLMs表现不佳，而基于BERT的微调模型（如Perspective API）效果更好。
-    *   **自然语言推断 (NLI)** 和 **问答 (QA)**：在多数数据集上，微调模型表现更优。
-    *   **信息检索 (IR)**：LLMs尚未被广泛应用，因为难以将大量候选文本转换成其擅长的少样本/零样本格式。
-    *   **底层中间任务 (NER、依存句法分析)**：根据现有评估，LLMs在这些任务上（如CoNLL03 NER）的性能远不及微调模型。
+*   **No use case**: On most NLU benchmarks with sufficient, high-quality labeled data and little distribution shift between the test set and the training set (such as GLUE and SuperGLUE), fine-tuned models usually outperform LLMs.
+    *   **Text classification**: On most datasets, LLMs lag slightly behind fine-tuned models. The gap is especially large in **toxicity detection** tasks, where LLMs perform poorly, while BERT-based fine-tuned models (such as Perspective API) do better.
+    *   **Natural Language Inference (NLI)** and **Question Answering (QA)**: On most datasets, fine-tuned models perform better.
+    *   **Information Retrieval (IR)**: LLMs have not been widely applied yet, because it is difficult to convert a large number of candidate texts into the few-shot/zero-shot format they are good at.
+    *   **Lower-level intermediate tasks (NER, dependency parsing)**: Based on existing evaluations, LLMs perform far worse than fine-tuned models on these tasks (such as CoNLL03 NER).
 
-*   **适用场景 (Use case)**：当任务需要极强的泛化能力时，LLMs的优势凸显。
-    *   **杂项文本分类**：对于主题多样、关系不明确、难以格式化的真实世界分类任务，LLMs表现更好。
-    *   **对抗性NLI (ANLI)**：这是一个通过对抗性挖掘构建的困难数据集，LLMs在其上表现出优越的性能。
-    *   这些例子都证明了LLMs在处理分布外数据和稀疏标注数据时的卓越泛化能力。
+*   **Use case**: When a task requires extremely strong generalization, the advantages of LLMs become clear.
+    *   **Miscellaneous text classification**: For real-world classification tasks with diverse topics, unclear relationships, and formats that are hard to standardize, LLMs perform better.
+    *   **Adversarial NLI (ANLI)**: This is a difficult dataset built through adversarial mining, and LLMs show superior performance on it.
+    *   These examples all demonstrate the excellent generalization ability of LLMs when handling out-of-distribution data and sparsely labeled data.
 
-### 生成任务
-自然语言生成（Natural Language Generation, NLG）任务主要分为两类：一是将输入文本转换为新的符号序列（如摘要、翻译），二是从零开始“开放式”生成文本（如写邮件、故事、代码）。
+### Generation Tasks
+Natural Language Generation (NLG) tasks mainly fall into two categories: converting input text into a new symbol sequence (such as summarization and translation), and generating text “from scratch” in an open-ended way (such as writing emails, stories, or code).
 
-> **核心观点 3**
+> **Core Viewpoint 3**
 >
-> 凭借强大的生成能力和创造力，LLMs在大多数生成任务中表现出优越性。
+> With strong generation ability and creativity, LLMs perform better on most generation tasks.
 
-*   **适用场景 (Use case)**：
-    *   **摘要任务**：尽管在ROUGE等自动评估指标上不占优，但在人工评估中，LLMs生成的摘要在忠实度、连贯性和相关性方面更受青睐。
-    *   **机器翻译 (MT)**：LLMs在将低资源语言翻译成英语方面表现出色，这得益于其预训练数据中大量的英语语料。多语言预训练模型（如BLOOM）在更广泛的语言对上表现良好。
-    *   **开放式生成**：LLMs在生成新闻文章、小说和代码方面能力非凡。例如，GPT-4能够解决相当一部分有难度的LeetCode编程问题。
+*   **Use case**:
+    *   **Summarization**: Although they do not lead on automatic metrics such as ROUGE, in human evaluations, summaries generated by LLMs are preferred for faithfulness, coherence, and relevance.
+    *   **Machine Translation (MT)**: LLMs excel at translating low-resource languages into English, thanks to the large amount of English text in their pretraining data. Multilingual pretrained models (such as BLOOM) perform well across a broader range of language pairs.
+    *   **Open-ended generation**: LLMs are remarkably capable at generating news articles, novels, and code. For example, GPT-4 can solve a substantial portion of difficult LeetCode programming problems.
 
-*   **不适用场景 (No use case)**：在大多数高资源和极低资源的翻译任务中，专门微调的模型（如DeltaLM+Zcode）性能仍然最佳。
+*   **No use case**: In most high-resource and extremely low-resource translation tasks, specially fine-tuned models (such as DeltaLM+Zcode) still achieve the best performance.
 
-### 知识密集型任务
-这类任务高度依赖背景知识、领域专业知识或世界常识，超越了简单的模式识别。
+### Knowledge-Intensive Tasks
+These tasks rely heavily on background knowledge, domain expertise, or world knowledge, going beyond simple pattern recognition.
 
-> **核心观点 4**
+> **Core Viewpoint 4**
 >
-> (1) 由于储存了海量的真实世界知识，LLMs在知识密集型任务上表现出色。
+> (1) Because they store massive amounts of real-world knowledge, LLMs perform well on knowledge-intensive tasks.
 >
-> (2) 当任务所需的知识与模型学到的知识不匹配，或任务仅需上下文知识时，LLMs表现不佳，此时微调模型同样有效。
+> (2) When the knowledge required by a task does not match what the model has learned, or when the task only requires contextual knowledge, LLMs perform poorly; in such cases, fine-tuned models are equally effective.
 
-*   **适用场景 (Use case)**：
-    *   **闭卷问答**：在需要模型记忆事实性知识的任务（如NaturalQuestions, TriviaQA）中，LLMs表现远超微调模型。
-    *   **大规模多任务语言理解 (MMLU)**：这是一个涵盖57个学科、需要广泛知识的挑战性基准，新发布的GPT-4在此任务上取得了SOTA性能。
-    *   **Big-bench中的部分任务**：在一些需要特定领域知识（如印度神话、元素周期表）的任务上，LLMs的性能甚至超越了人类平均水平。
+*   **Use case**:
+    *   **Closed-book QA**: On tasks that require the model to recall factual knowledge (such as NaturalQuestions and TriviaQA), LLMs perform far better than fine-tuned models.
+    *   **Massive Multitask Language Understanding (MMLU)**: This is a challenging benchmark covering 57 subjects and requiring broad knowledge; the newly released GPT-4 achieved SOTA performance on this task.
+    *   **Some tasks in Big-bench**: On certain tasks that require specific domain knowledge (such as Indian mythology or the periodic table), LLMs even outperform the human average.
 
-*   **不适用场景 (No use case)**：
-    *   **仅需上下文知识的任务**：如机器阅读理解（Machine Reading Comprehension, MRC），模型只需理解给定段落即可回答问题，小型的微调模型同样能胜任。
-    *   **知识与模型储备相悖的任务**：当任务要求与模型已有的世界知识相悖或无关时（如Big-Bench中的“ASCII艺术数字识别”或“数学符号重定义”任务），LLMs表现很差，甚至不如随机猜测。
-    *   **可使用检索增强的场景**：通过检索增强（retrieval augmentation），让模型可以访问外部知识库。在这种“开卷”模式下，小型的微调模型结合检索器，其性能可以超过不带检索的LLMs。
+*   **No use case**:
+    *   **Tasks that only require contextual knowledge**: For example, in Machine Reading Comprehension (MRC), the model only needs to understand the given passage to answer the question, and a small fine-tuned model can handle this as well.
+    *   **Tasks where the required knowledge conflicts with the model’s stored knowledge**: When the task requirements conflict with or are unrelated to the model’s existing world knowledge (such as the “ASCII art digit recognition” or “mathematical symbol redefinition” tasks in Big-Bench), LLMs perform very poorly, even worse than random guessing.
+    *   **Scenarios where retrieval augmentation can be used**: Through retrieval augmentation, the model can access an external knowledge base. In this “open-book” setting, a small fine-tuned model combined with a retriever can outperform LLMs without retrieval.
 
-### 与规模化相关的能力
-模型规模（如参数量、计算量）的扩展极大地增强了语言模型的能力。某些能力，如推理，随着模型规模的扩大，从几乎不可用状态演变为接近人类水平。
+### Capabilities Related to Scale
+Scaling model size (such as parameter count and compute) greatly enhances the capabilities of language models. Some abilities, such as reasoning, evolve from being almost unusable to approaching human level as model scale increases.
 
-> **核心观点 5**
+> **Core Viewpoint 5**
 >
-> (1) 随着模型规模的指数级增长，LLMs在算术推理和常识推理等方面的能力尤为突出。
+> (1) As model scale grows exponentially, LLMs become especially strong in arithmetic reasoning and commonsense reasoning.
 >
-> (2) 随着LLMs规模扩大，会涌现出一些意外的能力，如词语操纵和逻辑能力，这为应用带来惊喜。
+> (2) As LLMs scale up, some unexpected abilities emerge, such as word manipulation and logical ability, which can be surprising in applications.
 >
-> (3) 由于对LLMs能力如何随规模变化的理解有限，在许多情况下，性能并非随着规模的扩大而稳定提升。
+> (3) Because our understanding of how LLM capabilities change with scale is limited, performance does not always improve steadily as scale increases in many cases.
 
-*   **适用场景：推理**
-    *   **算术推理/问题解决**：LLMs的算术推理能力随规模增长显著提升。在GSM8k等数据集上，作为通用模型，LLMs的性能已能与专用模型竞争，GPT-4更是超越了所有其他方法。配合思维链（Chain-of-Thought, CoT）提示，其计算能力还能进一步提升。
-    *   **常识推理**：LLMs的常识推理能力同样随规模稳步增长，在StrategyQA等数据集上优于微调模型。在ARC-C（中小学科学问题）上，GPT-4的准确率已接近100%。
+*   **Use case: reasoning**
+    *   **Arithmetic reasoning/problem solving**: LLMs’ arithmetic reasoning ability improves significantly with scale. On datasets such as GSM8k, as general-purpose models, LLMs can already compete with specialized models, and GPT-4 surpasses all other methods. With Chain-of-Thought (CoT) prompting, their computational ability can be further improved.
+    *   **Commonsense reasoning**: LLMs’ commonsense reasoning ability also improves steadily with scale, outperforming fine-tuned models on datasets such as StrategyQA. On ARC-C (elementary and middle school science questions), GPT-4’s accuracy is already close to 100%.
 
-*   **适用场景：涌现能力 (Emergent Abilities)**
-    涌现能力指那些在小模型上不存在，只有当模型规模超过某个阈值后才突然出现的能力。这些能力无法通过小模型的性能外推来预测。
-    *   **词语操纵**：如颠倒词语拼写、词语排序和字母重组。
-    *   **逻辑能力**：如逻辑推导、逻辑序列和逻辑网格谜题。
-    *   其他：高级编码（如自动调试）、概念理解等。
+*   **Applicable Scenarios: Emergent Abilities**
+    Emergent abilities refer to capabilities that do not exist in small models and only suddenly appear after the model size exceeds a certain threshold. These abilities cannot be predicted by extrapolating the performance of small models.
+    *   **Word manipulation**: such as reversing word spelling, word ordering, and letter rearrangement.
+    *   **Logical abilities**: such as logical deduction, logical sequences, and logic grid puzzles.
+    *   Others: advanced coding (e.g., automatic debugging), conceptual understanding, etc.
 
-*   **不适用场景及理解**
-    *   **逆规模现象 (Inverse Scaling Phenomenon)**：在某些任务上，模型性能随规模增大反而下降。例如，在要求模型处理被重新定义的数学符号的任务（Redefine-math）中，LLMs表现很差。
-    *   **U型现象 (U-shaped Phenomenon)**：在另一些任务上，性能随规模增大先下降后上升。例如，在评估模型是否会忽略事后信息的任务（Hindsight-neglect）中观察到此现象。
-    *   这些现象的成因仍在探索中，可能与模型过度依赖先验知识、评估指标的粒度以及任务内在的复杂性有关。这提示我们在选择模型时，并非总是越大越好。
+*   **Non-applicable Scenarios and Understanding**
+    *   **Inverse Scaling Phenomenon**: On some tasks, model performance decreases as model size increases. For example, LLMs perform poorly on tasks that require handling redefined mathematical symbols (Redefine-math).
+    *   **U-shaped Phenomenon**: On other tasks, performance first decreases and then increases as model size grows. This phenomenon has been observed in tasks that evaluate whether a model ignores hindsight information (Hindsight-neglect).
+    *   The causes of these phenomena are still being explored and may be related to the model’s overreliance on prior knowledge, the granularity of evaluation metrics, and the inherent complexity of the task. This suggests that when choosing a model, bigger is not always better.
 
-### 其他杂项任务
-本节探讨之前未覆盖的其他任务，以更全面地理解LLMs的优劣。
+### Other Miscellaneous Tasks
+This section discusses other tasks not covered previously, in order to more comprehensively understand the strengths and weaknesses of LLMs.
 
-> **核心观点 6**
+> **Core Viewpoint 6**
 >
-> (1) 在与LLMs预训练目标和数据差异较大的任务中，微调模型或专用模型仍有其用武之地。
+> (1) For tasks that differ greatly from LLMs’ pretraining objectives and data, fine-tuned models or specialized models still have their place.
 >
-> (2) LLMs是出色的人类模仿者、数据标注员和生成器。它们还可用于NLP任务的质量评估，并带来可解释性等额外好处。
+> (2) LLMs are excellent human imitators, data annotators, and generators. They can also be used for quality evaluation of NLP tasks and bring additional benefits such as interpretability.
 
-*   **不适用场景 (No use case)**：
-    *   **回归任务**：LLMs在预测连续值的回归任务（如GLUE STS-B）上表现不佳，逊于微调的RoBERTa模型。这主要是因为其语言建模的预训练目标与回归任务的目标不匹配。
-    *   **多模态任务**：LLMs主要在文本数据上训练，处理包含图像、音频、视频等多模态数据的任务能力有限。目前，BEiT、PaLI等微调的多模态模型在视觉问答（VQA）、图像描述等领域仍占主导地位。
+*   **Non-applicable Scenarios (No use case)**:
+    *   **Regression tasks**: LLMs perform poorly on regression tasks that predict continuous values (e.g., GLUE STS-B), and are inferior to fine-tuned RoBERTa models. This is mainly because their language-modeling pretraining objective does not match the objective of regression tasks.
+    *   **Multimodal tasks**: LLMs are mainly trained on text data and have limited ability to handle tasks involving multimodal data such as images, audio, and video. At present, fine-tuned multimodal models such as BEiT and PaLI still dominate in areas like visual question answering (VQA) and image captioning.
 
-*   **适用场景 (Use case)**：
-    *   **模仿人类与对话**：以ChatGPT为代表的LLMs在模仿人类对话方面表现出色，能进行连贯、可靠、信息丰富的多轮交流。
-    *   **数据标注与生成**：LLMs可作为高质量的标注员和数据增强的生成器，其生成的数据甚至被用来训练其他模型。
-    *   **质量评估**：LLMs可作为NLG任务（如摘要、翻译）的评估器，其评估结果与人类判断的相关性很高，但可能存在偏爱LLM生成文本的偏见。
-    *   **额外优势**：LLMs的某些能力带来了额外的好处，如思维链（CoT）推理过程为模型预测提供了实例级别的可解释性。
+*   **Applicable Scenarios (Use case)**:
+    *   **Human imitation and dialogue**: LLMs represented by ChatGPT excel at imitating human conversation and can carry out coherent, reliable, and information-rich multi-turn exchanges.
+    *   **Data annotation and generation**: LLMs can serve as high-quality annotators and generators for data augmentation, and the data they generate is even used to train other models.
+    *   **Quality evaluation**: LLMs can act as evaluators for NLG tasks such as summarization and translation, and their evaluation results correlate highly with human judgments, though they may exhibit a bias toward LLM-generated text.
+    *   **Additional advantages**: Certain capabilities of LLMs bring extra benefits, such as the chain-of-thought (CoT) reasoning process providing instance-level interpretability for model predictions.
 
-### 真实世界“任务”
-真实世界的“任务”通常没有学术界那样明确的定义，用户输入可能充满噪声，任务类型多样且模糊。
+### Real-world “Tasks”
+Real-world “tasks” usually do not have as clear a definition as those in academia; user inputs may be noisy, and task types are diverse and ambiguous.
 
-> **核心观点 7**
+> **Core Viewpoint 7**
 >
-> 与微调模型相比，LLMs更适合处理真实世界的场景。然而，如何有效评估模型在真实世界中的表现仍是一个开放问题。
+> Compared with fine-tuned models, LLMs are better suited to real-world scenarios. However, how to effectively evaluate model performance in the real world remains an open question.
 
-真实世界场景的挑战主要来自：
-*   **噪声/非结构化输入**：用户输入可能包含拼写错误、口语、混合语言。
-*   **非标准化的任务**：用户请求通常不属于预定义的NLP任务类别，甚至一个请求包含多个任务。
-*   **遵循复杂指令**：用户指令可能包含隐式意图，需要模型理解上下文并做出恰当回应。
+The challenges of real-world scenarios mainly come from:
+*   **Noisy/unstructured input**: User input may contain spelling mistakes, colloquial expressions, and mixed languages.
+*   **Non-standardized tasks**: User requests usually do not fall into predefined NLP task categories, and a single request may even contain multiple tasks.
+*   **Following complex instructions**: User instructions may contain implicit intent, requiring the model to understand the context and respond appropriately.
 
-LLMs因其在多样化数据上的训练，具备更强的开放域响应能力和对模糊、噪声输入的处理能力，因此比专门针对特定任务的微调模型更适合应对这些挑战。指令微调（instruction tuning）和人类对齐微调（human alignment tuning）等技术进一步增强了LLMs理解和遵循用户指令的能力。评估模型在真实世界中的有效性非常困难，主要依赖昂贵的人工评估，这也是一个重要的研究方向。
+Because they are trained on diverse data, LLMs have stronger open-domain response capabilities and better handling of ambiguous, noisy input, making them more suitable than fine-tuned models designed for specific tasks to address these challenges. Techniques such as instruction tuning and human alignment tuning further enhance LLMs’ ability to understand and follow user instructions. Evaluating a model’s effectiveness in the real world is very difficult and relies mainly on expensive human evaluation, which is also an important research direction.
 
-## 其他考量因素
-尽管LLMs在各种下游任务中表现强大，但在实际应用中还需考虑其他因素，如效率、成本和延迟等。
+## Other Considerations
+Although LLMs perform strongly across a variety of downstream tasks, practical applications still need to consider other factors such as efficiency, cost, and latency.
