@@ -2,14 +2,14 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: AI Frontier Daily # the website title (if blank, full name will be used instead)
+title: AICAT News # the website title (if blank, full name will be used instead)
 first_name: Agi
 middle_name:
 last_name: Frontier
 contact_note: >
-  Daily updates on the latest AI advances.
+  Daily AI news, paper breakdowns, and frontier updates.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Daily updates on the latest AI advances.
+  Daily AI news, paper breakdowns, and frontier updates.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
@@ -83,8 +83,8 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: AI Frontier Daily # blog_name will be displayed in your blog page
-blog_description: Daily updates on the latest AI advances.
+blog_name: AICAT News # blog_name will be displayed in your blog page
+blog_description: Daily AI news, paper breakdowns, and frontier updates.
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 
