@@ -9,7 +9,10 @@ last_name: Frontier
 contact_note: >
   Daily AI news, paper breakdowns, and frontier updates.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Daily AI news, paper breakdowns, and frontier updates.
+  Daily breakdowns of frontier AI papers, model releases, and research trends across LLMs, agents, reasoning, and multimodal systems.
+home_title: AI Paper Breakdowns, Frontier Research & Trends | AICAT News
+home_description: >
+  Daily breakdowns of frontier AI papers, model releases, and research trends across LLMs, agents, reasoning, multimodal systems, and real-world AI tooling.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
@@ -63,7 +66,7 @@ max_width: 700px
 # -----------------------------------------------------------------------------
 # Display links to the page with a preview object on social media.
 # see https://schema.org/docs/faq.html for more information
-serve_og_meta: false # Include Open Graph meta tags in the HTML head
+serve_og_meta: true # Include Open Graph meta tags in the HTML head
 serve_schema_org: false # Include Schema.org in the HTML head
 og_image: # The site-wide (default for all links) Open Graph preview image
 
@@ -85,7 +88,7 @@ bing_site_verification: 2D30F8D3D76790FE2E2D4BA11F54CD7F # out your bing-site-ve
 # -----------------------------------------------------------------------------
 
 blog_name: AICAT News # blog_name will be displayed in your blog page
-blog_description: Daily AI news, paper breakdowns, and frontier updates.
+blog_description: Daily breakdowns of frontier AI papers, model releases, and research trends across LLMs, agents, reasoning, and multimodal systems.
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 

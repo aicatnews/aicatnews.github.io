@@ -1,10 +1,30 @@
-require "active_support/all"
 require 'net/http'
 require 'json'
 require 'uri'
 
 module Helpers
-  extend ActiveSupport::NumberHelper
+  def self.number_to_human(number)
+    value = number.to_i
+    return value.to_s if value < 1_000
+
+    units = [
+      [1_000_000_000, 'B'],
+      [1_000_000, 'M'],
+      [1_000, 'K']
+    ]
+
+    divisor, suffix = units.find { |threshold, _unit| value >= threshold }
+    scaled = value.to_f / divisor
+    formatted = if scaled >= 100
+      scaled.round.to_s
+    elsif scaled >= 10
+      format('%.1f', scaled).sub(/\.0\z/, '')
+    else
+      format('%.2f', scaled).sub(/0\z/, '').sub(/\.0\z/, '')
+    end
+
+    "#{formatted}#{suffix}"
+  end
 end
 
 module Jekyll
@@ -38,7 +58,7 @@ module Jekyll
         citation_count = data["hits"]["hits"][0]["metadata"]["citation_count"].to_i
 
         # Format the citation count for readability
-        citation_count = Helpers.number_to_human(citation_count, format: '%n%u', precision: 2, units: { thousand: 'K', million: 'M', billion: 'B' })
+        citation_count = Helpers.number_to_human(citation_count)
 
       rescue Exception => e
         # Handle any errors that may occur during fetching

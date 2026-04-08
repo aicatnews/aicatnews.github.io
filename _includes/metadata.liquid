@@ -15,31 +15,180 @@
 {% endif %}
 
 {% capture author_name %}{{ site.first_name }}{% if site.middle_name %} {{ site.middle_name }}{% endif %} {{ site.last_name }}{% endcapture %}
+{% if site.title == 'blank' %}
+  {% capture site_title %}{{ author_name }}{% endcapture %}
+{% else %}
+  {% capture site_title %}{{ site.title }}{% endcapture %}
+{% endif %}
+
+{% assign page_title = page.title | default: '' | strip %}
+{% assign page_description = page.description | default: '' | strip %}
+{% assign page_url = page.url | default: '' %}
+{% assign paginator_page = paginator.page | default: 1 %}
+{% assign is_homepage = false %}
+{% if page_url == '/' or page_url == '/index.html' %}
+  {% assign is_homepage = true %}
+{% endif %}
+
+{% assign description_source = content %}
+{% if page.collection == 'tutorials' %}
+  {% assign rendered_sections = content | split: '<h2 id="tldr">TL;DR</h2>' %}
+  {% if rendered_sections.size > 1 %}
+    {% assign post_tldr = rendered_sections[1] | split: '<h2 id="' | first %}
+    {% assign description_source = post_tldr %}
+  {% else %}
+    {% assign intro_sections = content | split: '<h2 id="introduction">Introduction</h2>' %}
+    {% if intro_sections.size > 1 %}
+      {% assign post_intro = intro_sections[1] | split: '<h2 id="' | first %}
+      {% assign description_source = post_intro %}
+    {% else %}
+      {% assign overview_sections = content | split: '<h2 id="overview">Overview</h2>' %}
+      {% if overview_sections.size > 1 %}
+        {% assign post_overview = overview_sections[1] | split: '<h2 id="' | first %}
+        {% assign description_source = post_overview %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% capture generated_excerpt %}
+  {{ description_source
+    | markdownify
+    | strip_html
+    | replace: 'ArXiv URL', ' '
+    | replace: 'Authors', ' '
+    | replace: 'Publishing Organization', ' '
+    | replace: 'TL;DR', ' '
+    | replace: 'Key Definitions', ' '
+    | replace: 'Related Work', ' '
+    | replace: 'Method', ' '
+    | replace: '##', ' '
+    | replace: '---', ' '
+    | replace: '\n', ' '
+    | replace: '', ' '
+    | normalize_whitespace
+  }}
+{% endcapture %}
+{% assign generated_excerpt = generated_excerpt | strip %}
+
+{% assign generated_description = generated_excerpt | truncate: 157, '...' %}
+{% assign seo_page_title = page_title %}
+{% if page.collection == 'tutorials' and page_title != '' %}
+  {% assign trim_suffixes = ' a| an| and| as| at| by| for| from| in| of| on| or| the| to| via| with' | split: '|' %}
+  {% assign title_budget = 47 %}
+  {% assign compact_title = page_title
+    | replace_first: 'A Concise Review of ', ''
+    | replace_first: 'A Survey on ', ''
+    | replace_first: 'A Survey of ', ''
+    | replace_first: 'An Empirical Study of ', ''
+    | replace_first: 'The 2025 ', '2025 '
+    | replace: 'Sensitive to the Motives Behind Communication', 'Sensitive to Communication Motives'
+    | replace: 'A Guide to Secure Plan-then-Execute Implementations', 'Secure Plan-then-Execute'
+    | replace: 'From Data-centric Perspectives', 'Data-Centric View'
+    | replace: 'their Mitigation', 'Mitigation'
+    | replace: 'Open Language Models', 'Open LMs'
+    | replace: 'Large Language Models', 'LLMs'
+    | replace: 'Large Language Model', 'LLM'
+    | replace: 'Reinforcement Learning', 'RL'
+    | replace: 'Retrieval-Augmented Generation', 'RAG'
+    | replace: ' and ', ' & '
+    | normalize_whitespace %}
+  {% assign title_parts = compact_title | split: ': ' %}
+  {% assign title_prefix = title_parts | first | strip %}
+  {% assign title_suffix = compact_title | remove_first: title_prefix | remove_first: ': ' | strip %}
+
+  {% if compact_title.size <= title_budget %}
+    {% assign seo_page_title = compact_title %}
+  {% elsif title_parts.size > 1 and title_prefix.size <= title_budget %}
+    {% assign seo_page_title = title_prefix %}
+    {% assign suffix_budget = title_budget | minus: title_prefix.size | minus: 2 %}
+    {% if suffix_budget > 8 %}
+      {% assign suffix_words = title_suffix | split: ' ' %}
+      {% assign built_suffix = '' %}
+      {% for word in suffix_words %}
+        {% assign try_suffix = built_suffix | append: ' ' | append: word | strip %}
+        {% if try_suffix.size <= suffix_budget %}
+          {% assign built_suffix = try_suffix %}
+        {% else %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+      {% assign built_suffix = built_suffix | strip %}
+      {% for suffix in trim_suffixes %}
+        {% assign suffix_size = suffix | size %}
+        {% assign suffix_start = built_suffix.size | minus: suffix_size %}
+        {% if suffix_start >= 0 %}
+          {% assign built_suffix_tail = built_suffix | slice: suffix_start, suffix_size %}
+          {% if built_suffix == suffix or built_suffix_tail == suffix %}
+            {% assign built_suffix = built_suffix | remove: suffix | strip %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if built_suffix != '' %}
+        {% assign seo_page_title = title_prefix | append: ': ' | append: built_suffix %}
+      {% endif %}
+    {% endif %}
+  {% else %}
+    {% assign title_words = compact_title | split: ' ' %}
+    {% assign built_title = '' %}
+    {% for word in title_words %}
+      {% assign try_title = built_title | append: ' ' | append: word | strip %}
+      {% if try_title.size <= title_budget %}
+        {% assign built_title = try_title %}
+      {% else %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% assign seo_page_title = built_title | strip %}
+    {% for suffix in trim_suffixes %}
+      {% assign suffix_size = suffix | size %}
+      {% assign suffix_start = seo_page_title.size | minus: suffix_size %}
+      {% if suffix_start >= 0 %}
+        {% assign seo_title_tail = seo_page_title | slice: suffix_start, suffix_size %}
+        {% if seo_page_title == suffix or seo_title_tail == suffix %}
+          {% assign seo_page_title = seo_page_title | remove: suffix | strip %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% assign meta_title = site_title %}
+{% if is_homepage %}
+  {% assign meta_title = site.home_title | default: site_title %}
+{% elsif page_url == '/blog/index.html' %}
+  {% capture meta_title %}{{ page_title }} | {{ site_title }}{% endcapture %}
+{% elsif page_title != '' and page_title != 'blank' %}
+  {% capture meta_title %}{{ seo_page_title }} | {{ site_title }}{% endcapture %}
+{% endif %}
+
+{% if paginator_page > 1 %}
+  {% capture meta_title %}Page {{ paginator_page }} | {{ meta_title }}{% endcapture %}
+{% endif %}
+
+{% assign meta_description = site.description %}
+{% if is_homepage %}
+  {% assign meta_description = site.home_description | default: site.description %}
+{% elsif page_description != '' %}
+  {% assign meta_description = page_description | truncate: 157, '...' %}
+{% elsif generated_description != '' %}
+  {% assign meta_description = generated_description %}
+{% endif %}
+
+{% if paginator_page > 1 %}
+  {% capture meta_description %}Browse page {{ paginator_page }} of {{ site.blog_name | default: site_title }}, with AI paper breakdowns, frontier research updates, and analysis of LLMs, agents, reasoning, and multimodal systems.{% endcapture %}
+{% endif %}
+
+{% assign meta_title = meta_title | strip | normalize_whitespace %}
+{% assign meta_description = meta_description | strip | normalize_whitespace %}
 
 <!-- Standard metadata -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>
-  {% if site.title == 'blank' %}
-    {% capture title %}{{ author_name }}{% endcapture %}
-  {% else %}
-    {% capture title %}{{ site.title }}{% endcapture %}
-  {% endif %}
-  {% if page.url == '/blog/index.html' %}
-    {{ page.title }} | {{ title }}
-  {% elsif page.title != 'blank' and page.url != '/' %}
-    {% if page.title == null or page.title == '' %}
-      {{ page.date | date: '%Y' }} | {{ title }}
-    {% else %}
-      {{ page.title }} | {{ title }}
-    {% endif %}
-  {% else %}
-    {{ title }}
-  {% endif %}
-</title>
+<title>{{ meta_title }}</title>
 <meta name="author" content="{{ author_name }}">
-<meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+<meta name="description" content="{{ meta_description }}">
 {% if page.keywords or site.keywords %}
   <meta name="keywords" content="{% if page.keywords %}{{ page.keywords }}{% else %}{{ site.keywords }}{% endif %}">
 {% endif %}
@@ -53,11 +202,11 @@
 
 {% if site.serve_og_meta %}
   <!-- OpenGraph -->
-  <meta property="og:site_name" content="{{ title }}">
+  <meta property="og:site_name" content="{{ site_title }}">
   <meta property="og:type" content="{% if is_blog_post %}article{% else %}website{% endif %}">
-  <meta property="og:title" content="{% if page.title %}{{ title }} | {{ page.title }}{% else %}{{ title }}{% endif %}">
+  <meta property="og:title" content="{{ meta_title }}">
   <meta property="og:url" content="{{ page.url | prepend: site.baseurl | prepend: site.url | remove_first: 'index.html' }}">
-  <meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+  <meta property="og:description" content="{{ meta_description }}">
   {% if page.og_image or site.og_image %}
     <meta property="og:image" content="{% if page.og_image %}{{ page.og_image }}{% else %}{{ site.og_image }}{% endif %}">
   {% endif %}
@@ -65,8 +214,8 @@
 
   <!-- Twitter card -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ title }}{% endif %}">
-  <meta name="twitter:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+  <meta name="twitter:title" content="{{ meta_title }}">
+  <meta name="twitter:description" content="{{ meta_description }}">
   {% if page.og_image or site.og_image %}
     <meta name="twitter:image" content="{% if page.og_image %}{{ page.og_image }}{% else %}{{ site.og_image }}{% endif %}">
   {% endif %}
