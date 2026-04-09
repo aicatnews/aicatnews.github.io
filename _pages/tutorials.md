@@ -1,7 +1,7 @@
 ---
 layout: default
 permalink: /
-title: Tutorials
+title: AI Paper Breakdowns
 nav: true
 nav_order: 1
 pagination:
@@ -19,8 +19,8 @@ pagination:
 <div class="post">
 
   <div class="header-bar">
-    <h1>Tutorials</h1>
-    <h2>Daily AI news, paper breakdowns, and frontier updates.</h2>
+    <h1>AI Paper Breakdowns</h1>
+    <h2>Frontier research, model releases, and practical analysis across LLMs, agents, reasoning, multimodal systems, and AI tooling.</h2>
   </div>
 
 {% if site.display_tags and site.display_tags.size > 0 or site.display_categories and site.display_categories.size > 0 %}
