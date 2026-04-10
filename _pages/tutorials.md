@@ -1,7 +1,7 @@
 ---
 layout: default
 permalink: /
-title: AI Paper Breakdowns
+title: AI Research
 nav: true
 nav_order: 1
 pagination:
@@ -19,7 +19,7 @@ pagination:
 <div class="post">
 
   <div class="header-bar">
-    <h1>AI Paper Breakdowns</h1>
+    <h1>AI Research</h1>
     <h2>Frontier research, model releases, and practical analysis across LLMs, agents, reasoning, multimodal systems, and AI tooling.</h2>
   </div>
 
